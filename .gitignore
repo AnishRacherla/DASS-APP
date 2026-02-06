@@ -11,3 +11,7 @@ venv/
 # --- OS Specific ---
 .DS_Store
 Thumbs.db
+
+node_modules/
+mobile/node_modules/
+
