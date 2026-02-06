@@ -1,0 +1,27 @@
+{
+  "expo": {
+    "name": "Literacy Game",
+    "slug": "literacy-game-mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "resizeMode": "contain",
+      "backgroundColor": "#0B0C2A"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.literacygame.app"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#0B0C2A"
+      },
+      "package": "com.literacygame.app",
+      "permissions": []
+    }
+  }
+}
