@@ -57,7 +57,7 @@ export default function Homepage({ navigation }) {
         await AsyncStorage.setItem('userLanguage', response.data.user.language);
         
         setLoading(false);
-        navigation.navigate('PlanetSelection', { language: selectedLanguage });
+        navigation.navigate('GameSelection', { language: selectedLanguage });
       }
     } catch (error) {
       console.error('Error creating user:', error);

@@ -13,15 +13,24 @@ const scoreSchema = new mongoose.Schema({
     ref: 'User',
     required: true
   },
+  gameType: {
+    type: String,
+    enum: ['quiz', 'balloon', 'memory', 'spelling', 'story', 'tracing'],
+    default: 'quiz'
+  },
+  gameId: {
+    type: String,
+    required: false
+  },
   quizId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Quiz',
-    required: true
+    required: false
   },
   language: {
     type: String,
     required: true,
-    enum: ['hindi', 'telugu']
+    enum: ['hindi', 'telugu', 'english']
   },
   level: {
     type: Number,
@@ -30,12 +39,19 @@ const scoreSchema = new mongoose.Schema({
   score: {
     type: Number,
     required: true,
-    min: 0,
-    max: 5
+    min: 0
+  },
+  correctAnswers: {
+    type: Number,
+    default: 0
   },
   totalQuestions: {
     type: Number,
     default: 5
+  },
+  timeTaken: {
+    type: Number, // in seconds
+    default: 0
   },
   completedAt: {
     type: Date,
