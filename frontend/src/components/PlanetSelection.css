@@ -257,3 +257,65 @@
     font-size: 20px;
   }
 }
+
+/* ── Other Games section ──────────────────────────────────────────── */
+.other-games-section {
+  margin: 30px auto 20px;
+  max-width: 900px;
+  padding: 0 20px;
+  width: 100%;
+}
+
+.other-games-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 14px;
+}
+
+.other-game-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: rgba(255,255,255,0.07);
+  border: 2px solid rgba(255,255,255,0.14);
+  border-radius: 16px;
+  padding: 18px 22px;
+  cursor: pointer;
+  transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s;
+  margin-bottom: 12px;
+}
+
+.other-game-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 30px rgba(0,0,0,.4);
+}
+
+.whack-card:hover { border-color: #FFD700; }
+
+.other-game-icon {
+  font-size: 2.4rem;
+}
+
+.other-game-info {
+  flex: 1;
+}
+
+.other-game-name {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #FFD700;
+  margin: 0 0 4px;
+}
+
+.other-game-desc {
+  font-size: 0.85rem;
+  color: #aaa;
+  margin: 0;
+}
+
+.other-game-arrow {
+  font-size: 1.4rem;
+  color: #aaa;
+}
+

@@ -6,7 +6,9 @@
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
-    "seed": "node seeds/seedQuizzes.js"
+    "seed": "node seeds/seedQuizzes.js",
+    "seed:balloon": "node seeds/seedBalloonGames.js",
+    "seed:whack": "node seeds/seedWhackGames.js"
   },
   "dependencies": {
     "express": "^4.18.2",

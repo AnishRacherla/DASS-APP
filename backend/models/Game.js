@@ -6,7 +6,7 @@ const gameSchema = new mongoose.Schema({
   gameType: {
     type: String,
     required: true,
-    enum: ['quiz', 'balloon', 'memory', 'spelling', 'story', 'tracing']
+    enum: ['quiz', 'balloon', 'memory', 'spelling', 'story', 'tracing', 'whack']
   },
   gameId: {
     type: String,

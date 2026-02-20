@@ -136,6 +136,22 @@ const PlanetSelection = () => {
           </div>
         </div>
       </div>
+
+      {/* ── Other Games ── */}
+      <div className="other-games-section">
+        <h2 className="other-games-title">🎮 Other Games</h2>
+        <div
+          className="other-game-card whack-card"
+          onClick={() => navigate(`/whack/${language}`)}
+        >
+          <span className="other-game-icon">🔨</span>
+          <div className="other-game-info">
+            <h3 className="other-game-name">Whack-a-Letter</h3>
+            <p className="other-game-desc">Tap the tiles that show the target letter!</p>
+          </div>
+          <span className="other-game-arrow">→</span>
+        </div>
+      </div>
     </div>
   );
 };

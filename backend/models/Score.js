@@ -15,7 +15,7 @@ const scoreSchema = new mongoose.Schema({
   },
   gameType: {
     type: String,
-    enum: ['quiz', 'balloon', 'memory', 'spelling', 'story', 'tracing'],
+    enum: ['quiz', 'balloon', 'memory', 'spelling', 'story', 'tracing', 'whack'],
     default: 'quiz'
   },
   gameId: {

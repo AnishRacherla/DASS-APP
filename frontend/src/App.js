@@ -5,6 +5,8 @@ import PlanetSelection from './components/PlanetSelection';
 import Quiz from './components/Quiz';
 import Results from './components/Results';
 import Dashboard from './components/Dashboard';
+import WhackSelection from './components/WhackSelection';
+import WhackGame from './components/WhackGame';
 import './App.css';
 
 function App() {
@@ -17,6 +19,8 @@ function App() {
           <Route path="/quiz/:language/:level" element={<Quiz />} />
           <Route path="/results" element={<Results />} />
           <Route path="/dashboard/:userId" element={<Dashboard />} />
+          <Route path="/whack/:language" element={<WhackSelection />} />
+          <Route path="/whack/:language/:level" element={<WhackGame />} />
         </Routes>
       </div>
     </Router>

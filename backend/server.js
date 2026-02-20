@@ -26,6 +26,7 @@ app.use('/api/scores', require('./routes/scores'));
 app.use('/api/progress', require('./routes/progress'));
 app.use('/api/audio', require('./routes/audio'));
 app.use('/api/balloon', require('./routes/balloonGame'));
+app.use('/api/whack', require('./routes/whackGame'));
 
 // Test route
 app.get('/api/test', (req, res) => {
