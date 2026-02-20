@@ -15,9 +15,10 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Serve audio files
-app.use('/audio/hindi', express.static(path.join(__dirname, '../hindi')));
-app.use('/audio/telugu', express.static(path.join(__dirname, '../telugu')));
+// Serve static files (images and audio)
+app.use('/images', express.static(path.join(__dirname, 'assets/images')));
+app.use('/audio/hindi', express.static(path.join(__dirname, 'assets/audio/hindi')));
+app.use('/audio/telugu', express.static(path.join(__dirname, 'assets/audio/telugu')));
 
 // Routes
 app.use('/api/users', require('./routes/users'));
@@ -26,6 +27,8 @@ app.use('/api/scores', require('./routes/scores'));
 app.use('/api/progress', require('./routes/progress'));
 app.use('/api/audio', require('./routes/audio'));
 app.use('/api/balloon', require('./routes/balloonGame'));
+app.use('/api/lessons', require('./routes/lessons'));
+app.use('/api/mars-game', require('./routes/marsGame'));
 
 // Test route
 app.get('/api/test', (req, res) => {

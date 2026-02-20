@@ -7,18 +7,42 @@ import {
   ScrollView,
   StatusBar
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+import { API_BASE_URL } from '../config';
 
 export default function Results({ navigation, route }) {
   const { score, totalQuestions, language, level, gameType, correctAnswers } = route.params;
 
-  const safeTotal = Math.max(totalQuestions || 1, 1); // Prevent division by zero
+  const safeTotal = Math.max(totalQuestions || correctAnswers || 1, 1);
   const safeCorrect = correctAnswers || 0;
   const percentage = (safeCorrect / safeTotal) * 100;
-  const passed = safeCorrect >= Math.ceil(safeTotal * 0.6); // 60% to pass
+  const passed = safeCorrect >= Math.ceil(safeTotal * 0.6);
   const stars = percentage >= 80 ? 3 : percentage >= 60 ? 2 : 1;
 
+  useEffect(() => {
+    saveScore();
+  }, []);
+
+  const saveScore = async () => {
+    try {
+      const userId = await AsyncStorage.getItem('userId');
+      if (!userId) return;
+
+      await axios.post(`${API_BASE_URL}/api/scores`, {
+        userId,
+        score,
+        gameType: gameType || 'quiz',
+        language,
+        level: level || 1,
+      });
+    } catch (error) {
+      console.error('Error saving score:', error);
+    }
+  };
+
   const getEmoji = () => {
-    if (gameType === 'balloon') {
+    if (gameType === 'balloon' || gameType === 'mars') {
       if (percentage >= 80) return '🏆';
       if (percentage >= 60) return '🌟';
       if (percentage >= 40) return '⭐';
@@ -34,7 +58,7 @@ export default function Results({ navigation, route }) {
   };
 
   const getMessage = () => {
-    if (gameType === 'balloon') {
+    if (gameType === 'balloon' || gameType === 'mars') {
       if (percentage >= 80) return 'Amazing! You\'re a Pro!';
       if (percentage >= 60) return 'Great Job!';
       if (percentage >= 40) return 'Good Try!';
@@ -49,6 +73,9 @@ export default function Results({ navigation, route }) {
     return 'Keep Practicing!';
   };
 
+  const isBaloonGame = gameType === 'balloon';
+  const isMarsGame = gameType === 'mars';
+
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" />
@@ -59,22 +86,24 @@ export default function Results({ navigation, route }) {
           
           <Text style={styles.title}>{getMessage()}</Text>
 
-          {gameType === 'balloon' && (
+          {(isBaloonGame || isMarsGame) ? (
             <View style={styles.scorePoints}>
               <Text style={styles.scoreLabel}>Total Score:</Text>
               <Text style={styles.scoreValue}>{score} points</Text>
             </View>
+          ) : (
+            <View style={styles.scoreDisplay}>
+              <Text style={styles.scoreNumber}>{safeCorrect}</Text>
+              <Text style={styles.scoreSeparator}>/</Text>
+              <Text style={styles.scoreTotal}>{safeTotal}</Text>
+            </View>
           )}
 
-          <View style={styles.scoreDisplay}>
-            <Text style={styles.scoreNumber}>{safeCorrect}</Text>
-            <Text style={styles.scoreSeparator}>/</Text>
-            <Text style={styles.scoreTotal}>{safeTotal}</Text>
-          </View>
-
-          <Text style={styles.percentage}>
-            {isNaN(percentage) ? '0' : percentage.toFixed(0)}% Correct
-          </Text>
+          {!isBaloonGame && !isMarsGame && (
+            <Text style={styles.percentage}>
+              {isNaN(percentage) ? '0' : percentage.toFixed(0)}% Correct
+            </Text>
+          )}
 
           <View style={styles.starsRating}>
             {[...Array(3)].map((_, i) => (
@@ -97,6 +126,8 @@ export default function Results({ navigation, route }) {
               onPress={() => {
                 if (gameType === 'balloon') {
                   navigation.navigate('BalloonGame', { language, level });
+                } else if (gameType === 'mars') {
+                  navigation.navigate('MarsGame', { language, level });
                 } else {
                   navigation.navigate('Quiz', { language, level });
                 }
@@ -105,7 +136,7 @@ export default function Results({ navigation, route }) {
               <Text style={styles.primaryBtnText}>🔄 Play Again</Text>
             </TouchableOpacity>
 
-            {passed && (
+            {passed && gameType !== 'mars' && (
               <TouchableOpacity
                 style={styles.successBtn}
                 onPress={() => {
@@ -122,22 +153,16 @@ export default function Results({ navigation, route }) {
 
             <TouchableOpacity
               style={styles.secondaryBtn}
-              onPress={() => {
-                if (gameType === 'balloon') {
-                  navigation.navigate('BalloonSelection', { language });
-                } else {
-                  navigation.navigate('PlanetSelection', { language });
-                }
-              }}
+              onPress={() => navigation.navigate('PlanetHome', { language })}
             >
-              <Text style={styles.secondaryBtnText}>{gameType === 'balloon' ? '🎈 Back to Levels' : '🪐 Back to Planets'}</Text>
+              <Text style={styles.secondaryBtnText}>🪐 Back to Home</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
               style={styles.secondaryBtn}
               onPress={() => navigation.navigate('Homepage')}
             >
-              <Text style={styles.secondaryBtnText}>🏠 Home</Text>
+              <Text style={styles.secondaryBtnText}>🏠 Main Menu</Text>
             </TouchableOpacity>
           </View>
         </View>

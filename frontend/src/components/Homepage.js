@@ -28,7 +28,7 @@ const Homepage = () => {
     e.preventDefault();
     
     try {
-      const response = await axios.post('http://localhost:5000/api/users', {
+      const response = await axios.post('http://localhost:5001/api/users', {
         name: formData.name,
         age: parseInt(formData.age),
         language: selectedLanguage
@@ -40,8 +40,8 @@ const Homepage = () => {
         localStorage.setItem('userName', response.data.user.name);
         localStorage.setItem('userLanguage', response.data.user.language);
         
-        // Navigate to planet selection
-        navigate(`/planets/${selectedLanguage}`);
+        // Navigate to planet home
+        navigate('/planet-home', { state: { language: selectedLanguage } });
       }
     } catch (error) {
       console.error('Error creating user:', error);

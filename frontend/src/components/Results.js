@@ -1,39 +1,75 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import axios from 'axios';
 import './Results.css';
 
 const Results = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { score, totalQuestions, language, level } = location.state || {};
+  const { score, totalQuestions, language, level, correctAnswers, gameType } = location.state || {};
+  const [scoreSaved, setScoreSaved] = useState(false);
 
   useEffect(() => {
     if (!score && score !== 0) {
       navigate('/');
+    } else {
+      // Save score to database
+      saveScore();
     }
   }, [score, navigate]);
+
+  const saveScore = async () => {
+    if (scoreSaved) return; // Prevent duplicate saves
+    
+    const userId = localStorage.getItem('userId');
+    if (!userId) return;
+
+    try {
+      await axios.post('http://localhost:5001/api/scores', {
+        userId,
+        gameType: gameType || 'quiz',
+        language,
+        level: level || 1,
+        score,
+        correctAnswers: correctAnswers !== undefined ? correctAnswers : score,
+        totalQuestions
+      });
+      setScoreSaved(true);
+    } catch (error) {
+      console.error('Error saving score:', error);
+    }
+  };
 
   if (!score && score !== 0) {
     return null;
   }
 
-  const percentage = (score / totalQuestions) * 100;
-  const passed = score >= 3;
-  const stars = score >= 4 ? 3 : score >= 2 ? 2 : 1;
+  // For balloon game, show raw score. For others, use correctAnswers
+  const isBaloonGame = gameType === 'balloon';
+  const correctCount = isBaloonGame ? score : (correctAnswers !== undefined ? correctAnswers : score);
+  const totalQuestionsValue = totalQuestions || correctCount || 1; // Prevent division by zero
+  
+  // For balloon game, calculate percentage based on correctAnswers vs totalTaps
+  const percentage = isBaloonGame 
+    ? ((correctAnswers || 0) / totalQuestionsValue) * 100
+    : (correctCount / totalQuestionsValue) * 100;
+    
+  const passed = correctCount >= Math.ceil(totalQuestionsValue * 0.6); // 60% to pass
+  const stars = percentage >= 80 ? 3 : percentage >= 60 ? 2 : 1;
 
   const getEmoji = () => {
-    if (score === 5) return '🏆';
-    if (score >= 4) return '🌟';
-    if (score >= 3) return '⭐';
-    if (score >= 2) return '💫';
+    if (percentage === 100) return '🏆';
+    if (percentage >= 80) return '🌟';
+    if (percentage >= 60) return '⭐';
+    if (percentage >= 40) return '💫';
     return '💪';
   };
 
   const getMessage = () => {
-    if (score === 5) return 'Perfect! All Correct!';
-    if (score >= 4) return 'Excellent Work!';
-    if (score >= 3) return 'Great Job!';
-    if (score >= 2) return 'Good Try!';
+    if (percentage === 100) return 'Perfect! All Correct!';
+    if (percentage >= 80) return 'Excellent Work!';
+    if (percentage >= 60) return 'Great Job!';
+    if (percentage >= 40) return 'Good Try!';
     return 'Keep Practicing!';
   };
 
@@ -80,13 +116,25 @@ const Results = () => {
           </h1>
 
           <div className="score-display-large">
-            <span className="score-number">{score}</span>
-            <span className="score-separator">/</span>
-            <span className="score-total">{totalQuestions}</span>
+            {isBaloonGame ? (
+              <>
+                <span className="score-number">{score}</span>
+                <span className="score-separator"> Points</span>
+              </>
+            ) : (
+              <>
+                <span className="score-number">{correctCount}</span>
+                <span className="score-separator">/</span>
+                <span className="score-total">{totalQuestionsValue}</span>
+              </>
+            )}
           </div>
 
           <div className="percentage-display">
-            {percentage.toFixed(0)}% Correct
+            {isBaloonGame 
+              ? `${correctAnswers || 0}/${totalQuestionsValue} Correct (${isNaN(percentage) ? '0' : percentage.toFixed(0)}%)`
+              : `${isNaN(percentage) ? '0' : percentage.toFixed(0)}% Correct`
+            }
           </div>
 
           <div className="stars-rating">
@@ -107,35 +155,80 @@ const Results = () => {
           )}
 
           <div className="results-actions">
-            <button
-              className="btn btn-primary action-btn"
-              onClick={() => navigate(`/quiz/${language}/${level}`)}
-            >
-              🔄 Play Again
-            </button>
+            {/* For Mars game */}
+            {gameType === 'mars' && (
+              <>
+                <button
+                  className="btn btn-primary action-btn"
+                  onClick={() => navigate(`/mars-game`, { state: { language, level } })}
+                >
+                  🔄 Play Again
+                </button>
 
-            {passed && (
-              <button
-                className="btn btn-success action-btn"
-                onClick={() => navigate(`/quiz/${language}/${parseInt(level) + 1}`)}
-              >
-                Next Level →
-              </button>
+                {passed && level < 2 && (
+                  <button
+                    className="btn btn-success action-btn"
+                    onClick={() => navigate(`/mars-game`, { state: { language, level: parseInt(level) + 1 } })}
+                  >
+                    Next Level →
+                  </button>
+                )}
+
+                <button
+                  className="btn btn-secondary action-btn"
+                  onClick={() => navigate('/planet-home', { state: { language } })}
+                >
+                  🏠 Back to Home
+                </button>
+              </>
             )}
 
-            <button
-              className="btn btn-secondary action-btn"
-              onClick={() => navigate(`/planets/${language}`)}
-            >
-              🪐 Back to Planets
-            </button>
+            {/* For Balloon game */}
+            {gameType === 'balloon' && (
+              <>
+                <button
+                  className="btn btn-primary action-btn"
+                  onClick={() => navigate('/balloon-selection', { state: { language } })}
+                >
+                  🔄 Play Again
+                </button>
 
-            <button
-              className="btn btn-secondary action-btn"
-              onClick={() => navigate('/')}
-            >
-              🏠 Home
-            </button>
+                <button
+                  className="btn btn-secondary action-btn"
+                  onClick={() => navigate('/planet-home', { state: { language } })}
+                >
+                  🏠 Back to Home
+                </button>
+              </>
+            )}
+
+            {/* For Quiz game */}
+            {!gameType && (
+              <>
+                <button
+                  className="btn btn-primary action-btn"
+                  onClick={() => navigate(`/quiz/${language}/${level}`)}
+                >
+                  🔄 Play Again
+                </button>
+
+                {passed && (
+                  <button
+                    className="btn btn-success action-btn"
+                    onClick={() => navigate(`/quiz/${language}/${parseInt(level) + 1}`)}
+                  >
+                    Next Level →
+                  </button>
+                )}
+
+                <button
+                  className="btn btn-secondary action-btn"
+                  onClick={() => navigate('/planet-home', { state: { language } })}
+                >
+                  🏠 Back to Home
+                </button>
+              </>
+            )}
           </div>
         </div>
       </div>

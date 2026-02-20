@@ -1,0 +1,96 @@
+.mars-selection-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #d66d75 0%, #e29587 100%);
+  color: white;
+}
+
+.mars-selection-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.mars-selection-header h1 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.mars-selection-content {
+  padding: 40px 20px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.mars-selection-title {
+  font-size: 36px;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.mars-selection-subtitle {
+  text-align: center;
+  font-size: 20px;
+  margin-bottom: 50px;
+  opacity: 0.9;
+}
+
+.levels-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 30px;
+}
+
+.mars-level-card {
+  background: rgba(255, 255, 255, 0.95);
+  color: #333;
+  border: 3px solid;
+  border-radius: 20px;
+  padding: 30px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.mars-level-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+}
+
+.level-badge {
+  display: inline-block;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.level-title {
+  font-size: 28px;
+  margin: 10px 0;
+}
+
+.level-description {
+  font-size: 16px;
+  color: #666;
+  margin: 15px 0;
+}
+
+.level-stats {
+  display: flex;
+  gap: 30px;
+  margin-top: 20px;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.stat-icon {
+  font-size: 24px;
+}

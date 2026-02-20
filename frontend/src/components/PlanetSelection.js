@@ -19,12 +19,12 @@ const PlanetSelection = () => {
   const fetchData = async () => {
     try {
       // Fetch all quizzes for this language
-      const quizzesResponse = await axios.get(`http://localhost:5000/api/quizzes/${language}`);
+      const quizzesResponse = await axios.get(`http://localhost:5001/api/quizzes/${language}`);
       setQuizzes(quizzesResponse.data.quizzes);
 
       // Fetch user progress
       if (userId) {
-        const progressResponse = await axios.get(`http://localhost:5000/api/progress/${userId}`);
+        const progressResponse = await axios.get(`http://localhost:5001/api/progress/${userId}`);
         setProgress(progressResponse.data.progress);
       }
 
@@ -84,7 +84,7 @@ const PlanetSelection = () => {
       </div>
 
       <h1 className="planets-title">
-        Choose Your Planet 🪐
+        Choose Your World 🗺️
         <br />
         <span className="title-subtitle">Select a level to start learning</span>
       </h1>
@@ -92,7 +92,7 @@ const PlanetSelection = () => {
       <div className="planets-grid">
         {quizzes.map((quiz, index) => {
           const unlocked = isPlanetUnlocked(quiz.level);
-          const planetEmojis = ['🌎', '🪐', '🌕', '⭐', '🌙', '☄️', '🌟', '💫', '✨', '🌠'];
+          const planetEmojis = ['�', '�️', '⛰️'];
           
           return (
             <div
