@@ -44,17 +44,24 @@ const Results = () => {
     return null;
   }
 
-  // For balloon game, show raw score. For others, use correctAnswers
+  // For balloon and mars games, show raw score. For others, use correctAnswers
   const isBaloonGame = gameType === 'balloon';
-  const correctCount = isBaloonGame ? score : (correctAnswers !== undefined ? correctAnswers : score);
-  const totalQuestionsValue = totalQuestions || correctCount || 1; // Prevent division by zero
+  const isMarsGame = gameType === 'mars';
   
-  // For balloon game, calculate percentage based on correctAnswers vs totalTaps
-  const percentage = isBaloonGame 
-    ? ((correctAnswers || 0) / totalQuestionsValue) * 100
-    : (correctCount / totalQuestionsValue) * 100;
+  // For balloon: score is points, correctAnswers is number of correct balloons, totalQuestions is total taps
+  // For mars/quiz: correctAnswers is correct count, totalQuestions is total questions
+  const displayScore = (isBaloonGame || isMarsGame) ? score : (correctAnswers !== undefined ? correctAnswers : score);
+  
+  // For balloon game, don't calculate percentage based on taps, just show if they got points
+  const correctCount = correctAnswers !== undefined ? correctAnswers : score;
+  const totalQuestionsValue = (isBaloonGame || isMarsGame) ? correctCount : (totalQuestions || correctCount || 1);
+  
+  // Calculate percentage - for balloon/mars, assume 100% if they scored, otherwise based on correct/total
+  const percentage = (isBaloonGame || isMarsGame) 
+    ? (displayScore > 0 ? 100 : 0)
+    : ((correctCount / totalQuestionsValue) * 100);
     
-  const passed = correctCount >= Math.ceil(totalQuestionsValue * 0.6); // 60% to pass
+  const passed = (isBaloonGame || isMarsGame) ? (displayScore > 0) : (correctCount >= Math.ceil(totalQuestionsValue * 0.6));
   const stars = percentage >= 80 ? 3 : percentage >= 60 ? 2 : 1;
 
   const getEmoji = () => {
@@ -116,9 +123,9 @@ const Results = () => {
           </h1>
 
           <div className="score-display-large">
-            {isBaloonGame ? (
+            {isBaloonGame || isMarsGame ? (
               <>
-                <span className="score-number">{score}</span>
+                <span className="score-number">{displayScore}</span>
                 <span className="score-separator"> Points</span>
               </>
             ) : (
@@ -132,8 +139,10 @@ const Results = () => {
 
           <div className="percentage-display">
             {isBaloonGame 
-              ? `${correctAnswers || 0}/${totalQuestionsValue} Correct (${isNaN(percentage) ? '0' : percentage.toFixed(0)}%)`
-              : `${isNaN(percentage) ? '0' : percentage.toFixed(0)}% Correct`
+              ? `${correctCount} Correct Balloons • ${totalQuestions || 0} Total Taps`
+              : isMarsGame
+                ? `${correctCount}/${totalQuestionsValue} Correct`
+                : `${isNaN(percentage) ? '0' : percentage.toFixed(0)}% Correct`
             }
           </div>
 
@@ -155,6 +164,34 @@ const Results = () => {
           )}
 
           <div className="results-actions">
+            {/* For WhackGame */}
+            {gameType === 'whack' && (
+              <>
+                <button
+                  className="btn btn-primary action-btn"
+                  onClick={() => navigate(`/whack/${language}/${level}`)}
+                >
+                  🔄 Play Again
+                </button>
+
+                {passed && level < 7 && (
+                  <button
+                    className="btn btn-success action-btn"
+                    onClick={() => navigate(`/whack/${language}/${parseInt(level) + 1}`)}
+                  >
+                    Next Level →
+                  </button>
+                )}
+
+                <button
+                  className="btn btn-secondary action-btn"
+                  onClick={() => navigate('/mars-games', { state: { language } })}
+                >
+                  🏠 Back to Mars
+                </button>
+              </>
+            )}
+
             {/* For Mars game */}
             {gameType === 'mars' && (
               <>
@@ -176,9 +213,9 @@ const Results = () => {
 
                 <button
                   className="btn btn-secondary action-btn"
-                  onClick={() => navigate('/planet-home', { state: { language } })}
+                  onClick={() => navigate('/mars-games', { state: { language } })}
                 >
-                  🏠 Back to Home
+                  🏠 Back to Mars
                 </button>
               </>
             )}

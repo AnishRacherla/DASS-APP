@@ -71,7 +71,7 @@ const WhackGame = () => {
   useEffect(() => {
     const load = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/whack/${language}/${level}`);
+        const res = await axios.get(`http://localhost:5001/api/whack/${language}/${level}`);
         gameRef.current = res.data.game;
         setGame(res.data.game);
         setLoading(false);

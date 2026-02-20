@@ -14,13 +14,14 @@ const WhackSelection = () => {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:5000/api/whack/${language}`)
+      .get(`http://localhost:5001/api/whack/${language}`)
       .then((res) => {
+        console.log('WhackGame API response:', res.data);
         setGames(res.data.games || []);
         setLoading(false);
       })
       .catch((err) => {
-        console.error(err);
+        console.error('WhackGame API error:', err);
         setLoading(false);
       });
   }, [language]);
@@ -47,7 +48,7 @@ const WhackSelection = () => {
       </div>
 
       <div className="ws-header">
-        <button className="btn btn-secondary" onClick={() => navigate(`/planets/${language}`)}>
+        <button className="btn btn-secondary" onClick={() => navigate('/mars-games', { state: { language } })}>
           ← Back
         </button>
         <h1 className="ws-title">🔨 Whack-a-Letter</h1>
@@ -58,29 +59,36 @@ const WhackSelection = () => {
         {language === 'hindi' ? 'Hindi 🇮🇳' : 'Telugu 🇮🇳'} — Choose a level
       </p>
 
-      <div className="ws-grid">
-        {games.map((game) => (
-          <div
-            key={game._id}
-            className="ws-card"
-            onClick={() => navigate(`/whack/${language}/${game.level}`)}
-          >
+      {games.length === 0 ? (
+        <div style={{ color: 'white', textAlign: 'center', padding: '50px' }}>
+          <p>No games found. Please check if WhackGame data is seeded.</p>
+          <p>Run: node seeds/seedWhackGames.js</p>
+        </div>
+      ) : (
+        <div className="ws-grid">
+          {games.map((game) => (
             <div
-              className="ws-card-badge"
-              style={{ background: difficultyColor[game.difficulty] || '#4ECDC4' }}
+              key={game._id}
+              className="ws-card"
+              onClick={() => navigate(`/whack/${language}/${game.level}`)}
             >
-              {difficultyLabel[game.difficulty] || game.difficulty}
+              <div
+                className="ws-card-badge"
+                style={{ background: difficultyColor[game.difficulty] || '#4ECDC4' }}
+              >
+                {difficultyLabel[game.difficulty] || game.difficulty}
+              </div>
+              <div className="ws-target-letter">{game.gameData?.targetLetter || '?'}</div>
+              <div className="ws-level-label">Level {game.level}</div>
+              <div className="ws-card-desc">{game.description}</div>
+              <div className="ws-card-meta">
+                <span>⏱ 40s</span>
+                <span>🔄 5 rounds</span>
+              </div>
             </div>
-            <div className="ws-target-letter">{game.gameData.targetLetter}</div>
-            <div className="ws-level-label">Level {game.level}</div>
-            <div className="ws-card-desc">{game.description}</div>
-            <div className="ws-card-meta">
-              <span>⏱ 40s</span>
-              <span>🔄 5 rounds</span>
-            </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
