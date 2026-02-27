@@ -78,7 +78,7 @@ const WhackSelection = () => {
               >
                 {difficultyLabel[game.difficulty] || game.difficulty}
               </div>
-              <div className="ws-target-letter">{game.gameData?.targetLetter || '?'}</div>
+              <div className="ws-target-letter" style={{ fontSize: '2.4rem' }}>🔊</div>
               <div className="ws-level-label">Level {game.level}</div>
               <div className="ws-card-desc">{game.description}</div>
               <div className="ws-card-meta">

@@ -8,6 +8,8 @@ const NUM_ROUNDS = 5;
 const ROUND_DURATION = 8000;    // 8 s per round
 const TILE_OPEN_MS  = 3000;     // tiles visible for 3 s
 
+const LANG_VOICE_MAP = { hindi: 'hi-IN', telugu: 'te-IN' };
+
 const WhackGame = () => {
   const { language, level } = useParams();
   const navigate = useNavigate();
@@ -37,6 +39,23 @@ const WhackGame = () => {
   const roundTimers    = useRef([]);
 
   const userId = localStorage.getItem('userId');
+
+  // ── speech helper ──────────────────────────────────────────────────────────
+
+  const playLetterSound = useCallback((letter) => {
+    if (!letter) return;
+    window.speechSynthesis.cancel();
+    const utter = new SpeechSynthesisUtterance(letter);
+    utter.lang = LANG_VOICE_MAP[language] || 'hi-IN';
+    utter.rate = 0.8;
+    utter.pitch = 1;
+    utter.volume = 1;
+    // Try to pick a matching voice
+    const voices = window.speechSynthesis.getVoices();
+    const match = voices.find(v => v.lang === (LANG_VOICE_MAP[language] || 'hi-IN'));
+    if (match) utter.voice = match;
+    window.speechSynthesis.speak(utter);
+  }, [language]);
 
   // ── helpers ────────────────────────────────────────────────────────────────
 
@@ -89,6 +108,10 @@ const WhackGame = () => {
 
   useEffect(() => {
     if (gamePhase !== 'countdown') return;
+    // Play the target letter sound at the start of countdown
+    if (gameRef.current) {
+      playLetterSound(gameRef.current.gameData.targetLetter);
+    }
     let c = 3;
     setCountdown(c);
     const iv = setInterval(() => {
@@ -136,6 +159,9 @@ const WhackGame = () => {
     setRoundNumber(roundNum);
     setRoundPhase('open');
     tilesActiveRef.current = true;
+
+    // Play the target letter sound at the start of each round
+    playLetterSound(g.gameData.targetLetter);
 
     const { targetLetter, allLetters } = g.gameData;
 
@@ -271,8 +297,14 @@ const WhackGame = () => {
     return (
       <div className="whack-game-container countdown-screen">
         <div className="countdown-box">
-          <p className="countdown-label">Get ready to find:</p>
-          <div className="countdown-target">{game.gameData.targetLetter}</div>
+          <p className="countdown-label">Listen carefully!</p>
+          <button
+            className="wg-sound-btn wg-sound-btn-large"
+            onClick={() => playLetterSound(game.gameData.targetLetter)}
+          >
+            🔊
+          </button>
+          <p className="countdown-hint">Tap to hear again</p>
           <div className="countdown-number">{countdown}</div>
         </div>
       </div>
@@ -318,10 +350,16 @@ const WhackGame = () => {
         </div>
       </div>
 
-      {/* Target */}
+      {/* Target – audio only, no visual letter */}
       <div className="wg-target-row">
-        <span className="wg-target-label">Find:</span>
-        <span className="wg-target-letter">{game.gameData.targetLetter}</span>
+        <span className="wg-target-label">Listen & Find:</span>
+        <button
+          className="wg-sound-btn"
+          onClick={() => playLetterSound(game.gameData.targetLetter)}
+          title="Play letter sound"
+        >
+          🔊
+        </button>
       </div>
 
       {/* Round phase message */}

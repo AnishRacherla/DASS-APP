@@ -135,7 +135,7 @@
   color: #4ECDC4;
 }
 
-/* ── Target letter ─────────────────────────────────────────────────────── */
+/* ── Target letter → audio button ───────────────────────────────────────── */
 .wg-target-row {
   display: flex;
   align-items: center;
@@ -155,6 +155,50 @@
   color: #FFD700;
   text-shadow: 0 0 24px rgba(255,215,0,.6);
   animation: floatLetter 3s ease-in-out infinite;
+}
+
+/* Speaker / play-sound button */
+.wg-sound-btn {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 3px solid #FFD700;
+  background: linear-gradient(135deg, rgba(255,215,0,.18) 0%, rgba(255,215,0,.06) 100%);
+  color: #FFD700;
+  font-size: 2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
+  box-shadow: 0 0 18px rgba(255,215,0,.25);
+  animation: floatLetter 3s ease-in-out infinite;
+}
+
+.wg-sound-btn:hover {
+  transform: scale(1.12);
+  box-shadow: 0 0 32px rgba(255,215,0,.5);
+  background: linear-gradient(135deg, rgba(255,215,0,.3) 0%, rgba(255,215,0,.12) 100%);
+}
+
+.wg-sound-btn:active {
+  transform: scale(0.92);
+}
+
+/* Large version for countdown screen */
+.wg-sound-btn-large {
+  width: 100px;
+  height: 100px;
+  font-size: 3rem;
+  border-width: 4px;
+  margin: 16px auto;
+}
+
+.countdown-hint {
+  font-size: 0.85rem;
+  color: #888;
+  margin: 6px 0 18px;
+  letter-spacing: 0.5px;
 }
 
 @keyframes floatLetter {

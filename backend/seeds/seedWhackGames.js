@@ -12,15 +12,21 @@ const connectDB = async () => {
   }
 };
 
-// Hindi letter pools — 9 letters per pool (fits one full 3x3 grid)
-const hindiVowels   = ['अ', 'आ', 'इ', 'ई', 'उ', 'ऊ', 'ए', 'ऐ', 'ओ'];
+// Hindi letter pools — 9 letters per pool (fits one full 3×3 grid)
+const hindiVowels      = ['अ', 'आ', 'इ', 'ई', 'उ', 'ऊ', 'ए', 'ऐ', 'ओ'];
 const hindiConsonants1 = ['क', 'ख', 'ग', 'घ', 'च', 'छ', 'ज', 'झ', 'ट'];
 const hindiConsonants2 = ['त', 'थ', 'द', 'ध', 'न', 'प', 'फ', 'ब', 'म'];
+const hindiConsonants3 = ['य', 'र', 'ल', 'व', 'श', 'ष', 'स', 'ह', 'क्ष'];
+const hindiMixed1      = ['अ', 'क', 'ग', 'इ', 'त', 'प', 'ए', 'म', 'र'];
+const hindiMixed2      = ['आ', 'ख', 'च', 'ई', 'थ', 'फ', 'ऐ', 'ब', 'ल'];
 
 // Telugu letter pools
-const teluguVowels   = ['అ', 'ఆ', 'ఇ', 'ఈ', 'ఉ', 'ఊ', 'ఎ', 'ఏ', 'ఒ'];
+const teluguVowels      = ['అ', 'ఆ', 'ఇ', 'ఈ', 'ఉ', 'ఊ', 'ఎ', 'ఏ', 'ఒ'];
 const teluguConsonants1 = ['క', 'ఖ', 'గ', 'ఘ', 'చ', 'ఛ', 'జ', 'ఝ', 'ట'];
 const teluguConsonants2 = ['త', 'థ', 'ద', 'ధ', 'న', 'ప', 'ఫ', 'బ', 'మ'];
+const teluguConsonants3 = ['య', 'ర', 'ల', 'వ', 'శ', 'ష', 'స', 'హ', 'ళ'];
+const teluguMixed1      = ['అ', 'క', 'గ', 'ఇ', 'త', 'ప', 'ఎ', 'మ', 'ర'];
+const teluguMixed2      = ['ఆ', 'ఖ', 'చ', 'ఈ', 'థ', 'ఫ', 'ఏ', 'బ', 'ల'];
 
 const makeGame = (language, level, targetLetter, allLetters, title, description, difficulty) => ({
   gameType: 'whack',
@@ -46,23 +52,43 @@ const makeGame = (language, level, targetLetter, allLetters, title, description,
 });
 
 const whackGames = [
-  // Hindi
-  makeGame('hindi', 1, 'अ', hindiVowels,      'Whack-a-Letter: अ',  'Find and tap all tiles showing अ!', 'easy'),
-  makeGame('hindi', 2, 'आ', hindiVowels,      'Whack-a-Letter: आ',  'Find and tap all tiles showing आ!', 'easy'),
-  makeGame('hindi', 3, 'इ', hindiVowels,      'Whack-a-Letter: इ',  'Find and tap all tiles showing इ!', 'easy'),
-  makeGame('hindi', 4, 'क', hindiConsonants1, 'Whack-a-Letter: क',  'Find and tap all tiles showing क!', 'medium'),
-  makeGame('hindi', 5, 'ग', hindiConsonants1, 'Whack-a-Letter: ग',  'Find and tap all tiles showing ग!', 'medium'),
-  makeGame('hindi', 6, 'त', hindiConsonants2, 'Whack-a-Letter: त',  'Find and tap all tiles showing त!', 'hard'),
-  makeGame('hindi', 7, 'प', hindiConsonants2, 'Whack-a-Letter: प',  'Find and tap all tiles showing प!', 'hard'),
+  // ─── Hindi ──────────────────────────────────────────────────────────────
+  // Easy — vowels
+  makeGame('hindi',  1, 'अ',  hindiVowels,      'Whack-a-Letter: Level 1',  'Listen and find the correct letter!', 'easy'),
+  makeGame('hindi',  2, 'आ',  hindiVowels,      'Whack-a-Letter: Level 2',  'Listen and find the correct letter!', 'easy'),
+  makeGame('hindi',  3, 'इ',  hindiVowels,      'Whack-a-Letter: Level 3',  'Listen and find the correct letter!', 'easy'),
+  makeGame('hindi',  4, 'उ',  hindiVowels,      'Whack-a-Letter: Level 4',  'Listen and find the correct letter!', 'easy'),
+  makeGame('hindi',  5, 'ए',  hindiVowels,      'Whack-a-Letter: Level 5',  'Listen and find the correct letter!', 'easy'),
+  // Medium — consonants
+  makeGame('hindi',  6, 'क',  hindiConsonants1, 'Whack-a-Letter: Level 6',  'Listen and find the correct letter!', 'medium'),
+  makeGame('hindi',  7, 'ग',  hindiConsonants1, 'Whack-a-Letter: Level 7',  'Listen and find the correct letter!', 'medium'),
+  makeGame('hindi',  8, 'च',  hindiConsonants1, 'Whack-a-Letter: Level 8',  'Listen and find the correct letter!', 'medium'),
+  makeGame('hindi',  9, 'त',  hindiConsonants2, 'Whack-a-Letter: Level 9',  'Listen and find the correct letter!', 'medium'),
+  makeGame('hindi', 10, 'प',  hindiConsonants2, 'Whack-a-Letter: Level 10', 'Listen and find the correct letter!', 'medium'),
+  // Hard — consonants set 3 & mixed
+  makeGame('hindi', 11, 'श',  hindiConsonants3, 'Whack-a-Letter: Level 11', 'Listen and find the correct letter!', 'hard'),
+  makeGame('hindi', 12, 'र',  hindiConsonants3, 'Whack-a-Letter: Level 12', 'Listen and find the correct letter!', 'hard'),
+  makeGame('hindi', 13, 'क',  hindiMixed1,      'Whack-a-Letter: Level 13', 'Listen and find the correct letter!', 'hard'),
+  makeGame('hindi', 14, 'ख',  hindiMixed2,      'Whack-a-Letter: Level 14', 'Listen and find the correct letter!', 'hard'),
 
-  // Telugu
-  makeGame('telugu', 1, 'అ', teluguVowels,      'Whack-a-Letter: అ',  'Find and tap all tiles showing అ!', 'easy'),
-  makeGame('telugu', 2, 'ఆ', teluguVowels,      'Whack-a-Letter: ఆ',  'Find and tap all tiles showing ఆ!', 'easy'),
-  makeGame('telugu', 3, 'ఇ', teluguVowels,      'Whack-a-Letter: ఇ',  'Find and tap all tiles showing ఇ!', 'easy'),
-  makeGame('telugu', 4, 'క', teluguConsonants1, 'Whack-a-Letter: క',  'Find and tap all tiles showing క!', 'medium'),
-  makeGame('telugu', 5, 'గ', teluguConsonants1, 'Whack-a-Letter: గ',  'Find and tap all tiles showing గ!', 'medium'),
-  makeGame('telugu', 6, 'త', teluguConsonants2, 'Whack-a-Letter: త',  'Find and tap all tiles showing త!', 'hard'),
-  makeGame('telugu', 7, 'ప', teluguConsonants2, 'Whack-a-Letter: ప',  'Find and tap all tiles showing ప!', 'hard'),
+  // ─── Telugu ─────────────────────────────────────────────────────────────
+  // Easy — vowels
+  makeGame('telugu',  1, 'అ',  teluguVowels,      'Whack-a-Letter: Level 1',  'Listen and find the correct letter!', 'easy'),
+  makeGame('telugu',  2, 'ఆ',  teluguVowels,      'Whack-a-Letter: Level 2',  'Listen and find the correct letter!', 'easy'),
+  makeGame('telugu',  3, 'ఇ',  teluguVowels,      'Whack-a-Letter: Level 3',  'Listen and find the correct letter!', 'easy'),
+  makeGame('telugu',  4, 'ఉ',  teluguVowels,      'Whack-a-Letter: Level 4',  'Listen and find the correct letter!', 'easy'),
+  makeGame('telugu',  5, 'ఎ',  teluguVowels,      'Whack-a-Letter: Level 5',  'Listen and find the correct letter!', 'easy'),
+  // Medium — consonants
+  makeGame('telugu',  6, 'క',  teluguConsonants1, 'Whack-a-Letter: Level 6',  'Listen and find the correct letter!', 'medium'),
+  makeGame('telugu',  7, 'గ',  teluguConsonants1, 'Whack-a-Letter: Level 7',  'Listen and find the correct letter!', 'medium'),
+  makeGame('telugu',  8, 'చ',  teluguConsonants1, 'Whack-a-Letter: Level 8',  'Listen and find the correct letter!', 'medium'),
+  makeGame('telugu',  9, 'త',  teluguConsonants2, 'Whack-a-Letter: Level 9',  'Listen and find the correct letter!', 'medium'),
+  makeGame('telugu', 10, 'ప',  teluguConsonants2, 'Whack-a-Letter: Level 10', 'Listen and find the correct letter!', 'medium'),
+  // Hard — consonants set 3 & mixed
+  makeGame('telugu', 11, 'శ',  teluguConsonants3, 'Whack-a-Letter: Level 11', 'Listen and find the correct letter!', 'hard'),
+  makeGame('telugu', 12, 'ర',  teluguConsonants3, 'Whack-a-Letter: Level 12', 'Listen and find the correct letter!', 'hard'),
+  makeGame('telugu', 13, 'క',  teluguMixed1,      'Whack-a-Letter: Level 13', 'Listen and find the correct letter!', 'hard'),
+  makeGame('telugu', 14, 'ఖ',  teluguMixed2,      'Whack-a-Letter: Level 14', 'Listen and find the correct letter!', 'hard'),
 ];
 
 const seedWhackGames = async () => {
