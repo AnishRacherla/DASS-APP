@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -10,8 +10,26 @@ import {
 
 export default function MarsLevelSelection({ navigation, route }) {
   const { language } = route.params;
+  const [selectedGame, setSelectedGame] = useState(null); // null | 'image-id'
 
-  const levels = [
+  const gameTypes = [
+    {
+      id: 'image-id',
+      title: 'Image Identification',
+      emoji: '🖼️',
+      description: 'Match images with words — 2 levels',
+      color: '#FF6B6B',
+    },
+    {
+      id: 'whack',
+      title: 'Whack-a-Letter',
+      emoji: '🔨',
+      description: 'Tap tiles with the target letter!',
+      color: '#FF8C42',
+    },
+  ];
+
+  const imageIdLevels = [
     {
       id: 1,
       title: 'Level 1',
@@ -30,54 +48,97 @@ export default function MarsLevelSelection({ navigation, route }) {
     },
   ];
 
+  const handleGameTypeSelect = (gameId) => {
+    if (gameId === 'whack') {
+      navigation.navigate('WhackSelection', { language });
+    } else {
+      setSelectedGame(gameId);
+    }
+  };
+
+  const handleBack = () => {
+    if (selectedGame) {
+      setSelectedGame(null);
+    } else {
+      navigation.navigate('PlanetHome', { language });
+    }
+  };
+
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" />
-      
+
       <View style={styles.header}>
-        <TouchableOpacity 
-          style={styles.backBtn} 
-          onPress={() => navigation.navigate('PlanetHome', { language })}
-        >
+        <TouchableOpacity style={styles.backBtn} onPress={handleBack}>
           <Text style={styles.backBtnText}>← Back</Text>
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Mars Game</Text>
+        <Text style={styles.headerTitle}>Mars 🔴</Text>
         <View style={styles.placeholder} />
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        <Text style={styles.title}>🔴 Mars Word Match</Text>
-        <Text style={styles.subtitle}>Select a difficulty level</Text>
+        {!selectedGame ? (
+          // ── Game type picker ──────────────────────────────────────────────
+          <>
+            <Text style={styles.title}>🔴 Mars Games</Text>
+            <Text style={styles.subtitle}>Choose your game</Text>
 
-        <View style={styles.levelsContainer}>
-          {levels.map((level) => (
-            <TouchableOpacity
-              key={level.id}
-              style={[styles.levelCard, { borderColor: level.color }]}
-              onPress={() => navigation.navigate('MarsGame', { language, level: level.id })}
-            >
-              <View style={[styles.levelIconContainer, { backgroundColor: level.color }]}>
-                <Text style={styles.levelEmoji}>{level.emoji}</Text>
-              </View>
-              <View style={styles.levelInfo}>
-                <Text style={styles.levelTitle}>{level.title}</Text>
-                <Text style={styles.levelDescription}>{level.description}</Text>
-                <Text style={styles.levelQuestions}>{level.questions}</Text>
-              </View>
-              <Text style={styles.arrow}>→</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
+            <View style={styles.levelsContainer}>
+              {gameTypes.map((gt) => (
+                <TouchableOpacity
+                  key={gt.id}
+                  style={[styles.levelCard, { borderColor: gt.color }]}
+                  onPress={() => handleGameTypeSelect(gt.id)}
+                >
+                  <View style={[styles.levelIconContainer, { backgroundColor: gt.color }]}>
+                    <Text style={styles.levelEmoji}>{gt.emoji}</Text>
+                  </View>
+                  <View style={styles.levelInfo}>
+                    <Text style={styles.levelTitle}>{gt.title}</Text>
+                    <Text style={styles.levelDescription}>{gt.description}</Text>
+                  </View>
+                  <Text style={styles.arrow}>→</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </>
+        ) : (
+          // ── Image ID level picker ─────────────────────────────────────────
+          <>
+            <Text style={styles.title}>🖼️ Image Identification</Text>
+            <Text style={styles.subtitle}>Select a difficulty level</Text>
 
-        <View style={styles.instructions}>
-          <Text style={styles.instructionsTitle}>📖 How to Play</Text>
-          <Text style={styles.instructionsText}>
-            • Listen to the word pronunciation{'\n'}
-            • Look at all the images{'\n'}
-            • Tap the correct image that matches the word{'\n'}
-            • Earn 10 points for each correct answer!
-          </Text>
-        </View>
+            <View style={styles.levelsContainer}>
+              {imageIdLevels.map((level) => (
+                <TouchableOpacity
+                  key={level.id}
+                  style={[styles.levelCard, { borderColor: level.color }]}
+                  onPress={() => navigation.navigate('MarsGame', { language, level: level.id })}
+                >
+                  <View style={[styles.levelIconContainer, { backgroundColor: level.color }]}>
+                    <Text style={styles.levelEmoji}>{level.emoji}</Text>
+                  </View>
+                  <View style={styles.levelInfo}>
+                    <Text style={styles.levelTitle}>{level.title}</Text>
+                    <Text style={styles.levelDescription}>{level.description}</Text>
+                    <Text style={styles.levelQuestions}>{level.questions}</Text>
+                  </View>
+                  <Text style={styles.arrow}>→</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+
+            <View style={styles.instructions}>
+              <Text style={styles.instructionsTitle}>📖 How to Play</Text>
+              <Text style={styles.instructionsText}>
+                {'• Listen to the word pronunciation\n'}
+                {'• Look at all the images\n'}
+                {'• Tap the correct image that matches the word\n'}
+                {'• Earn 10 points for each correct answer!'}
+              </Text>
+            </View>
+          </>
+        )}
       </ScrollView>
     </View>
   );

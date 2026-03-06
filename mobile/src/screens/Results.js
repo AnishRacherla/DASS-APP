@@ -49,6 +49,13 @@ export default function Results({ navigation, route }) {
       if (percentage >= 20) return '💫';
       return '💪';
     }
+    if (gameType === 'whack') {
+      if (score >= 100) return '🏆';
+      if (score >= 60)  return '🌟';
+      if (score >= 30)  return '⭐';
+      if (score >= 0)   return '💫';
+      return '💪';
+    }
     // Quiz game logic
     if (score === 5) return '🏆';
     if (score >= 4) return '🌟';
@@ -65,6 +72,13 @@ export default function Results({ navigation, route }) {
       if (percentage >= 20) return 'Keep Practicing!';
       return 'Try Again!';
     }
+    if (gameType === 'whack') {
+      if (score >= 100) return 'Amazing Speed! 🔨';
+      if (score >= 60)  return 'Great Whacking!';
+      if (score >= 30)  return 'Good Try!';
+      if (score >= 0)   return 'Keep Practicing!';
+      return 'Try Again!';
+    }
     // Quiz game logic
     if (score === 5) return 'Perfect! All Correct!';
     if (score >= 4) return 'Excellent Work!';
@@ -75,6 +89,7 @@ export default function Results({ navigation, route }) {
 
   const isBaloonGame = gameType === 'balloon';
   const isMarsGame = gameType === 'mars';
+  const isWhackGame = gameType === 'whack';
 
   return (
     <View style={styles.container}>
@@ -86,7 +101,7 @@ export default function Results({ navigation, route }) {
           
           <Text style={styles.title}>{getMessage()}</Text>
 
-          {(isBaloonGame || isMarsGame) ? (
+          {(isBaloonGame || isMarsGame || isWhackGame) ? (
             <View style={styles.scorePoints}>
               <Text style={styles.scoreLabel}>Total Score:</Text>
               <Text style={styles.scoreValue}>{score} points</Text>
@@ -99,7 +114,7 @@ export default function Results({ navigation, route }) {
             </View>
           )}
 
-          {!isBaloonGame && !isMarsGame && (
+          {!isBaloonGame && !isMarsGame && !isWhackGame && (
             <Text style={styles.percentage}>
               {isNaN(percentage) ? '0' : percentage.toFixed(0)}% Correct
             </Text>
@@ -128,6 +143,8 @@ export default function Results({ navigation, route }) {
                   navigation.navigate('BalloonGame', { language, level });
                 } else if (gameType === 'mars') {
                   navigation.navigate('MarsGame', { language, level });
+                } else if (gameType === 'whack') {
+                  navigation.navigate('WhackGame', { language, level });
                 } else {
                   navigation.navigate('Quiz', { language, level });
                 }
@@ -142,6 +159,8 @@ export default function Results({ navigation, route }) {
                 onPress={() => {
                   if (gameType === 'balloon') {
                     navigation.navigate('BalloonGame', { language, level: parseInt(level) + 1 });
+                  } else if (gameType === 'whack') {
+                    navigation.navigate('WhackGame', { language, level: parseInt(level) + 1 });
                   } else {
                     navigation.navigate('Quiz', { language, level: parseInt(level) + 1 });
                   }
@@ -151,12 +170,23 @@ export default function Results({ navigation, route }) {
               </TouchableOpacity>
             )}
 
-            <TouchableOpacity
-              style={styles.secondaryBtn}
-              onPress={() => navigation.navigate('PlanetHome', { language })}
-            >
-              <Text style={styles.secondaryBtnText}>🪐 Back to Home</Text>
-            </TouchableOpacity>
+            {isWhackGame && (
+              <TouchableOpacity
+                style={styles.secondaryBtn}
+                onPress={() => navigation.navigate('MarsLevelSelection', { language })}
+              >
+                <Text style={styles.secondaryBtnText}>🔴 Back to Mars</Text>
+              </TouchableOpacity>
+            )}
+
+            {!isWhackGame && (
+              <TouchableOpacity
+                style={styles.secondaryBtn}
+                onPress={() => navigation.navigate('PlanetHome', { language })}
+              >
+                <Text style={styles.secondaryBtnText}>🪐 Back to Home</Text>
+              </TouchableOpacity>
+            )}
 
             <TouchableOpacity
               style={styles.secondaryBtn}

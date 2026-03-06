@@ -11,6 +11,8 @@ import BalloonGame from './src/screens/BalloonGame';
 import Lessons from './src/screens/Lessons';
 import MarsLevelSelection from './src/screens/MarsLevelSelection';
 import MarsGame from './src/screens/MarsGame';
+import WhackSelection from './src/screens/WhackSelection';
+import WhackGame from './src/screens/WhackGame';
 import Results from './src/screens/Results';
 
 const Stack = createNativeStackNavigator();
@@ -34,6 +36,8 @@ export default function App() {
         <Stack.Screen name="Lessons" component={Lessons} />
         <Stack.Screen name="MarsLevelSelection" component={MarsLevelSelection} />
         <Stack.Screen name="MarsGame" component={MarsGame} />
+        <Stack.Screen name="WhackSelection" component={WhackSelection} />
+        <Stack.Screen name="WhackGame" component={WhackGame} />
         <Stack.Screen name="Results" component={Results} />
       </Stack.Navigator>
     </NavigationContainer>
