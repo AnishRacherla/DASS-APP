@@ -119,7 +119,7 @@ export default function MarsGame({ navigation, route }) {
       'Your progress will be lost.',
       [
         { text: 'Cancel', style: 'cancel' },
-        { text: 'Exit', onPress: () => navigation.navigate('PlanetHome', { language }) }
+        { text: 'Exit', onPress: () => navigation.navigate('GameHub') }
       ]
     );
   };

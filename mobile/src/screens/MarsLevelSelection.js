@@ -60,7 +60,7 @@ export default function MarsLevelSelection({ navigation, route }) {
     if (selectedGame) {
       setSelectedGame(null);
     } else {
-      navigation.navigate('PlanetHome', { language });
+      navigation.navigate('GameHub');
     }
   };
 

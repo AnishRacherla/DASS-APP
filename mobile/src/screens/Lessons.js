@@ -75,7 +75,7 @@ export default function Lessons({ navigation, route }) {
         [
           {
             text: 'OK',
-            onPress: () => navigation.navigate('PlanetHome', { language })
+            onPress: () => navigation.navigate('GameHub')
           }
         ]
       );
@@ -89,7 +89,7 @@ export default function Lessons({ navigation, route }) {
   };
 
   const handleExit = () => {
-    navigation.navigate('PlanetHome', { language });
+    navigation.navigate('GameHub');
   };
 
   if (loading) {

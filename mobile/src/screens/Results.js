@@ -190,7 +190,7 @@ export default function Results({ navigation, route }) {
 
             <TouchableOpacity
               style={styles.secondaryBtn}
-              onPress={() => navigation.navigate('Homepage')}
+              onPress={() => navigation.navigate('GameHub')}
             >
               <Text style={styles.secondaryBtnText}>🏠 Main Menu</Text>
             </TouchableOpacity>

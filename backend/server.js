@@ -30,13 +30,14 @@ app.use('/api/balloon', require('./routes/balloonGame'));
 app.use('/api/lessons', require('./routes/lessons'));
 app.use('/api/mars-game', require('./routes/marsGame'));
 app.use('/api/whack', require('./routes/whackGame'));
+app.use('/api/akshara', require('./routes/aksharaGame'));
 
 // Test route
 app.get('/api/test', (req, res) => {
   res.json({ message: 'API is working!' });
 });
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server is running on port ${PORT}`);

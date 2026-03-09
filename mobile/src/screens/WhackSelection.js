@@ -52,7 +52,7 @@ export default function WhackSelection({ navigation, route }) {
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.backBtn}
-          onPress={() => navigation.navigate('MarsLevelSelection', { language })}
+          onPress={() => navigation.navigate('GameHub')}
         >
           <Text style={styles.backBtnText}>← Back</Text>
         </TouchableOpacity>

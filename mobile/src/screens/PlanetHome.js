@@ -75,7 +75,7 @@ export default function PlanetHome({ navigation, route }) {
       <StatusBar barStyle="light-content" />
       
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backBtn} onPress={() => navigation.navigate('Homepage')}>
+        <TouchableOpacity style={styles.backBtn} onPress={() => navigation.navigate('GameHub')}>
           <Text style={styles.backBtnText}>← Home</Text>
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Planet System</Text>
