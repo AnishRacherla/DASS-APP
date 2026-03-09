@@ -1,0 +1,360 @@
+.quiz-container {
+  min-height: 100vh;
+  padding: 20px;
+  position: relative;
+}
+
+.loading,
+.error-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  font-size: 36px;
+  color: white;
+}
+
+.quiz-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 15px;
+  position: relative;
+  z-index: 10;
+}
+
+.exit-btn {
+  font-size: 18px;
+  padding: 12px 25px;
+}
+
+.quiz-info {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.level-badge {
+  background: linear-gradient(135deg, #6B2FA5, #9B5DE5);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 25px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.score-display {
+  background: linear-gradient(135deg, #FFD700, #FFA500);
+  color: #0B0C2A;
+  padding: 10px 20px;
+  border-radius: 25px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.progress-bar-container {
+  position: relative;
+  width: 100%;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 25px;
+  overflow: hidden;
+  margin-bottom: 30px;
+  z-index: 10;
+}
+
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #FFD700, #FFA500);
+  transition: width 0.5s ease;
+  border-radius: 25px;
+}
+
+.progress-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-weight: bold;
+  font-size: 16px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.quiz-content {
+  max-width: 900px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 10;
+}
+
+.question-section {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.question-title {
+  font-size: 36px;
+  color: #FFD700;
+  margin-bottom: 30px;
+  text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+}
+
+.question-subtitle {
+  font-size: 20px;
+  color: #9B5DE5;
+  display: block;
+  margin-top: 10px;
+}
+
+.audio-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 20px;
+  background: linear-gradient(135deg, #6B2FA5, #9B5DE5);
+  border: none;
+  border-radius: 30px;
+  padding: 25px 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 30px rgba(107, 47, 165, 0.4);
+}
+
+.audio-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 15px 40px rgba(107, 47, 165, 0.6);
+}
+
+.audio-btn:active {
+  transform: scale(1.05);
+}
+
+.speaker-icon {
+  font-size: 60px;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+.audio-text {
+  font-size: 28px;
+  color: white;
+  font-weight: bold;
+  text-align: left;
+}
+
+.audio-subtext {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.8);
+  display: block;
+  margin-top: 5px;
+  font-weight: normal;
+}
+
+.options-section {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.option-btn {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 25px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 32px;
+  color: white;
+  font-weight: bold;
+  font-family: inherit;
+  position: relative;
+  min-height: 100px;
+}
+
+.option-btn:hover:not(:disabled) {
+  transform: translateY(-5px);
+  border-color: #FFD700;
+  box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
+}
+
+.option-btn.selected {
+  border-color: #FFD700;
+  background: rgba(255, 215, 0, 0.2);
+}
+
+.option-btn.correct {
+  border-color: #4CAF50;
+  background: rgba(76, 175, 80, 0.3);
+  animation: correctBounce 0.5s ease;
+}
+
+.option-btn.wrong {
+  border-color: #FF5252;
+  background: rgba(255, 82, 82, 0.3);
+  animation: wrongShake 0.5s ease;
+}
+
+@keyframes correctBounce {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes wrongShake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-10px);
+  }
+  75% {
+    transform: translateX(10px);
+  }
+}
+
+.option-btn:disabled {
+  cursor: not-allowed;
+}
+
+.option-letter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, #6B2FA5, #9B5DE5);
+  border-radius: 50%;
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.option-text {
+  flex: 1;
+}
+
+.feedback-icon {
+  position: absolute;
+  right: 20px;
+  font-size: 40px;
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 20px;
+  font-size: 24px;
+  margin-top: 20px;
+}
+
+.submit-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.feedback-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 30px;
+  border-radius: 20px;
+  margin-top: 30px;
+  animation: slideIn 0.5s ease;
+}
+
+.correct-feedback {
+  background: linear-gradient(135deg, rgba(76, 175, 80, 0.3), rgba(69, 160, 73, 0.3));
+  border: 3px solid #4CAF50;
+}
+
+.wrong-feedback {
+  background: linear-gradient(135deg, rgba(255, 82, 82, 0.3), rgba(211, 47, 47, 0.3));
+  border: 3px solid #FF5252;
+}
+
+.feedback-emoji {
+  font-size: 60px;
+}
+
+.feedback-text {
+  font-size: 28px;
+  color: white;
+  font-weight: bold;
+  text-align: left;
+}
+
+.feedback-subtext {
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.9);
+  display: block;
+  margin-top: 5px;
+  font-weight: normal;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .quiz-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .quiz-info {
+    justify-content: space-between;
+  }
+
+  .question-title {
+    font-size: 28px;
+  }
+
+  .question-subtitle {
+    font-size: 16px;
+  }
+
+  .audio-btn {
+    padding: 20px 30px;
+  }
+
+  .speaker-icon {
+    font-size: 50px;
+  }
+
+  .audio-text {
+    font-size: 22px;
+  }
+
+  .options-section {
+    grid-template-columns: 1fr;
+  }
+
+  .option-btn {
+    font-size: 28px;
+    padding: 20px;
+  }
+
+  .option-letter {
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+  }
+
+  .feedback-text {
+    font-size: 22px;
+  }
+}
