@@ -11,7 +11,7 @@ import {
 import * as Speech from 'expo-speech';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import { API_BASE_URL } from '../config';
+import { API_BASE_URL, API_TIMEOUT } from '../config';
 
 const TOTAL_TIME   = 40;
 const NUM_ROUNDS   = 5;
@@ -99,7 +99,7 @@ export default function WhackGame({ navigation, route }) {
   useEffect(() => {
     const load = async () => {
       try {
-        const res = await axios.get(`${API_BASE_URL}/api/whack/${language}/${level}`);
+        const res = await axios.get(`${API_BASE_URL}/api/whack/${language}/${level}`, { timeout: API_TIMEOUT });
         gameRef.current = res.data.game;
         setGame(res.data.game);
         setLoading(false);
@@ -241,23 +241,8 @@ export default function WhackGame({ navigation, route }) {
     const finalScore    = scoreRef.current;
     const finalPenalties = penaltiesRef.current;
 
-    try {
-      const userId = await AsyncStorage.getItem('userId');
-      if (userId && gameRef.current) {
-        await axios.post(`${API_BASE_URL}/api/whack/score`, {
-          userId,
-          gameId:    gameRef.current._id,
-          language,
-          level:     parseInt(level),
-          score:     finalScore,
-          penalties: finalPenalties,
-          timeTaken: TOTAL_TIME,
-        });
-      }
-    } catch (err) {
-      console.error('Error saving whack score:', err);
-    } finally {
-      navigation.navigate('Results', {
+    // Results screen handles saving to /api/scores
+    navigation.navigate('Results', {
         score:          finalScore,
         totalQuestions: NUM_ROUNDS,
         correctAnswers: Math.max(finalScore, 0),
@@ -266,7 +251,6 @@ export default function WhackGame({ navigation, route }) {
         gameType: 'whack',
         penalties: finalPenalties,
       });
-    }
   }, [clearAll, language, level, navigation]);
 
   const handleExit = () => {

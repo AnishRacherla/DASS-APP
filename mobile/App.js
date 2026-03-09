@@ -36,6 +36,7 @@ import WhackSelection from './src/screens/WhackSelection';
 import WhackGame from './src/screens/WhackGame';
 import AksharaGame from './src/screens/AksharaGame';
 import Results from './src/screens/Results';
+import Dashboard from './src/screens/Dashboard';
 
 const Stack = createNativeStackNavigator();
 
@@ -65,6 +66,7 @@ export default function App() {
         <Stack.Screen name="WhackGame" component={WhackGame} />
         <Stack.Screen name="AksharaGame" component={AksharaGame} />
         <Stack.Screen name="Results" component={Results} />
+        <Stack.Screen name="Dashboard" component={Dashboard} />
       </Stack.Navigator>
     </NavigationContainer>
     </ErrorBoundary>

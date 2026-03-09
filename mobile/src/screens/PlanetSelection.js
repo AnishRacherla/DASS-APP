@@ -1,108 +1,92 @@
 import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-  StatusBar,
-  ActivityIndicator
-} from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, StatusBar, ActivityIndicator } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import { API_BASE_URL } from '../config';
+import { API_BASE_URL, API_TIMEOUT } from '../config';
 
-export default function PlanetSelection({ navigation, route }) {
-  const { language } = route.params;
+export default function PlanetSelection({ route, navigation }) {
+  const language = route.params?.language || 'hindi';
   const [quizzes, setQuizzes] = useState([]);
   const [progress, setProgress] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [userId, setUserId] = useState(null);
   const [userName, setUserName] = useState('');
 
   useEffect(() => {
-    fetchData();
+    loadAndFetch();
   }, []);
 
-  const fetchData = async () => {
+  const loadAndFetch = async () => {
     try {
-      const userId = await AsyncStorage.getItem('userId');
+      const uid = await AsyncStorage.getItem('userId');
       const name = await AsyncStorage.getItem('userName');
-      setUserName(name);
+      setUserId(uid);
+      setUserName(name || '');
 
-      const quizzesResponse = await axios.get(`${API_BASE_URL}/api/quizzes/${language}`);
-      setQuizzes(quizzesResponse.data.quizzes);
+      const quizzesRes = await axios.get(API_BASE_URL + '/api/quizzes/' + language, { timeout: API_TIMEOUT });
+      setQuizzes(quizzesRes.data.quizzes || []);
 
-      if (userId) {
-        const progressResponse = await axios.get(`${API_BASE_URL}/api/progress/${userId}`);
-        setProgress(progressResponse.data.progress);
+      if (uid) {
+        const progressRes = await axios.get(API_BASE_URL + '/api/progress/' + uid, { timeout: API_TIMEOUT });
+        setProgress(progressRes.data.progress);
       }
-
-      setLoading(false);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-      setLoading(false);
+    } catch (e) {
+      console.log('PlanetSelection fetch error:', e.message);
     }
+    setLoading(false);
   };
 
+  const isPlanetUnlocked = (level) => progress && level <= progress.currentLevel;
+
   const handlePlanetClick = (level) => {
-    if (progress && level <= progress.currentLevel) {
+    if (isPlanetUnlocked(level)) {
       navigation.navigate('Quiz', { language, level });
     }
   };
 
-  const isPlanetUnlocked = (level) => {
-    return progress && level <= progress.currentLevel;
-  };
-
   if (loading) {
     return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#FFD700" />
+      <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+        <ActivityIndicator size="large" color="#4ECDC4" />
         <Text style={styles.loadingText}>🌍 Loading Planets...</Text>
       </View>
     );
   }
 
-  const planetEmojis = ['🌎', '🪐', '🌕', '⭐', '🌙', '☄️', '🌟', '💫', '✨', '🌠'];
+  const planetEmojis = ['🌍', '🌎', '⛰️'];
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" />
-      
+      <StatusBar barStyle="light-content" backgroundColor="#0B0C2A" />
+
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backBtn} onPress={() => navigation.goBack()}>
-          <Text style={styles.backBtnText}>← Home</Text>
+        <TouchableOpacity onPress={() => navigation.navigate('GameHub')}>
+          <Text style={styles.backBtn}>← Home</Text>
         </TouchableOpacity>
-        
         <View style={styles.userInfo}>
           <Text style={styles.welcomeText}>Welcome, {userName}! 👋</Text>
           <Text style={styles.scoreInfo}>🏆 Total Score: {progress?.totalScore || 0}</Text>
         </View>
       </View>
 
-      <Text style={styles.title}>Choose Your Planet 🪐</Text>
-      <Text style={styles.subtitle}>Select a level to start learning</Text>
+      <ScrollView contentContainerStyle={styles.scroll}>
+        <Text style={styles.title}>Choose Your World 🗺️</Text>
+        <Text style={styles.titleSub}>Select a level to start learning</Text>
 
-      <ScrollView contentContainerStyle={styles.scrollContent}>
-        <View style={styles.planetsGrid}>
+        <View style={styles.grid}>
           {quizzes.map((quiz, index) => {
             const unlocked = isPlanetUnlocked(quiz.level);
-            
             return (
               <TouchableOpacity
                 key={quiz._id}
-                style={[
-                  styles.planetCard,
-                  unlocked ? styles.planetUnlocked : styles.planetLocked
-                ]}
+                style={[styles.planetCard, !unlocked && styles.lockedCard]}
                 onPress={() => handlePlanetClick(quiz.level)}
-                disabled={!unlocked}
+                activeOpacity={unlocked ? 0.8 : 1}
               >
                 <Text style={styles.planetEmoji}>{planetEmojis[index % planetEmojis.length]}</Text>
                 <Text style={styles.planetName}>{quiz.planetName}</Text>
                 <Text style={styles.planetLevel}>Level {quiz.level}</Text>
-                <Text style={styles.planetQuestions}>{quiz.questions.length} Questions</Text>
-                
+                <Text style={styles.planetQuestions}>{quiz.questions?.length || 0} Questions</Text>
                 {!unlocked && (
                   <View style={styles.lockOverlay}>
                     <Text style={styles.lockIcon}>🔒</Text>
@@ -114,9 +98,10 @@ export default function PlanetSelection({ navigation, route }) {
           })}
         </View>
 
+        {/* Progress Card */}
         <View style={styles.progressCard}>
           <Text style={styles.progressTitle}>📊 Your Progress</Text>
-          <View style={styles.statsContainer}>
+          <View style={styles.statsRow}>
             <View style={styles.statItem}>
               <Text style={styles.statLabel}>Quizzes Completed</Text>
               <Text style={styles.statValue}>{progress?.quizzesCompleted || 0}</Text>
@@ -131,165 +116,60 @@ export default function PlanetSelection({ navigation, route }) {
             </View>
           </View>
         </View>
+
+        {/* Other Games */}
+        <Text style={styles.otherGamesTitle}>🎮 Other Games</Text>
+        <TouchableOpacity
+          style={styles.whackCard}
+          onPress={() => navigation.navigate('WhackSelection', { language })}
+        >
+          <Text style={styles.whackIcon}>🔨</Text>
+          <View style={styles.whackInfo}>
+            <Text style={styles.whackName}>Whack-a-Letter</Text>
+            <Text style={styles.whackDesc}>Tap the tiles that show the target letter!</Text>
+          </View>
+          <Text style={styles.whackArrow}>→</Text>
+        </TouchableOpacity>
       </ScrollView>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#0B0C2A',
-  },
-  loadingContainer: {
-    flex: 1,
-    backgroundColor: '#0B0C2A',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  loadingText: {
-    fontSize: 24,
-    color: 'white',
-    marginTop: 20,
-  },
-  header: {
-    paddingTop: 40,
-    paddingHorizontal: 20,
-    paddingBottom: 20,
-  },
-  backBtn: {
-    backgroundColor: '#6B2FA5',
-    borderRadius: 25,
-    padding: 12,
-    alignSelf: 'flex-start',
-    marginBottom: 15,
-  },
-  backBtnText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  userInfo: {
-    alignItems: 'flex-end',
-  },
-  welcomeText: {
-    fontSize: 20,
-    color: '#FFD700',
-    fontWeight: 'bold',
-    marginBottom: 5,
-  },
-  scoreInfo: {
-    fontSize: 16,
-    color: 'white',
-  },
-  title: {
-    fontSize: 32,
-    color: '#FFD700',
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 10,
-    paddingHorizontal: 20,
-  },
-  subtitle: {
-    fontSize: 18,
-    color: '#9B5DE5',
-    textAlign: 'center',
-    marginBottom: 20,
-  },
-  scrollContent: {
-    padding: 20,
-  },
-  planetsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    marginBottom: 30,
-  },
-  planetCard: {
-    width: '48%',
-    backgroundColor: 'rgba(255,255,255,0.1)',
-    borderRadius: 20,
-    padding: 20,
-    marginBottom: 15,
-    alignItems: 'center',
-    borderWidth: 3,
-  },
-  planetUnlocked: {
-    borderColor: '#FFD700',
-  },
-  planetLocked: {
-    borderColor: '#666',
-    opacity: 0.6,
-  },
-  planetEmoji: {
-    fontSize: 60,
-    marginBottom: 10,
-  },
-  planetName: {
-    fontSize: 16,
-    color: '#FFD700',
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 5,
-  },
-  planetLevel: {
-    fontSize: 14,
-    color: '#9B5DE5',
-    marginBottom: 3,
-  },
-  planetQuestions: {
-    fontSize: 12,
-    color: '#ddd',
-  },
-  lockOverlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(0,0,0,0.7)',
-    borderRadius: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  lockIcon: {
-    fontSize: 40,
-    marginBottom: 5,
-  },
-  lockText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  progressCard: {
-    backgroundColor: 'rgba(255,255,255,0.1)',
-    borderRadius: 20,
-    padding: 20,
-    marginTop: 10,
-  },
-  progressTitle: {
-    fontSize: 24,
-    color: '#FFD700',
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 20,
-  },
-  statsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-  },
-  statItem: {
-    alignItems: 'center',
-  },
-  statLabel: {
-    fontSize: 12,
-    color: '#ddd',
-    marginBottom: 5,
-    textAlign: 'center',
-  },
-  statValue: {
-    fontSize: 28,
-    color: '#FFD700',
-    fontWeight: 'bold',
-  },
+  container: { flex: 1, backgroundColor: '#0B0C2A' },
+  loadingText: { color: '#94a3b8', marginTop: 12, fontSize: 16 },
+  header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, paddingVertical: 14, borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.08)' },
+  backBtn: { color: '#a855f7', fontSize: 15, fontWeight: '600' },
+  userInfo: { alignItems: 'flex-end' },
+  welcomeText: { fontSize: 13, color: '#e2e8f0' },
+  scoreInfo: { fontSize: 12, color: '#FFD700', fontWeight: '600' },
+  scroll: { padding: 20, paddingBottom: 40 },
+  title: { fontSize: 24, fontWeight: '800', color: '#FFD700', textAlign: 'center', marginBottom: 4 },
+  titleSub: { fontSize: 13, color: '#94a3b8', textAlign: 'center', marginBottom: 20 },
+
+  grid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: 12, marginBottom: 20 },
+  planetCard: { backgroundColor: 'rgba(255,255,255,0.06)', borderRadius: 16, padding: 20, alignItems: 'center', width: '45%', borderWidth: 1, borderColor: 'rgba(255,255,255,0.1)' },
+  lockedCard: { opacity: 0.45 },
+  planetEmoji: { fontSize: 40, marginBottom: 8 },
+  planetName: { fontSize: 16, fontWeight: '700', color: '#e2e8f0', marginBottom: 2 },
+  planetLevel: { fontSize: 13, color: '#a855f7', fontWeight: '600' },
+  planetQuestions: { fontSize: 12, color: '#94a3b8', marginTop: 4 },
+  lockOverlay: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, borderRadius: 16, backgroundColor: 'rgba(0,0,0,0.5)', alignItems: 'center', justifyContent: 'center' },
+  lockIcon: { fontSize: 28 },
+  lockText: { fontSize: 12, color: '#fff', fontWeight: '600', marginTop: 4 },
+
+  progressCard: { backgroundColor: 'rgba(78,205,196,0.08)', borderRadius: 16, padding: 16, borderWidth: 1, borderColor: 'rgba(78,205,196,0.2)', marginBottom: 24 },
+  progressTitle: { fontSize: 17, fontWeight: '700', color: '#e2e8f0', marginBottom: 12 },
+  statsRow: { flexDirection: 'row', justifyContent: 'space-between' },
+  statItem: { alignItems: 'center', flex: 1 },
+  statLabel: { fontSize: 11, color: '#94a3b8', marginBottom: 4, textAlign: 'center' },
+  statValue: { fontSize: 20, fontWeight: '700', color: '#4ECDC4' },
+
+  otherGamesTitle: { fontSize: 18, fontWeight: '700', color: '#e2e8f0', marginBottom: 12 },
+  whackCard: { flexDirection: 'row', alignItems: 'center', backgroundColor: 'rgba(255,165,2,0.1)', borderRadius: 16, padding: 16, borderWidth: 1, borderColor: 'rgba(255,165,2,0.25)' },
+  whackIcon: { fontSize: 32, marginRight: 12 },
+  whackInfo: { flex: 1 },
+  whackName: { fontSize: 16, fontWeight: '700', color: '#e2e8f0' },
+  whackDesc: { fontSize: 12, color: '#94a3b8', marginTop: 2 },
+  whackArrow: { fontSize: 20, color: '#ffa502', fontWeight: '700' },
 });

@@ -11,7 +11,7 @@ import {
 import { Audio } from 'expo-av';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import { API_BASE_URL } from '../config';
+import { API_BASE_URL, API_TIMEOUT } from '../config';
 
 export default function Quiz({ navigation, route }) {
   const { language, level } = route.params;
@@ -37,7 +37,7 @@ export default function Quiz({ navigation, route }) {
 
   const fetchQuiz = async () => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/api/quizzes/${language}/${level}`);
+      const response = await axios.get(`${API_BASE_URL}/api/quizzes/${language}/${level}`, { timeout: API_TIMEOUT });
       setQuiz(response.data.quiz);
       setLoading(false);
       setStartTime(Date.now());
@@ -111,27 +111,14 @@ export default function Quiz({ navigation, route }) {
   };
 
   const submitQuizScore = async (finalAnswers, finalScore) => {
-    try {
-      const userId = await AsyncStorage.getItem('userId');
-
-      await axios.post(`${API_BASE_URL}/api/scores`, {
-        userId,
-        quizId: quiz._id,
-        language,
-        level: parseInt(level),
-        score: finalScore,
-        answers: finalAnswers
-      });
-
-      navigation.navigate('Results', {
-        score: finalScore,
-        totalQuestions: quiz.questions.length,
-        language,
-        level
-      });
-    } catch (error) {
-      console.error('Error submitting score:', error);
-    }
+    // Results screen handles saving to /api/scores
+    navigation.navigate('Results', {
+      score: finalScore,
+      correctAnswers: finalScore,
+      totalQuestions: quiz.questions.length,
+      language,
+      level
+    });
   };
 
   if (loading) {

@@ -8,4 +8,7 @@ const API_BASE_URL = 'http://10.84.106.5:5001';
 // PRODUCTION - Use your deployed backend URL:
 // const API_BASE_URL = 'https://YOUR_APP_NAME.onrender.com';
 
-export { API_BASE_URL };
+// Global axios timeout (ms) — prevents app from freezing if backend is down
+const API_TIMEOUT = 8000;
+
+export { API_BASE_URL, API_TIMEOUT };

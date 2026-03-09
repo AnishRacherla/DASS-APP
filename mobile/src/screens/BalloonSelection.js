@@ -9,7 +9,7 @@ import {
   ActivityIndicator
 } from 'react-native';
 import axios from 'axios';
-import { API_BASE_URL } from '../config';
+import { API_BASE_URL, API_TIMEOUT } from '../config';
 
 export default function BalloonSelection({ navigation, route }) {
   const { language } = route.params;
@@ -22,7 +22,7 @@ export default function BalloonSelection({ navigation, route }) {
 
   const fetchGames = async () => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/api/balloon/${language}`);
+      const response = await axios.get(`${API_BASE_URL}/api/balloon/${language}`, { timeout: API_TIMEOUT });
       setGames(response.data.games);
       setLoading(false);
     } catch (error) {
@@ -103,12 +103,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 20,
+    paddingHorizontal: 16,
     paddingTop: 50,
+    paddingBottom: 12,
     backgroundColor: '#1a1a40',
   },
   backBtn: {
-    width: 60,
+    paddingVertical: 8,
+    paddingRight: 12,
   },
   backBtnText: {
     color: '#4ECDC4',

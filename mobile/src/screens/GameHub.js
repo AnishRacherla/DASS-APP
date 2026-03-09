@@ -3,112 +3,164 @@ import { View, Text, TouchableOpacity, StyleSheet, ScrollView, StatusBar, Alert 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const GAMES = [
-  { id: 'quiz', name: 'Audio Quiz', emoji: '🎯', color: '#4ECDC4', desc: 'Listen & pick the correct letter' },
-  { id: 'balloon', name: 'Balloon Pop', emoji: '🎈', color: '#FF6B6B', desc: 'Pop balloons with the right letter' },
-  { id: 'mars', name: 'Mars Explorer', emoji: '🔴', color: '#f97316', desc: 'Match words to images on Mars' },
-  { id: 'whack', name: 'Whack-a-Letter', emoji: '🔨', color: '#a855f7', desc: 'Fast-paced tile tapping game' },
-  { id: 'akshara', name: 'Akshara Magic Lab', emoji: '🧙‍♂️', color: '#f472b6', desc: 'Master letters, syllables & words' },
-  { id: 'lessons', name: 'Word Lessons', emoji: '📚', color: '#60a5fa', desc: 'Learn words with images & audio' },
+  {
+    id: 'balloon',
+    title: 'Balloon Pop',
+    emoji: '🎈',
+    description: 'Pop balloons with the correct letters! Fun letter recognition game.',
+    color: '#FF6B6B',
+    screen: 'BalloonSelection',
+    category: 'Letters',
+  },
+  {
+    id: 'quiz',
+    title: 'Audio Quiz',
+    emoji: '📝',
+    description: 'Listen to sounds and answer questions. Test your knowledge!',
+    color: '#4ECDC4',
+    screen: 'PlanetSelection',
+    category: 'Letters',
+  },
+  {
+    id: 'mars',
+    title: 'Mars Game',
+    emoji: '🪐',
+    description: 'Match images with words on Mars! Learn vocabulary through space adventure.',
+    color: '#FF4757',
+    screen: 'MarsLevelSelection',
+    category: 'Words',
+  },
+
+  {
+    id: 'akshara',
+    title: 'Akshara Magic Lab',
+    emoji: '🧙‍♂️',
+    description: '8 magical levels! Learn aksharas through combining, splitting & word mastery.',
+    color: '#a855f7',
+    screen: 'AksharaGame',
+    category: 'Aksharas',
+    special: true,
+  },
 ];
 
 export default function GameHub({ navigation }) {
-  const [playerName, setPlayerName] = useState('Player');
   const [language, setLanguage] = useState('hindi');
+  const [playerName, setPlayerName] = useState('Player');
 
   useEffect(() => {
-    loadData();
+    loadUserData();
   }, []);
 
-  const loadData = async () => {
-    const name = await AsyncStorage.getItem('playerName') || await AsyncStorage.getItem('userName') || 'Player';
-    const lang = await AsyncStorage.getItem('userLanguage') || 'hindi';
-    setPlayerName(name);
+  const loadUserData = async () => {
+    try {
+      const lang = await AsyncStorage.getItem('userLanguage');
+      const name = (await AsyncStorage.getItem('playerName')) || (await AsyncStorage.getItem('userName')) || 'Player';
+      if (lang) setLanguage(lang);
+      setPlayerName(name);
+    } catch (e) {}
+  };
+
+  const handleLanguageChange = async (lang) => {
     setLanguage(lang);
+    await AsyncStorage.setItem('userLanguage', lang);
   };
 
-  const switchLanguage = async () => {
-    const newLang = language === 'hindi' ? 'telugu' : 'hindi';
-    setLanguage(newLang);
-    await AsyncStorage.setItem('userLanguage', newLang);
-  };
-
-  const handleGamePress = (gameId) => {
-    switch (gameId) {
-      case 'quiz':
-        navigation.navigate('PlanetHome', { language });
-        break;
-      case 'balloon':
-        navigation.navigate('BalloonSelection', { language });
-        break;
-      case 'mars':
-        navigation.navigate('MarsLevelSelection', { language });
-        break;
-      case 'whack':
-        navigation.navigate('WhackSelection', { language });
-        break;
-      case 'akshara':
-        navigation.navigate('AksharaGame', { language });
-        break;
-      case 'lessons':
-        navigation.navigate('Lessons', { language });
-        break;
-    }
+  const handleGameClick = (game) => {
+    navigation.navigate(game.screen, { language });
   };
 
   const handleLogout = async () => {
-    Alert.alert('Logout', 'Are you sure you want to logout?', [
-      { text: 'Cancel', style: 'cancel' },
-      {
-        text: 'Logout', style: 'destructive',
-        onPress: async () => {
-          await AsyncStorage.multiRemove(['playerId', 'playerName', 'playerEmail', 'userId', 'userName', 'userLanguage', 'isLoggedIn', 'akshara_session']);
-          navigation.replace('AuthPage');
-        },
-      },
-    ]);
+    const keys = ['isLoggedIn', 'playerId', 'playerName', 'playerEmail', 'userId', 'userName', 'userLanguage', 'akshara_session'];
+    await AsyncStorage.multiRemove(keys);
+    navigation.replace('AuthPage');
+  };
+
+  const handleLessons = () => {
+    navigation.navigate('Lessons', { language });
   };
 
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#0B0C2A" />
-      <ScrollView contentContainerStyle={styles.scroll}>
-        {/* Header */}
-        <View style={styles.header}>
-          <View>
-            <Text style={styles.welcome}>Welcome back,</Text>
-            <Text style={styles.name}>{playerName} 👋</Text>
+
+      {/* Top Bar */}
+      <View style={styles.topBar}>
+        <View style={styles.userArea}>
+          <View style={styles.avatar}>
+            <Text style={styles.avatarText}>{playerName.charAt(0).toUpperCase()}</Text>
           </View>
-          <TouchableOpacity style={styles.logoutBtn} onPress={handleLogout}>
-            <Text style={styles.logoutText}>Logout</Text>
+          <View>
+            <Text style={styles.welcome}>Welcome back!</Text>
+            <Text style={styles.nameText}>{playerName}</Text>
+          </View>
+        </View>
+        <View style={styles.controls}>
+          <View style={styles.langToggle}>
+            <TouchableOpacity
+              style={[styles.langBtn, language === 'hindi' && styles.langActive]}
+              onPress={() => handleLanguageChange('hindi')}
+            >
+              <Text style={[styles.langBtnText, language === 'hindi' && styles.langActiveText]}>Hindi</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.langBtn, language === 'telugu' && styles.langActive]}
+              onPress={() => handleLanguageChange('telugu')}
+            >
+              <Text style={[styles.langBtnText, language === 'telugu' && styles.langActiveText]}>Telugu</Text>
+            </TouchableOpacity>
+          </View>
+          <TouchableOpacity onPress={handleLogout}>
+            <Text style={styles.logoutEmoji}>🚪</Text>
           </TouchableOpacity>
         </View>
+      </View>
 
-        {/* Language Toggle */}
-        <TouchableOpacity style={styles.langToggle} onPress={switchLanguage}>
-          <Text style={styles.langLabel}>Language:</Text>
-          <Text style={styles.langValue}>{language === 'hindi' ? '🇮🇳 Hindi' : '✨ Telugu'}</Text>
-          <Text style={styles.langSwitch}>Tap to switch</Text>
+      <ScrollView contentContainerStyle={styles.scroll}>
+        {/* Header */}
+        <Text style={styles.title}>🎮 Choose Your Game 🌟</Text>
+        <Text style={styles.subtitle}>
+          5 amazing games to learn {language === 'hindi' ? 'Hindi (हिंदी)' : 'Telugu (తెలుగు)'} letters and words!
+        </Text>
+
+        {/* Lessons Banner */}
+        <TouchableOpacity style={styles.lessonsBanner} onPress={handleLessons}>
+          <Text style={styles.lessonsIcon}>📚</Text>
+          <View style={styles.lessonsTextArea}>
+            <Text style={styles.lessonsTitle}>Learn Words First!</Text>
+            <Text style={styles.lessonsDesc}>Start with lessons before playing Mars Game</Text>
+          </View>
+          <Text style={styles.lessonsArrow}>→</Text>
         </TouchableOpacity>
 
-        {/* Game Grid */}
-        <Text style={styles.sectionTitle}>Choose a Game</Text>
-        <View style={styles.gameGrid}>
-          {GAMES.map((game) => (
-            <TouchableOpacity
-              key={game.id}
-              style={[styles.gameCard, { borderColor: game.color + '40' }]}
-              onPress={() => handleGamePress(game.id)}
-              activeOpacity={0.7}
-            >
-              <Text style={styles.gameEmoji}>{game.emoji}</Text>
-              <Text style={styles.gameName}>{game.name}</Text>
-              <Text style={styles.gameDesc}>{game.desc}</Text>
-              <View style={[styles.playBadge, { backgroundColor: game.color }]}>
-                <Text style={styles.playText}>PLAY ▶</Text>
+        {/* Game Cards */}
+        {GAMES.map((game) => (
+          <TouchableOpacity
+            key={game.id}
+            style={[styles.card, { borderLeftColor: game.color, borderLeftWidth: 4 }]}
+            onPress={() => handleGameClick(game)}
+            activeOpacity={0.85}
+          >
+            {game.special && (
+              <View style={styles.specialBadge}>
+                <Text style={styles.specialBadgeText}>✨ NEW</Text>
               </View>
-            </TouchableOpacity>
-          ))}
-        </View>
+            )}
+            <View style={styles.cardRow}>
+              <View style={[styles.emojiWrap, { backgroundColor: game.color + '22' }]}>
+                <Text style={styles.cardEmoji}>{game.emoji}</Text>
+              </View>
+              <View style={styles.cardInfo}>
+                <Text style={styles.cardTitle}>{game.title}</Text>
+                <Text style={styles.cardCategory}>{game.category}</Text>
+                <Text style={styles.cardDesc}>{game.description}</Text>
+              </View>
+            </View>
+            <View style={styles.playRow}>
+              <Text style={[styles.playText, { color: game.color }]}>Play</Text>
+              <Text style={[styles.playArrow, { color: game.color }]}>▶</Text>
+            </View>
+          </TouchableOpacity>
+        ))}
       </ScrollView>
     </View>
   );
@@ -116,22 +168,39 @@ export default function GameHub({ navigation }) {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#0B0C2A' },
-  scroll: { padding: 20, paddingBottom: 40 },
-  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, marginTop: 20 },
-  welcome: { fontSize: 14, color: '#94a3b8' },
-  name: { fontSize: 22, fontWeight: '800', color: '#f1f5f9' },
-  logoutBtn: { paddingVertical: 8, paddingHorizontal: 16, borderRadius: 12, borderWidth: 1, borderColor: 'rgba(248,113,113,0.3)', backgroundColor: 'rgba(248,113,113,0.08)' },
-  logoutText: { color: '#f87171', fontSize: 13, fontWeight: '600' },
-  langToggle: { flexDirection: 'row', alignItems: 'center', gap: 8, padding: 14, borderRadius: 14, backgroundColor: 'rgba(255,255,255,0.06)', borderWidth: 1, borderColor: 'rgba(255,255,255,0.1)', marginBottom: 20 },
-  langLabel: { color: '#94a3b8', fontSize: 13 },
-  langValue: { color: '#f1f5f9', fontSize: 15, fontWeight: '700', flex: 1 },
-  langSwitch: { color: '#a855f7', fontSize: 12, fontWeight: '600' },
-  sectionTitle: { fontSize: 18, fontWeight: '700', color: '#c084fc', marginBottom: 14, letterSpacing: 0.5 },
-  gameGrid: { gap: 14 },
-  gameCard: { padding: 18, borderRadius: 18, backgroundColor: 'rgba(255,255,255,0.06)', borderWidth: 2, flexDirection: 'column' },
-  gameEmoji: { fontSize: 36, marginBottom: 8 },
-  gameName: { fontSize: 17, fontWeight: '800', color: '#f1f5f9', marginBottom: 4 },
-  gameDesc: { fontSize: 12, color: '#94a3b8', marginBottom: 10, lineHeight: 18 },
-  playBadge: { alignSelf: 'flex-start', paddingVertical: 6, paddingHorizontal: 16, borderRadius: 20 },
-  playText: { color: '#fff', fontSize: 12, fontWeight: '800', letterSpacing: 1 },
+  topBar: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.08)' },
+  userArea: { flexDirection: 'row', alignItems: 'center', gap: 10 },
+  avatar: { width: 40, height: 40, borderRadius: 20, backgroundColor: '#a855f7', alignItems: 'center', justifyContent: 'center' },
+  avatarText: { color: '#fff', fontSize: 18, fontWeight: '700' },
+  welcome: { fontSize: 11, color: '#94a3b8' },
+  nameText: { fontSize: 15, fontWeight: '700', color: '#e2e8f0' },
+  controls: { flexDirection: 'row', alignItems: 'center', gap: 10 },
+  langToggle: { flexDirection: 'row', borderRadius: 10, overflow: 'hidden', borderWidth: 1, borderColor: 'rgba(255,255,255,0.15)' },
+  langBtn: { paddingHorizontal: 14, paddingVertical: 7 },
+  langActive: { backgroundColor: '#a855f7' },
+  langBtnText: { fontSize: 13, fontWeight: '600', color: '#94a3b8' },
+  langActiveText: { color: '#fff' },
+  logoutEmoji: { fontSize: 24 },
+  scroll: { padding: 16, paddingBottom: 40 },
+  title: { fontSize: 24, fontWeight: '800', color: '#FFD700', textAlign: 'center', marginBottom: 4 },
+  subtitle: { fontSize: 13, color: '#94a3b8', textAlign: 'center', marginBottom: 16 },
+  lessonsBanner: { flexDirection: 'row', alignItems: 'center', backgroundColor: 'rgba(168,85,247,0.12)', borderRadius: 16, padding: 14, borderWidth: 1, borderColor: 'rgba(168,85,247,0.3)', marginBottom: 16 },
+  lessonsIcon: { fontSize: 28, marginRight: 12 },
+  lessonsTextArea: { flex: 1 },
+  lessonsTitle: { fontSize: 15, fontWeight: '700', color: '#e2e8f0' },
+  lessonsDesc: { fontSize: 12, color: '#94a3b8', marginTop: 2 },
+  lessonsArrow: { fontSize: 20, color: '#a855f7', fontWeight: '700' },
+  card: { backgroundColor: 'rgba(255,255,255,0.06)', borderRadius: 16, padding: 16, marginBottom: 12, borderWidth: 1, borderColor: 'rgba(255,255,255,0.08)' },
+  specialBadge: { position: 'absolute', top: 8, right: 8, backgroundColor: '#a855f7', borderRadius: 8, paddingHorizontal: 8, paddingVertical: 2, zIndex: 1 },
+  specialBadgeText: { fontSize: 10, fontWeight: '700', color: '#fff' },
+  cardRow: { flexDirection: 'row', alignItems: 'center' },
+  emojiWrap: { width: 52, height: 52, borderRadius: 14, alignItems: 'center', justifyContent: 'center', marginRight: 14 },
+  cardEmoji: { fontSize: 28 },
+  cardInfo: { flex: 1 },
+  cardTitle: { fontSize: 17, fontWeight: '700', color: '#e2e8f0' },
+  cardCategory: { fontSize: 11, color: '#a855f7', fontWeight: '600', marginTop: 2 },
+  cardDesc: { fontSize: 12, color: '#94a3b8', marginTop: 4, lineHeight: 17 },
+  playRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end', marginTop: 8, gap: 6 },
+  playText: { fontSize: 14, fontWeight: '700' },
+  playArrow: { fontSize: 12 },
 });
