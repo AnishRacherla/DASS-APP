@@ -43,49 +43,46 @@ router.post('/', async (req, res) => {
 
     await newScore.save();
 
-    // Update user progress (create if missing so score save never fails with 404)
-    let progress = await Progress.findOne({ userId, language });
+    // Update user progress
+    const progress = await Progress.findOne({ userId, language });
+    
+    if (progress) {
+      // If there was a previous score, subtract it first
+      if (previousScore) {
+        progress.totalScore -= previousScore.score;
+      }
+      
+      // Then add the new score
+      progress.totalScore += finalScore;
+      
+      // For quiz, update level progress
+      if (gameType === 'quiz') {
+        // Only increment quizzes completed if this is a new level
+        if (!previousScore) {
+          progress.quizzesCompleted += 1;
+        }
+        
+        // Unlock next level if score >= 3
+        if (score >= 3 && level >= progress.currentLevel) {
+          progress.currentLevel = level + 1;
+        }
+      }
+      
+      progress.updatedAt = Date.now();
+      await progress.save();
 
-    if (!progress) {
-      progress = new Progress({
-        userId,
-        language,
-        currentLevel: 1,
-        totalScore: 0,
-        quizzesCompleted: 0
+      res.status(201).json({
+        success: true,
+        score: newScore,
+        progress,
+        message: previousScore ? 'Score updated' : 'Score saved'
+      });
+    } else {
+      res.status(404).json({
+        success: false,
+        message: 'Progress not found'
       });
     }
-
-    // If there was a previous score, subtract it first
-    if (previousScore) {
-      progress.totalScore -= previousScore.score;
-    }
-
-    // Then add the new score
-    progress.totalScore += finalScore;
-
-    // For quiz, update level progress
-    if (gameType === 'quiz') {
-      // Only increment quizzes completed if this is a new level
-      if (!previousScore) {
-        progress.quizzesCompleted += 1;
-      }
-
-      // Unlock next level if score >= 3
-      if (score >= 3 && level >= progress.currentLevel) {
-        progress.currentLevel = level + 1;
-      }
-    }
-
-    progress.updatedAt = Date.now();
-    await progress.save();
-
-    res.status(201).json({
-      success: true,
-      score: newScore,
-      progress,
-      message: previousScore ? 'Score updated' : 'Score saved'
-    });
   } catch (error) {
     res.status(400).json({
       success: false,
@@ -142,7 +139,6 @@ router.get('/user/:userId/total', async (req, res) => {
       quiz: 0,
       balloon: 0,
       mars: 0,
-      whack: 0,
       total: 0
     };
 
@@ -158,7 +154,6 @@ router.get('/user/:userId/total', async (req, res) => {
       quiz: uniqueGames.filter(s => s.gameType === 'quiz').length,
       balloon: uniqueGames.filter(s => s.gameType === 'balloon').length,
       mars: uniqueGames.filter(s => s.gameType === 'mars').length,
-      whack: uniqueGames.filter(s => s.gameType === 'whack').length,
       total: uniqueGames.length
     };
 

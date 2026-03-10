@@ -16,20 +16,13 @@ export default function MarsGame({ route, navigation }) {
   const soundRef = useRef(null);
 
   useEffect(() => {
-    setGame(null);
-    setCurrentQuestion(0);
-    setScore(0);
-    setCorrectCount(0);
-    setLoading(true);
-    setSelectedImage(null);
-    setShowFeedback(false);
     fetchGame();
     return () => {
       if (soundRef.current) {
         soundRef.current.unloadAsync();
       }
     };
-  }, [language, level]);
+  }, []);
 
   const fetchGame = async () => {
     try {

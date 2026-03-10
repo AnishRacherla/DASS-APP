@@ -38,7 +38,8 @@ const scoreSchema = new mongoose.Schema({
   },
   score: {
     type: Number,
-    required: true
+    required: true,
+    min: 0
   },
   correctAnswers: {
     type: Number,

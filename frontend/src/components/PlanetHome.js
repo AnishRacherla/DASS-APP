@@ -105,10 +105,6 @@ export default function PlanetHome() {
                 <span>🔴 Mars Game:</span>
                 <span>{totalScore.gameTypeTotals.mars || 0} pts</span>
               </div>
-              <div className="score-item">
-                <span>🔨 Whack-a-Letter:</span>
-                <span>{totalScore.gameTypeTotals.whack || 0} pts</span>
-              </div>
             </div>
             <p className="games-played">Games Played: {totalScore.gamesPlayed.total}</p>
           </div>

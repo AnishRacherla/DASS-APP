@@ -54,7 +54,6 @@ export default function WhackGame({ navigation, route }) {
   // Refs to avoid stale closures in timers
   const scoreRef       = useRef(0);
   const penaltiesRef   = useRef(0);
-  const correctHitsRef = useRef(0);
   const timeLeftRef    = useRef(TOTAL_TIME);
   const tilesActiveRef = useRef(false);
   const gameEndedRef   = useRef(false);
@@ -213,7 +212,6 @@ export default function WhackGame({ navigation, route }) {
       if (correct) {
         const pts = Math.max(timeLeftRef.current, 0);
         scoreRef.current += pts;
-        correctHitsRef.current += 1;
         setScore(scoreRef.current);
         showFeedback(`+${pts}`, 'correct');
       } else {
@@ -242,13 +240,12 @@ export default function WhackGame({ navigation, route }) {
 
     const finalScore    = scoreRef.current;
     const finalPenalties = penaltiesRef.current;
-    const finalCorrectHits = correctHitsRef.current;
 
     // Results screen handles saving to /api/scores
     navigation.navigate('Results', {
         score:          finalScore,
         totalQuestions: NUM_ROUNDS,
-        correctAnswers: finalCorrectHits,
+        correctAnswers: Math.max(finalScore, 0),
         language,
         level,
         gameType: 'whack',

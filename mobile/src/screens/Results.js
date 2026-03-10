@@ -12,7 +12,7 @@ import axios from 'axios';
 import { API_BASE_URL, API_TIMEOUT } from '../config';
 
 export default function Results({ navigation, route }) {
-  const { score, totalQuestions, language, level, gameType, correctAnswers, penalties } = route.params;
+  const { score, totalQuestions, language, level, gameType, correctAnswers } = route.params;
   const scoreSavedRef = useRef(false);
 
   const isBaloonGame = gameType === 'balloon';
@@ -21,17 +21,11 @@ export default function Results({ navigation, route }) {
 
   const correctCount = correctAnswers !== undefined ? correctAnswers : score;
   const totalQuestionsValue = totalQuestions || correctCount || 1;
-  const whackPenaltyCount = penalties || 0;
-  const whackPassed = whackPenaltyCount === 0 && score >= 10;
-  const percentage = isWhackGame
-    ? (totalQuestionsValue > 0 ? ((correctCount / totalQuestionsValue) * 100) : 0)
-    : totalQuestionsValue > 0
-      ? ((correctCount / totalQuestionsValue) * 100)
-      : (score > 0 ? 100 : 0);
-  const passed = isWhackGame ? whackPassed : (correctCount >= Math.ceil(totalQuestionsValue * 0.6));
-  const stars = isWhackGame
-    ? (whackPassed ? (whackPenaltyCount === 0 && score >= 30 ? 3 : 2) : 1)
-    : (percentage >= 80 ? 3 : percentage >= 60 ? 2 : 1);
+  const percentage = totalQuestionsValue > 0
+    ? ((correctCount / totalQuestionsValue) * 100)
+    : (score > 0 ? 100 : 0);
+  const passed = correctCount >= Math.ceil(totalQuestionsValue * 0.6);
+  const stars = percentage >= 80 ? 3 : percentage >= 60 ? 2 : 1;
 
   useEffect(() => {
     if (!score && score !== 0) {
@@ -65,7 +59,6 @@ export default function Results({ navigation, route }) {
   };
 
   const getEmoji = () => {
-    if (isWhackGame && whackPassed) return '🔨';
     if (percentage === 100) return '🏆';
     if (percentage >= 80) return '🌟';
     if (percentage >= 60) return '⭐';
@@ -74,11 +67,6 @@ export default function Results({ navigation, route }) {
   };
 
   const getMessage = () => {
-    if (isWhackGame) {
-      if (whackPassed && whackPenaltyCount === 0) return 'Sharp Aim!';
-      if (score > 0) return 'Nice Reflexes!';
-      return 'Keep Practicing!';
-    }
     if (percentage === 100) return 'Perfect! All Correct!';
     if (percentage >= 80) return 'Excellent Work!';
     if (percentage >= 60) return 'Great Job!';
@@ -96,7 +84,7 @@ export default function Results({ navigation, route }) {
           
           <Text style={styles.title}>{getMessage()}</Text>
 
-          {(isBaloonGame || isMarsGame || isWhackGame) ? (
+          {(isBaloonGame || isMarsGame) ? (
             <View style={styles.scorePoints}>
               <Text style={styles.scoreLabel}>Total Score:</Text>
               <Text style={styles.scoreValue}>{score} Points</Text>
@@ -114,9 +102,7 @@ export default function Results({ navigation, route }) {
               ? `${correctCount} Correct Balloons • ${totalQuestions || 0} Total Taps`
               : isMarsGame
                 ? `${correctCount}/${totalQuestionsValue} Correct`
-                : isWhackGame
-                  ? `${correctCount} Hits • ${whackPenaltyCount} Penalties`
-                  : `${isNaN(percentage) ? '0' : percentage.toFixed(0)}% Correct`
+                : `${isNaN(percentage) ? '0' : percentage.toFixed(0)}% Correct`
             }
           </Text>
 
