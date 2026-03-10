@@ -103,6 +103,8 @@ const Quiz = () => {
         language,
         level: parseInt(level),
         score: finalScore,
+        correctAnswers: finalScore,
+        totalQuestions: quiz.questions.length,
         answers: finalAnswers
       });
 
@@ -111,7 +113,8 @@ const Quiz = () => {
           score: finalScore,
           totalQuestions: quiz.questions.length,
           language,
-          level
+          level,
+          skipScoreSave: true
         }
       });
     } catch (error) {

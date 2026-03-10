@@ -75,12 +75,19 @@ router.post('/score', async (req, res) => {
     // Update progress if passed (no penalties AND score >= 10)
     const passed = penalties === 0 && score >= 10;
     if (passed && userId) {
-      const progress = await Progress.findOne({ userId, language });
-      if (progress) {
-        progress.totalScore += score;
-        progress.updatedAt = Date.now();
-        await progress.save();
+      let progress = await Progress.findOne({ userId, language });
+      if (!progress) {
+        progress = new Progress({
+          userId,
+          language,
+          currentLevel: 1,
+          totalScore: 0,
+          quizzesCompleted: 0
+        });
       }
+      progress.totalScore += score;
+      progress.updatedAt = Date.now();
+      await progress.save();
     }
 
     res.json({ success: true, message: 'Score saved!', scoreEntry, passed });

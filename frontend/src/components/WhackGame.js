@@ -31,6 +31,7 @@ const WhackGame = () => {
   // Refs (avoid stale closures in timers)
   const scoreRef       = useRef(0);
   const penaltiesRef   = useRef(0);
+  const correctHitsRef = useRef(0);
   const timeLeftRef    = useRef(TOTAL_TIME);
   const tilesActiveRef = useRef(false);
   const gameEndedRef   = useRef(false);
@@ -210,6 +211,7 @@ const WhackGame = () => {
       if (correct) {
         const pts = Math.max(timeLeftRef.current, 0);
         scoreRef.current += pts;
+        correctHitsRef.current += 1;
         setScore(scoreRef.current);
         showFeedbackPop(`+${pts}`, 'correct');
       } else {
@@ -239,6 +241,7 @@ const WhackGame = () => {
 
     const finalScore    = scoreRef.current;
     const finalPenalties = penaltiesRef.current;
+    const finalCorrectHits = correctHitsRef.current;
 
     try {
       if (userId && gameRef.current) {
@@ -258,10 +261,13 @@ const WhackGame = () => {
       navigate('/results', {
         state: {
           score:     finalScore,
+          correctAnswers: finalCorrectHits,
+          totalQuestions: NUM_ROUNDS,
           penalties: finalPenalties,
           language,
           level,
-          gameType: 'whack'
+          gameType: 'whack',
+          skipScoreSave: true
         }
       });
     }

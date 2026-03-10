@@ -6,7 +6,7 @@ import './Results.css';
 const Results = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { score, totalQuestions, language, level, correctAnswers, gameType } = location.state || {};
+  const { score, totalQuestions, language, level, correctAnswers, gameType, penalties, skipScoreSave } = location.state || {};
   const scoreSavedRef = useRef(false); // useRef so guard works synchronously (useState is async)
 
   useEffect(() => {
@@ -14,10 +14,10 @@ const Results = () => {
       navigate('/game-hub');
     } else {
       // Save score to database
-      saveScore();
+      if (!skipScoreSave) saveScore();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [score, navigate]);
+  }, [score, navigate, skipScoreSave]);
 
   const saveScore = async () => {
     if (scoreSavedRef.current) return; // Prevent duplicate saves (useRef is synchronous)
@@ -49,24 +49,32 @@ const Results = () => {
   // For balloon and mars games, show raw score. For others, use correctAnswers
   const isBaloonGame = gameType === 'balloon';
   const isMarsGame = gameType === 'mars';
+  const isWhackGame = gameType === 'whack';
   
   // For balloon: score is points, correctAnswers is number of correct balloons, totalQuestions is total taps
   // For mars/quiz: correctAnswers is correct count, totalQuestions is total questions
-  const displayScore = (isBaloonGame || isMarsGame) ? score : (correctAnswers !== undefined ? correctAnswers : score);
+  const displayScore = (isBaloonGame || isMarsGame || isWhackGame) ? score : (correctAnswers !== undefined ? correctAnswers : score);
   
   // For balloon game, don't calculate percentage based on taps, just show if they got points
   const correctCount = correctAnswers !== undefined ? correctAnswers : score;
   const totalQuestionsValue = totalQuestions || correctCount || 1; // always use actual totalQuestions
+  const whackPenaltyCount = penalties || 0;
+  const whackPassed = whackPenaltyCount === 0 && score >= 10;
   
   // Calculate percentage based on correct answers vs total questions
-  const percentage = totalQuestionsValue > 0
-    ? ((correctCount / totalQuestionsValue) * 100)
-    : (displayScore > 0 ? 100 : 0);
+  const percentage = isWhackGame
+    ? (totalQuestionsValue > 0 ? ((correctCount / totalQuestionsValue) * 100) : 0)
+    : totalQuestionsValue > 0
+      ? ((correctCount / totalQuestionsValue) * 100)
+      : (displayScore > 0 ? 100 : 0);
     
-  const passed = correctCount >= Math.ceil(totalQuestionsValue * 0.6);
-  const stars = percentage >= 80 ? 3 : percentage >= 60 ? 2 : 1;
+  const passed = isWhackGame ? whackPassed : (correctCount >= Math.ceil(totalQuestionsValue * 0.6));
+  const stars = isWhackGame
+    ? (whackPassed ? (whackPenaltyCount === 0 && score >= 30 ? 3 : 2) : 1)
+    : (percentage >= 80 ? 3 : percentage >= 60 ? 2 : 1);
 
   const getEmoji = () => {
+    if (isWhackGame && whackPassed) return '🔨';
     if (percentage === 100) return '🏆';
     if (percentage >= 80) return '🌟';
     if (percentage >= 60) return '⭐';
@@ -75,6 +83,11 @@ const Results = () => {
   };
 
   const getMessage = () => {
+    if (isWhackGame) {
+      if (whackPassed && whackPenaltyCount === 0) return 'Sharp Aim!';
+      if (score > 0) return 'Nice Reflexes!';
+      return 'Keep Practicing!';
+    }
     if (percentage === 100) return 'Perfect! All Correct!';
     if (percentage >= 80) return 'Excellent Work!';
     if (percentage >= 60) return 'Great Job!';
@@ -125,7 +138,7 @@ const Results = () => {
           </h1>
 
           <div className="score-display-large">
-            {isBaloonGame || isMarsGame ? (
+            {isBaloonGame || isMarsGame || isWhackGame ? (
               <>
                 <span className="score-number">{displayScore}</span>
                 <span className="score-separator"> Points</span>
@@ -144,7 +157,9 @@ const Results = () => {
               ? `${correctCount} Correct Balloons • ${totalQuestions || 0} Total Taps`
               : isMarsGame
                 ? `${correctCount}/${totalQuestionsValue} Correct`
-                : `${isNaN(percentage) ? '0' : percentage.toFixed(0)}% Correct`
+                : isWhackGame
+                  ? `${correctCount} Hits • ${whackPenaltyCount} Penalties`
+                  : `${isNaN(percentage) ? '0' : percentage.toFixed(0)}% Correct`
             }
           </div>
 

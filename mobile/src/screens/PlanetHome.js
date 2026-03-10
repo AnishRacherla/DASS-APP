@@ -80,6 +80,10 @@ export default function PlanetHome({ route, navigation }) {
                 <Text style={styles.scoreLabel}>🔴 Mars Game:</Text>
                 <Text style={styles.scoreVal}>{totalScore.gameTypeTotals?.mars || 0} pts</Text>
               </View>
+              <View style={styles.scoreRow}>
+                <Text style={styles.scoreLabel}>🔨 Whack-a-Letter:</Text>
+                <Text style={styles.scoreVal}>{totalScore.gameTypeTotals?.whack || 0} pts</Text>
+              </View>
             </View>
             <Text style={styles.gamesPlayed}>Games Played: {totalScore.gamesPlayed?.total || 0}</Text>
           </View>
