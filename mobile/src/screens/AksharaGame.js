@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, StatusBar, Alert, Dimensions, Animated } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import { API_BASE_URL } from '../config';
+import { API_BASE_URL, API_TIMEOUT } from '../config';
 import { LEVELS, WRONG_MESSAGES, CORRECT_MESSAGES } from '../akshara-data/gameData';
 import { generateRound, calcStars, calcScore, resetUsedPrompts } from '../akshara-utils/gameHelpers';
 
@@ -63,7 +63,7 @@ export default function AksharaGame({ navigation, route }) {
     // Also try to load from backend
     if (id) {
       try {
-        const res = await axios.get(`${API_BASE_URL}/api/akshara/player/${id}`);
+        const res = await axios.get(`${API_BASE_URL}/api/akshara/player/${id}`, { timeout: API_TIMEOUT });
         const player = res.data;
         if (player?.langProgress?.[lang]) {
           const entries = player.langProgress[lang];
@@ -204,7 +204,7 @@ export default function AksharaGame({ navigation, route }) {
           levelId: currentLevel.id, language, stars, score, accuracy,
           bestStreak, roundsPlayed: total, correct: correctCount, wrong: total - correctCount,
           streak: bestStreak, playTime: 0,
-        });
+        }, { timeout: API_TIMEOUT });
       } catch (e) {}
     }
 

@@ -1,290 +1,150 @@
 import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-  StatusBar,
-  ActivityIndicator
-} from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, StatusBar, Alert, ActivityIndicator } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import { API_BASE_URL } from '../config';
+import { API_BASE_URL, API_TIMEOUT } from '../config';
 
-export default function PlanetHome({ navigation, route }) {
-  const { language } = route.params;
-  const [totalScore, setTotalScore] = useState(null);
+export default function PlanetHome({ route, navigation }) {
+  const language = route.params?.language || 'hindi';
   const [marsUnlocked, setMarsUnlocked] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [totalScore, setTotalScore] = useState(null);
+  const [userId, setUserId] = useState(null);
 
   useEffect(() => {
-    checkMarsUnlock();
-    fetchTotalScore();
+    loadData();
   }, []);
 
-  const checkMarsUnlock = async () => {
+  const loadData = async () => {
     try {
-      const unlocked = await AsyncStorage.getItem(`lessonsCompleted_${language}`);
-      setMarsUnlocked(unlocked === 'true');
-    } catch (error) {
-      console.error('Error checking Mars unlock:', error);
-    }
+      const uid = await AsyncStorage.getItem('userId');
+      setUserId(uid);
+      const lessonsCompleted = await AsyncStorage.getItem('lessonsCompleted_' + language);
+      if (lessonsCompleted === 'true') setMarsUnlocked(true);
+      if (uid) fetchTotalScore(uid);
+    } catch (e) {}
   };
 
-  const fetchTotalScore = async () => {
+  const fetchTotalScore = async (uid) => {
     try {
-      const userId = await AsyncStorage.getItem('userId');
-      if (!userId) {
-        setLoading(false);
-        return;
-      }
-
-      const response = await axios.get(`${API_BASE_URL}/api/scores/user/${userId}/total?language=${language}`);
-      setTotalScore(response.data);
-      setLoading(false);
-    } catch (error) {
-      console.error('Error fetching total score:', error);
-      setLoading(false);
-    }
+      const res = await axios.get(API_BASE_URL + '/api/scores/user/' + uid + '/total?language=' + language, { timeout: API_TIMEOUT });
+      setTotalScore(res.data);
+    } catch (e) {}
   };
 
   const planets = [
-    {
-      id: 'earth',
-      name: 'Earth',
-      emoji: '🌍',
-      color: '#4ECDC4',
-      description: 'Learn letters and sounds',
-      unlocked: true,
-      screen: 'GameSelection'
-    },
-    {
-      id: 'mars',
-      name: 'Mars',
-      emoji: '🔴',
-      color: '#FF6B6B',
-      description: 'Match words with images',
-      unlocked: marsUnlocked,
-      screen: 'MarsLevelSelection'
-    }
+    { id: 'earth', name: 'Earth', emoji: '🌍', category: 'Letters', description: 'Learn letters and sounds', color: '#4ECDC4', unlocked: true },
+    { id: 'mars', name: 'Mars', emoji: '🔴', category: 'Words', description: 'Match images with words', color: '#FF6B6B', unlocked: marsUnlocked },
   ];
+
+  const handlePlanetClick = (planet) => {
+    if (!planet.unlocked) {
+      Alert.alert('Locked', 'Complete lessons from previous planet to unlock!');
+      return;
+    }
+    if (planet.id === 'earth') {
+      navigation.navigate('GameSelection', { language, planet: 'earth' });
+    } else if (planet.id === 'mars') {
+      navigation.navigate('MarsLevelSelection', { language, planet: 'mars' });
+    }
+  };
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" />
-      
+      <StatusBar barStyle="light-content" backgroundColor="#0B0C2A" />
+
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backBtn} onPress={() => navigation.navigate('GameHub')}>
-          <Text style={styles.backBtnText}>← Home</Text>
+        <TouchableOpacity onPress={() => navigation.navigate('GameHub')}>
+          <Text style={styles.backBtn}>← Back</Text>
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Planet System</Text>
-        <View style={styles.placeholder} />
+        <Text style={styles.headerTitle}>Choose Your Planet</Text>
+        <View style={{ width: 50 }} />
       </View>
 
-      <ScrollView contentContainerStyle={styles.scrollContent}>
-        <Text style={styles.title}>
-          {language === 'hindi' ? 'Hindi 🇮🇳' : 'Telugu 🇮🇳'} Learning
-        </Text>
+      <ScrollView contentContainerStyle={styles.scroll}>
+        <Text style={styles.title}>Learning Journey</Text>
+        <Text style={styles.subtitle}>Language: {language === 'hindi' ? 'Hindi 🇮🇳' : 'Telugu 🇮🇳'}</Text>
 
-        {/* Score Display */}
-        {loading ? (
-          <ActivityIndicator size="large" color="#4ECDC4" style={styles.loader} />
-        ) : totalScore && (
-          <View style={styles.scoreContainer}>
-            <Text style={styles.scoreTitle}>Total Score: {totalScore.totalScore}</Text>
-            {totalScore.gameTypeTotals && (
-              <View style={styles.scoreBreakdown}>
-                {totalScore.gameTypeTotals.quiz > 0 && (
-                  <Text style={styles.scoreItem}>🎯 Quiz: {totalScore.gameTypeTotals.quiz}</Text>
-                )}
-                {totalScore.gameTypeTotals.balloon > 0 && (
-                  <Text style={styles.scoreItem}>🎈 Balloon: {totalScore.gameTypeTotals.balloon}</Text>
-                )}
-                {totalScore.gameTypeTotals.mars > 0 && (
-                  <Text style={styles.scoreItem}>🔴 Mars: {totalScore.gameTypeTotals.mars}</Text>
-                )}
+        {totalScore && (
+          <View style={styles.scoreCard}>
+            <Text style={styles.scoreTitle}>🏆 Total Score: {totalScore.totalScore} Points</Text>
+            <View style={styles.scoreBreakdown}>
+              <View style={styles.scoreRow}>
+                <Text style={styles.scoreLabel}>🎵 Audio Quiz:</Text>
+                <Text style={styles.scoreVal}>{totalScore.gameTypeTotals?.quiz || 0} pts</Text>
               </View>
-            )}
+              <View style={styles.scoreRow}>
+                <Text style={styles.scoreLabel}>🎈 Balloon Pop:</Text>
+                <Text style={styles.scoreVal}>{totalScore.gameTypeTotals?.balloon || 0} pts</Text>
+              </View>
+              <View style={styles.scoreRow}>
+                <Text style={styles.scoreLabel}>🔴 Mars Game:</Text>
+                <Text style={styles.scoreVal}>{totalScore.gameTypeTotals?.mars || 0} pts</Text>
+              </View>
+            </View>
+            <Text style={styles.gamesPlayed}>Games Played: {totalScore.gamesPlayed?.total || 0}</Text>
           </View>
         )}
 
-        {/* Planets */}
-        <View style={styles.planetsContainer}>
-          {planets.map((planet) => (
+        {planets.map((planet, index) => (
+          <React.Fragment key={planet.id}>
             <TouchableOpacity
-              key={planet.id}
-              style={[
-                styles.planetCard,
-                { borderColor: planet.color },
-                !planet.unlocked && styles.lockedCard
-              ]}
-              onPress={() => {
-                if (planet.unlocked) {
-                  navigation.navigate(planet.screen, { language });
-                }
-              }}
-              disabled={!planet.unlocked}
+              style={[styles.planetCard, { borderLeftColor: planet.color, borderLeftWidth: 4 }, !planet.unlocked && styles.locked]}
+              onPress={() => handlePlanetClick(planet)}
+              activeOpacity={0.8}
             >
               <View style={[styles.planetIcon, { backgroundColor: planet.color }]}>
                 <Text style={styles.planetEmoji}>{planet.emoji}</Text>
               </View>
               <View style={styles.planetInfo}>
                 <Text style={styles.planetName}>{planet.name}</Text>
-                <Text style={styles.planetDescription}>{planet.description}</Text>
-                {!planet.unlocked && (
-                  <Text style={styles.lockedText}>🔒 Complete 20 lessons to unlock</Text>
-                )}
+                <Text style={styles.planetCategory}>{planet.category}</Text>
+                <Text style={styles.planetDesc}>{planet.description}</Text>
               </View>
-              {planet.unlocked && <Text style={styles.arrow}>→</Text>}
+              {!planet.unlocked && <Text style={styles.lockIcon}>🔒</Text>}
             </TouchableOpacity>
-          ))}
-        </View>
 
-        {/* Lessons Button */}
-        <TouchableOpacity
-          style={styles.lessonsButton}
-          onPress={() => navigation.navigate('Lessons', { language })}
-        >
-          <Text style={styles.lessonsButtonText}>📚 Learn 20 Words</Text>
-          <Text style={styles.lessonsButtonSubtext}>Complete to unlock Mars!</Text>
-        </TouchableOpacity>
+            {index === 0 && (
+              <TouchableOpacity
+                style={styles.lessonsBtn}
+                onPress={() => navigation.navigate('Lessons', { language })}
+              >
+                <Text style={styles.lessonsBtnText}>📚 Learn Words Before Mars</Text>
+              </TouchableOpacity>
+            )}
+          </React.Fragment>
+        ))}
       </ScrollView>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#0B0C2A',
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 20,
-    paddingTop: 50,
-    backgroundColor: '#1a1a40',
-  },
-  backBtn: {
-    width: 60,
-  },
-  backBtnText: {
-    color: '#4ECDC4',
-    fontSize: 16,
-  },
-  headerTitle: {
-    color: '#fff',
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  placeholder: {
-    width: 60,
-  },
-  scrollContent: {
-    padding: 20,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#fff',
-    textAlign: 'center',
-    marginTop: 20,
-    marginBottom: 20,
-  },
-  loader: {
-    marginVertical: 20,
-  },
-  scoreContainer: {
-    backgroundColor: '#1a1a40',
-    padding: 20,
-    borderRadius: 15,
-    marginBottom: 30,
-    borderWidth: 2,
-    borderColor: '#4ECDC4',
-  },
-  scoreTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#4ECDC4',
-    textAlign: 'center',
-    marginBottom: 10,
-  },
-  scoreBreakdown: {
-    marginTop: 10,
-  },
-  scoreItem: {
-    fontSize: 16,
-    color: '#fff',
-    textAlign: 'center',
-    marginVertical: 3,
-  },
-  planetsContainer: {
-    gap: 15,
-    marginBottom: 20,
-  },
-  planetCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#1a1a40',
-    padding: 20,
-    borderRadius: 15,
-    borderWidth: 2,
-    marginBottom: 15,
-  },
-  lockedCard: {
-    opacity: 0.5,
-    borderColor: '#666',
-  },
-  planetIcon: {
-    width: 70,
-    height: 70,
-    borderRadius: 35,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 15,
-  },
-  planetEmoji: {
-    fontSize: 40,
-  },
-  planetInfo: {
-    flex: 1,
-  },
-  planetName: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: '#fff',
-    marginBottom: 5,
-  },
-  planetDescription: {
-    fontSize: 14,
-    color: '#8892b0',
-  },
-  lockedText: {
-    fontSize: 12,
-    color: '#FF6B6B',
-    marginTop: 5,
-  },
-  arrow: {
-    fontSize: 24,
-    color: '#4ECDC4',
-  },
-  lessonsButton: {
-    backgroundColor: '#4ECDC4',
-    padding: 20,
-    borderRadius: 15,
-    alignItems: 'center',
-    marginTop: 10,
-  },
-  lessonsButtonText: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#0B0C2A',
-    marginBottom: 5,
-  },
-  lessonsButtonSubtext: {
-    fontSize: 14,
-    color: '#0B0C2A',
-  },
+  container: { flex: 1, backgroundColor: '#0B0C2A' },
+  header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, paddingVertical: 14, borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.08)' },
+  backBtn: { color: '#a855f7', fontSize: 15, fontWeight: '600' },
+  headerTitle: { fontSize: 18, fontWeight: '700', color: '#e2e8f0' },
+  scroll: { padding: 20, paddingBottom: 40 },
+  title: { fontSize: 26, fontWeight: '800', color: '#FFD700', textAlign: 'center', marginBottom: 4 },
+  subtitle: { fontSize: 14, color: '#94a3b8', textAlign: 'center', marginBottom: 20 },
+
+  scoreCard: { backgroundColor: 'rgba(255,215,0,0.08)', borderRadius: 16, padding: 16, borderWidth: 1, borderColor: 'rgba(255,215,0,0.2)', marginBottom: 24 },
+  scoreTitle: { fontSize: 18, fontWeight: '700', color: '#FFD700', marginBottom: 10 },
+  scoreBreakdown: { gap: 6 },
+  scoreRow: { flexDirection: 'row', justifyContent: 'space-between' },
+  scoreLabel: { fontSize: 14, color: '#e2e8f0' },
+  scoreVal: { fontSize: 14, fontWeight: '600', color: '#FFD700' },
+  gamesPlayed: { fontSize: 13, color: '#94a3b8', marginTop: 10, textAlign: 'center' },
+
+  planetCard: { backgroundColor: 'rgba(255,255,255,0.06)', borderRadius: 16, padding: 16, flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderColor: 'rgba(255,255,255,0.08)', marginBottom: 12 },
+  locked: { opacity: 0.5 },
+  planetIcon: { width: 52, height: 52, borderRadius: 14, alignItems: 'center', justifyContent: 'center', marginRight: 14 },
+  planetEmoji: { fontSize: 28 },
+  planetInfo: { flex: 1 },
+  planetName: { fontSize: 18, fontWeight: '700', color: '#e2e8f0' },
+  planetCategory: { fontSize: 12, color: '#a855f7', fontWeight: '600', marginTop: 2 },
+  planetDesc: { fontSize: 12, color: '#94a3b8', marginTop: 4 },
+  lockIcon: { fontSize: 24 },
+
+  lessonsBtn: { alignSelf: 'center', backgroundColor: 'rgba(168,85,247,0.15)', borderRadius: 14, paddingHorizontal: 20, paddingVertical: 12, borderWidth: 1, borderColor: 'rgba(168,85,247,0.3)', marginVertical: 12 },
+  lessonsBtnText: { fontSize: 15, fontWeight: '700', color: '#c084fc' },
 });

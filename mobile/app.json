@@ -24,10 +24,8 @@
       "permissions": [],
       "versionCode": 1
     },
-    "extra": {
-      "eas": {
-        "projectId": "fe62faab-ad66-4042-b424-d556fb617b0c"
-      }
+    "web": {
+      "bundler": "metro"
     }
   }
 }

@@ -12,7 +12,7 @@ import {
 import { Audio } from 'expo-av';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import { API_BASE_URL } from '../config';
+import { API_BASE_URL, API_TIMEOUT } from '../config';
 
 export default function Lessons({ navigation, route }) {
   const { language } = route.params;
@@ -33,7 +33,7 @@ export default function Lessons({ navigation, route }) {
 
   const fetchLessons = async () => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/api/lessons/${language}`);
+      const response = await axios.get(`${API_BASE_URL}/api/lessons/${language}`, { timeout: API_TIMEOUT });
       setLessons(response.data.lessons);
       setLoading(false);
     } catch (error) {
@@ -70,12 +70,12 @@ export default function Lessons({ navigation, route }) {
       // Completed all lessons - unlock Mars
       await AsyncStorage.setItem(`lessonsCompleted_${language}`, 'true');
       Alert.alert(
-        'Congratulations! 🎉',
-        'You completed all 20 lessons! Mars planet is now unlocked!',
+        'Great!',
+        'You completed all lessons! Mars planet unlocked!',
         [
           {
             text: 'OK',
-            onPress: () => navigation.navigate('GameHub')
+            onPress: () => navigation.navigate('PlanetHome', { language })
           }
         ]
       );

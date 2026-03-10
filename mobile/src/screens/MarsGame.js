@@ -1,145 +1,100 @@
-import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Image,
-  ActivityIndicator,
-  Alert,
-  StatusBar
-} from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, StatusBar, ActivityIndicator, Image, Alert } from 'react-native';
 import { Audio } from 'expo-av';
 import axios from 'axios';
-import { API_BASE_URL } from '../config';
+import { API_BASE_URL, API_TIMEOUT } from '../config';
 
-export default function MarsGame({ navigation, route }) {
-  const { language, level } = route.params;
+export default function MarsGame({ route, navigation }) {
+  const { language, level } = route.params || {};
   const [game, setGame] = useState(null);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [score, setScore] = useState(0);
   const [correctCount, setCorrectCount] = useState(0);
+  const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState(null);
   const [showFeedback, setShowFeedback] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [sound, setSound] = useState(null);
+  const soundRef = useRef(null);
 
   useEffect(() => {
     fetchGame();
-    
     return () => {
-      if (sound) {
-        sound.unloadAsync();
+      if (soundRef.current) {
+        soundRef.current.unloadAsync();
       }
     };
   }, []);
 
   const fetchGame = async () => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/api/mars-game/${language}/${level}`);
-      setGame(response.data.game);
+      const res = await axios.get(API_BASE_URL + '/api/mars-game/' + language + '/' + level, { timeout: API_TIMEOUT });
+      setGame(res.data.game);
       setLoading(false);
-      
-      // Auto-play audio for first question
-      if (response.data.game.questions[0]) {
-        playAudio(response.data.game.questions[0].audioUrl);
+      if (res.data.game.questions[0]) {
+        playAudio(res.data.game.questions[0].audioUrl);
       }
-    } catch (error) {
-      console.error('Error fetching game:', error);
+    } catch (e) {
       Alert.alert('Error', 'Could not load game');
       navigation.goBack();
     }
   };
 
   const playAudio = async (audioUrl) => {
-    if (!audioUrl) {
-      return;
-    }
-
+    if (!audioUrl) return;
     try {
-      if (sound) {
-        await sound.unloadAsync();
+      if (soundRef.current) {
+        await soundRef.current.unloadAsync();
       }
-
-      const { sound: newSound } = await Audio.Sound.createAsync(
-        { uri: `${API_BASE_URL}${audioUrl}` },
-        { shouldPlay: true }
-      );
-      setSound(newSound);
-    } catch (error) {
-      console.error('Error playing audio:', error);
+      const { sound } = await Audio.Sound.createAsync({ uri: API_BASE_URL + audioUrl });
+      soundRef.current = sound;
+      await sound.playAsync();
+    } catch (e) {
+      console.log('Audio error:', e.message);
     }
   };
 
   const handleImageClick = (imageIndex) => {
     if (showFeedback) return;
-    
+
     const question = game.questions[currentQuestion];
     const isCorrect = imageIndex === question.correctImageIndex;
-    
+
     setSelectedImage(imageIndex);
     setShowFeedback(true);
-    
+
     let newScore = score;
     let newCorrectCount = correctCount;
-    
+
     if (isCorrect) {
       newScore = score + 10;
       newCorrectCount = correctCount + 1;
       setScore(newScore);
       setCorrectCount(newCorrectCount);
     }
-    
-    // Move to next question after 1.5 seconds
+
     setTimeout(() => {
       if (currentQuestion < game.questions.length - 1) {
         setCurrentQuestion(currentQuestion + 1);
         setSelectedImage(null);
         setShowFeedback(false);
-        
-        // Play audio for next question
         playAudio(game.questions[currentQuestion + 1].audioUrl);
       } else {
-        // Game over
         navigation.navigate('Results', {
           score: newScore,
           correctAnswers: newCorrectCount,
           totalQuestions: game.questions.length,
           gameType: 'mars',
           language,
-          level
+          level,
         });
       }
     }, 1500);
   };
 
-  const handleExit = () => {
-    Alert.alert(
-      'Exit Game?',
-      'Your progress will be lost.',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        { text: 'Exit', onPress: () => navigation.navigate('GameHub') }
-      ]
-    );
-  };
-
   if (loading) {
     return (
-      <View style={[styles.container, styles.centered]}>
-        <ActivityIndicator size="large" color="#FF6B6B" />
+      <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+        <ActivityIndicator size="large" color="#FF4757" />
         <Text style={styles.loadingText}>Loading game...</Text>
-      </View>
-    );
-  }
-
-  if (!game || game.questions.length === 0) {
-    return (
-      <View style={[styles.container, styles.centered]}>
-        <Text style={styles.errorText}>No questions available</Text>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()}>
-          <Text style={styles.buttonText}>Go Back</Text>
-        </TouchableOpacity>
       </View>
     );
   }
@@ -148,213 +103,87 @@ export default function MarsGame({ navigation, route }) {
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" />
-      
+      <StatusBar barStyle="light-content" backgroundColor="#0B0C2A" />
+
       <View style={styles.header}>
-        <TouchableOpacity style={styles.exitBtn} onPress={handleExit}>
-          <Text style={styles.exitBtnText}>← Exit</Text>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Text style={styles.backBtn}>← Back</Text>
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Mars Level {level}</Text>
-        <View style={styles.scoreContainer}>
-          <Text style={styles.scoreText}>{score} pts</Text>
+        <Text style={styles.headerTitle}>Mars - Match the Word</Text>
+        <View style={styles.progressArea}>
+          <Text style={styles.progressText}>{currentQuestion + 1}/{game.questions.length}</Text>
+          <Text style={styles.scoreText}>⭐ {score}</Text>
         </View>
       </View>
 
-      <View style={styles.content}>
-        <View style={styles.progressBar}>
-          <Text style={styles.progressText}>
-            Question {currentQuestion + 1} / {game.questions.length}
-          </Text>
-        </View>
-
-        <View style={styles.questionCard}>
-          <Text style={styles.questionWord}>{question.word}</Text>
+      <ScrollView contentContainerStyle={styles.scroll}>
+        <View style={styles.wordDisplay}>
+          <Text style={styles.targetWord}>{question.word}</Text>
           {question.audioUrl && (
-            <TouchableOpacity
-              style={styles.audioButton}
-              onPress={() => playAudio(question.audioUrl)}
-            >
-              <Text style={styles.audioButtonText}>🔊 Replay Sound</Text>
+            <TouchableOpacity style={styles.replayBtn} onPress={() => playAudio(question.audioUrl)}>
+              <Text style={styles.replayText}>🔊 Replay Sound</Text>
             </TouchableOpacity>
           )}
         </View>
 
-        <Text style={styles.instruction}>Tap the correct image:</Text>
-
         <View style={styles.imagesGrid}>
-          {question.images.map((imageUrl, index) => (
-            <TouchableOpacity
-              key={index}
-              style={[
-                styles.imageOption,
-                selectedImage === index && (
-                  index === question.correctImageIndex
-                    ? styles.correctImage
-                    : styles.incorrectImage
-                )
-              ]}
-              onPress={() => handleImageClick(index)}
-              disabled={showFeedback}
-            >
-              <Image
-                source={{ uri: `${API_BASE_URL}${imageUrl}` }}
-                style={styles.optionImage}
-                resizeMode="contain"
-              />
-              {showFeedback && selectedImage === index && (
-                <Text style={styles.feedbackEmoji}>
-                  {index === question.correctImageIndex ? '✓' : '✗'}
-                </Text>
-              )}
-            </TouchableOpacity>
-          ))}
+          {question.images.map((image, index) => {
+            let cardStyle = [styles.imageOption];
+            if (selectedImage === index) {
+              cardStyle.push(index === question.correctImageIndex ? styles.correct : styles.incorrect);
+            }
+            if (showFeedback && index === question.correctImageIndex) {
+              cardStyle.push(styles.showCorrect);
+            }
+
+            return (
+              <TouchableOpacity
+                key={index}
+                style={cardStyle}
+                onPress={() => handleImageClick(index)}
+                activeOpacity={showFeedback ? 1 : 0.8}
+              >
+                <Image
+                  source={{ uri: API_BASE_URL + image }}
+                  style={styles.optionImage}
+                  resizeMode="cover"
+                />
+                {showFeedback && index === question.correctImageIndex && (
+                  <View style={styles.badge}><Text style={styles.badgeText}>✓</Text></View>
+                )}
+                {selectedImage === index && index !== question.correctImageIndex && (
+                  <View style={[styles.badge, styles.badgeWrong]}><Text style={styles.badgeText}>✗</Text></View>
+                )}
+              </TouchableOpacity>
+            );
+          })}
         </View>
-      </View>
+      </ScrollView>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#0B0C2A',
-  },
-  centered: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 20,
-    paddingTop: 50,
-    backgroundColor: '#1a1a40',
-  },
-  exitBtn: {
-    width: 80,
-  },
-  exitBtnText: {
-    color: '#FF6B6B',
-    fontSize: 16,
-  },
-  headerTitle: {
-    color: '#fff',
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  scoreContainer: {
-    width: 80,
-    alignItems: 'flex-end',
-  },
-  scoreText: {
-    color: '#4ECDC4',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  content: {
-    flex: 1,
-    padding: 20,
-  },
-  progressBar: {
-    backgroundColor: '#1a1a40',
-    padding: 15,
-    borderRadius: 10,
-    marginBottom: 20,
-    alignItems: 'center',
-  },
-  progressText: {
-    color: '#4ECDC4',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  questionCard: {
-    backgroundColor: '#1a1a40',
-    padding: 20,
-    borderRadius: 15,
-    borderWidth: 2,
-    borderColor: '#FF6B6B',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  questionWord: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#fff',
-    marginBottom: 15,
-  },
-  audioButton: {
-    backgroundColor: '#4ECDC4',
-    paddingVertical: 10,
-    paddingHorizontal: 25,
-    borderRadius: 20,
-  },
-  audioButtonText: {
-    color: '#0B0C2A',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  instruction: {
-    fontSize: 18,
-    color: '#8892b0',
-    textAlign: 'center',
-    marginBottom: 15,
-  },
-  imagesGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-  },
-  imageOption: {
-    width: '48%',
-    aspectRatio: 1,
-    backgroundColor: '#fff',
-    borderRadius: 15,
-    padding: 10,
-    marginBottom: 15,
-    borderWidth: 3,
-    borderColor: '#1a1a40',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  optionImage: {
-    width: '100%',
-    height: '100%',
-  },
-  correctImage: {
-    borderColor: '#4ECDC4',
-    backgroundColor: '#e8f9f8',
-  },
-  incorrectImage: {
-    borderColor: '#FF6B6B',
-    backgroundColor: '#ffe8e8',
-  },
-  feedbackEmoji: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
-    fontSize: 30,
-    fontWeight: 'bold',
-  },
-  loadingText: {
-    color: '#fff',
-    fontSize: 16,
-    marginTop: 10,
-  },
-  errorText: {
-    color: '#FF6B6B',
-    fontSize: 18,
-    marginBottom: 20,
-  },
-  button: {
-    backgroundColor: '#4ECDC4',
-    paddingVertical: 15,
-    paddingHorizontal: 40,
-    borderRadius: 10,
-  },
-  buttonText: {
-    color: '#0B0C2A',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
+  container: { flex: 1, backgroundColor: '#0B0C2A' },
+  loadingText: { color: '#94a3b8', marginTop: 12, fontSize: 16 },
+  header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, paddingVertical: 14, borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.08)' },
+  backBtn: { color: '#a855f7', fontSize: 15, fontWeight: '600' },
+  headerTitle: { fontSize: 16, fontWeight: '700', color: '#e2e8f0' },
+  progressArea: { alignItems: 'flex-end' },
+  progressText: { fontSize: 13, color: '#94a3b8' },
+  scoreText: { fontSize: 14, fontWeight: '700', color: '#FFD700' },
+  scroll: { padding: 20, alignItems: 'center' },
+  wordDisplay: { alignItems: 'center', marginBottom: 24 },
+  targetWord: { fontSize: 36, fontWeight: '800', color: '#FFD700', marginBottom: 10 },
+  replayBtn: { backgroundColor: 'rgba(168,85,247,0.15)', paddingHorizontal: 20, paddingVertical: 10, borderRadius: 12, borderWidth: 1, borderColor: 'rgba(168,85,247,0.3)' },
+  replayText: { fontSize: 14, fontWeight: '600', color: '#c084fc' },
+  imagesGrid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: 12, width: '100%' },
+  imageOption: { width: '45%', aspectRatio: 1, borderRadius: 16, overflow: 'hidden', borderWidth: 3, borderColor: 'rgba(255,255,255,0.15)', backgroundColor: 'rgba(255,255,255,0.05)' },
+  correct: { borderColor: '#4CAF50', borderWidth: 4 },
+  incorrect: { borderColor: '#FF5252', borderWidth: 4 },
+  showCorrect: { borderColor: '#4CAF50', borderWidth: 4 },
+  optionImage: { width: '100%', height: '100%' },
+  badge: { position: 'absolute', top: 8, right: 8, width: 32, height: 32, borderRadius: 16, backgroundColor: '#4CAF50', alignItems: 'center', justifyContent: 'center' },
+  badgeWrong: { backgroundColor: '#FF5252' },
+  badgeText: { color: '#fff', fontSize: 18, fontWeight: '700' },
 });

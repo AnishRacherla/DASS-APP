@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -9,87 +9,70 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import { API_BASE_URL } from '../config';
+import { API_BASE_URL, API_TIMEOUT } from '../config';
 
 export default function Results({ navigation, route }) {
   const { score, totalQuestions, language, level, gameType, correctAnswers } = route.params;
+  const scoreSavedRef = useRef(false);
 
-  const safeTotal = Math.max(totalQuestions || correctAnswers || 1, 1);
-  const safeCorrect = correctAnswers || 0;
-  const percentage = (safeCorrect / safeTotal) * 100;
-  const passed = safeCorrect >= Math.ceil(safeTotal * 0.6);
+  const isBaloonGame = gameType === 'balloon';
+  const isMarsGame = gameType === 'mars';
+  const isWhackGame = gameType === 'whack';
+
+  const correctCount = correctAnswers !== undefined ? correctAnswers : score;
+  const totalQuestionsValue = totalQuestions || correctCount || 1;
+  const percentage = totalQuestionsValue > 0
+    ? ((correctCount / totalQuestionsValue) * 100)
+    : (score > 0 ? 100 : 0);
+  const passed = correctCount >= Math.ceil(totalQuestionsValue * 0.6);
   const stars = percentage >= 80 ? 3 : percentage >= 60 ? 2 : 1;
 
   useEffect(() => {
-    saveScore();
+    if (!score && score !== 0) {
+      navigation.navigate('GameHub');
+    } else {
+      saveScore();
+    }
   }, []);
 
   const saveScore = async () => {
+    if (scoreSavedRef.current) return;
+    scoreSavedRef.current = true;
+
     try {
       const userId = await AsyncStorage.getItem('userId');
       if (!userId) return;
 
       await axios.post(`${API_BASE_URL}/api/scores`, {
         userId,
-        score,
         gameType: gameType || 'quiz',
         language,
         level: level || 1,
-      });
+        score,
+        correctAnswers: correctAnswers !== undefined ? correctAnswers : score,
+        totalQuestions,
+      }, { timeout: API_TIMEOUT });
     } catch (error) {
-      console.error('Error saving score:', error);
+      console.log('Score save failed (non-critical):', error?.message);
+      scoreSavedRef.current = false;
     }
   };
 
   const getEmoji = () => {
-    if (gameType === 'balloon' || gameType === 'mars') {
-      if (percentage >= 80) return '🏆';
-      if (percentage >= 60) return '🌟';
-      if (percentage >= 40) return '⭐';
-      if (percentage >= 20) return '💫';
-      return '💪';
-    }
-    if (gameType === 'whack') {
-      if (score >= 100) return '🏆';
-      if (score >= 60)  return '🌟';
-      if (score >= 30)  return '⭐';
-      if (score >= 0)   return '💫';
-      return '💪';
-    }
-    // Quiz game logic
-    if (score === 5) return '🏆';
-    if (score >= 4) return '🌟';
-    if (score >= 3) return '⭐';
-    if (score >= 2) return '💫';
+    if (percentage === 100) return '🏆';
+    if (percentage >= 80) return '🌟';
+    if (percentage >= 60) return '⭐';
+    if (percentage >= 40) return '💫';
     return '💪';
   };
 
   const getMessage = () => {
-    if (gameType === 'balloon' || gameType === 'mars') {
-      if (percentage >= 80) return 'Amazing! You\'re a Pro!';
-      if (percentage >= 60) return 'Great Job!';
-      if (percentage >= 40) return 'Good Try!';
-      if (percentage >= 20) return 'Keep Practicing!';
-      return 'Try Again!';
-    }
-    if (gameType === 'whack') {
-      if (score >= 100) return 'Amazing Speed! 🔨';
-      if (score >= 60)  return 'Great Whacking!';
-      if (score >= 30)  return 'Good Try!';
-      if (score >= 0)   return 'Keep Practicing!';
-      return 'Try Again!';
-    }
-    // Quiz game logic
-    if (score === 5) return 'Perfect! All Correct!';
-    if (score >= 4) return 'Excellent Work!';
-    if (score >= 3) return 'Great Job!';
-    if (score >= 2) return 'Good Try!';
+    if (percentage === 100) return 'Perfect! All Correct!';
+    if (percentage >= 80) return 'Excellent Work!';
+    if (percentage >= 60) return 'Great Job!';
+    if (percentage >= 40) return 'Good Try!';
     return 'Keep Practicing!';
   };
-
-  const isBaloonGame = gameType === 'balloon';
-  const isMarsGame = gameType === 'mars';
-  const isWhackGame = gameType === 'whack';
 
   return (
     <View style={styles.container}>
@@ -101,24 +84,27 @@ export default function Results({ navigation, route }) {
           
           <Text style={styles.title}>{getMessage()}</Text>
 
-          {(isBaloonGame || isMarsGame || isWhackGame) ? (
+          {(isBaloonGame || isMarsGame) ? (
             <View style={styles.scorePoints}>
               <Text style={styles.scoreLabel}>Total Score:</Text>
-              <Text style={styles.scoreValue}>{score} points</Text>
+              <Text style={styles.scoreValue}>{score} Points</Text>
             </View>
           ) : (
             <View style={styles.scoreDisplay}>
-              <Text style={styles.scoreNumber}>{safeCorrect}</Text>
+              <Text style={styles.scoreNumber}>{correctCount}</Text>
               <Text style={styles.scoreSeparator}>/</Text>
-              <Text style={styles.scoreTotal}>{safeTotal}</Text>
+              <Text style={styles.scoreTotal}>{totalQuestionsValue}</Text>
             </View>
           )}
 
-          {!isBaloonGame && !isMarsGame && !isWhackGame && (
-            <Text style={styles.percentage}>
-              {isNaN(percentage) ? '0' : percentage.toFixed(0)}% Correct
-            </Text>
-          )}
+          <Text style={styles.percentage}>
+            {isBaloonGame
+              ? `${correctCount} Correct Balloons • ${totalQuestions || 0} Total Taps`
+              : isMarsGame
+                ? `${correctCount}/${totalQuestionsValue} Correct`
+                : `${isNaN(percentage) ? '0' : percentage.toFixed(0)}% Correct`
+            }
+          </Text>
 
           <View style={styles.starsRating}>
             {[...Array(3)].map((_, i) => (
@@ -136,64 +122,108 @@ export default function Results({ navigation, route }) {
           )}
 
           <View style={styles.actionsContainer}>
-            <TouchableOpacity
-              style={styles.primaryBtn}
-              onPress={() => {
-                if (gameType === 'balloon') {
-                  navigation.navigate('BalloonGame', { language, level });
-                } else if (gameType === 'mars') {
-                  navigation.navigate('MarsGame', { language, level });
-                } else if (gameType === 'whack') {
-                  navigation.navigate('WhackGame', { language, level });
-                } else {
-                  navigation.navigate('Quiz', { language, level });
-                }
-              }}
-            >
-              <Text style={styles.primaryBtnText}>🔄 Play Again</Text>
-            </TouchableOpacity>
-
-            {passed && gameType !== 'mars' && (
-              <TouchableOpacity
-                style={styles.successBtn}
-                onPress={() => {
-                  if (gameType === 'balloon') {
-                    navigation.navigate('BalloonGame', { language, level: parseInt(level) + 1 });
-                  } else if (gameType === 'whack') {
-                    navigation.navigate('WhackGame', { language, level: parseInt(level) + 1 });
-                  } else {
-                    navigation.navigate('Quiz', { language, level: parseInt(level) + 1 });
-                  }
-                }}
-              >
-                <Text style={styles.primaryBtnText}>Next Level →</Text>
-              </TouchableOpacity>
-            )}
-
+            {/* Whack Game buttons */}
             {isWhackGame && (
-              <TouchableOpacity
-                style={styles.secondaryBtn}
-                onPress={() => navigation.navigate('MarsLevelSelection', { language })}
-              >
-                <Text style={styles.secondaryBtnText}>🔴 Back to Mars</Text>
-              </TouchableOpacity>
+              <>
+                <TouchableOpacity
+                  style={styles.primaryBtn}
+                  onPress={() => navigation.navigate('WhackGame', { language, level })}
+                >
+                  <Text style={styles.primaryBtnText}>🔄 Play Again</Text>
+                </TouchableOpacity>
+
+                {passed && (
+                  <TouchableOpacity
+                    style={styles.successBtn}
+                    onPress={() => navigation.navigate('WhackGame', { language, level: parseInt(level) + 1 })}
+                  >
+                    <Text style={styles.primaryBtnText}>Next Level →</Text>
+                  </TouchableOpacity>
+                )}
+
+                <TouchableOpacity
+                  style={styles.secondaryBtn}
+                  onPress={() => navigation.navigate('MarsLevelSelection', { language })}
+                >
+                  <Text style={styles.secondaryBtnText}>🏠 Back to Mars</Text>
+                </TouchableOpacity>
+              </>
             )}
 
-            {!isWhackGame && (
-              <TouchableOpacity
-                style={styles.secondaryBtn}
-                onPress={() => navigation.navigate('PlanetHome', { language })}
-              >
-                <Text style={styles.secondaryBtnText}>🪐 Back to Home</Text>
-              </TouchableOpacity>
+            {/* Mars Game buttons */}
+            {isMarsGame && (
+              <>
+                <TouchableOpacity
+                  style={styles.primaryBtn}
+                  onPress={() => navigation.navigate('MarsGame', { language, level })}
+                >
+                  <Text style={styles.primaryBtnText}>🔄 Play Again</Text>
+                </TouchableOpacity>
+
+                {passed && level < 2 && (
+                  <TouchableOpacity
+                    style={styles.successBtn}
+                    onPress={() => navigation.navigate('MarsGame', { language, level: parseInt(level) + 1 })}
+                  >
+                    <Text style={styles.primaryBtnText}>Next Level →</Text>
+                  </TouchableOpacity>
+                )}
+
+                <TouchableOpacity
+                  style={styles.secondaryBtn}
+                  onPress={() => navigation.navigate('MarsLevelSelection', { language })}
+                >
+                  <Text style={styles.secondaryBtnText}>🏠 Back to Mars</Text>
+                </TouchableOpacity>
+              </>
             )}
 
-            <TouchableOpacity
-              style={styles.secondaryBtn}
-              onPress={() => navigation.navigate('GameHub')}
-            >
-              <Text style={styles.secondaryBtnText}>🏠 Main Menu</Text>
-            </TouchableOpacity>
+            {/* Balloon Game buttons */}
+            {isBaloonGame && (
+              <>
+                <TouchableOpacity
+                  style={styles.primaryBtn}
+                  onPress={() => navigation.navigate('BalloonSelection', { language })}
+                >
+                  <Text style={styles.primaryBtnText}>🔄 Play Again</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.secondaryBtn}
+                  onPress={() => navigation.navigate('PlanetHome', { language })}
+                >
+                  <Text style={styles.secondaryBtnText}>🏠 Back to Home</Text>
+                </TouchableOpacity>
+              </>
+            )}
+
+            {/* Quiz Game buttons */}
+            {!gameType && (
+              <>
+                <TouchableOpacity
+                  style={styles.primaryBtn}
+                  onPress={() => navigation.navigate('Quiz', { language, level })}
+                >
+                  <Text style={styles.primaryBtnText}>🔄 Play Again</Text>
+                </TouchableOpacity>
+
+                {passed && (
+                  <TouchableOpacity
+                    style={styles.successBtn}
+                    onPress={() => navigation.navigate('Quiz', { language, level: parseInt(level) + 1 })}
+                  >
+                    <Text style={styles.primaryBtnText}>Next Level →</Text>
+                  </TouchableOpacity>
+                )}
+
+                <TouchableOpacity
+                  style={styles.secondaryBtn}
+                  onPress={() => navigation.navigate('PlanetHome', { language })}
+                >
+                  <Text style={styles.secondaryBtnText}>🏠 Back to Home</Text>
+                </TouchableOpacity>
+              </>
+            )}
           </View>
         </View>
       </ScrollView>

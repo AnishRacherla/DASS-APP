@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import { API_BASE_URL } from '../config';
+import { API_BASE_URL, API_TIMEOUT } from '../config';
 
 const { width, height } = Dimensions.get('window');
 const BALLOON_SIZE = 80;
@@ -76,7 +76,7 @@ export default function BalloonGame({ navigation, route }) {
 
   const fetchGame = async () => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/api/balloon/${language}/${level}`);
+      const response = await axios.get(`${API_BASE_URL}/api/balloon/${language}/${level}`, { timeout: API_TIMEOUT });
       const gameData = response.data.game;
       setGame(gameData);
       
@@ -159,7 +159,7 @@ export default function BalloonGame({ navigation, route }) {
       Animated.timing(animValue, {
         toValue: -BALLOON_SIZE * 2,
         duration: ANIMATION_DURATION,
-        useNativeDriver: true,
+        useNativeDriver: false,
       }).start(({ finished }) => {
         if (finished && gameActiveRef.current) {
           // Remove balloon and spawn new one
@@ -212,6 +212,9 @@ export default function BalloonGame({ navigation, route }) {
       correctAnswersRef.current += 1;
       setScore(prev => prev + 10);
       setCorrectAnswers(prev => prev + 1);
+    } else {
+      scoreRef.current = Math.max(0, scoreRef.current - 5);
+      setScore(Math.max(0, scoreRef.current));
     }
     
     // Animate balloon pop and remove quickly
@@ -219,12 +222,12 @@ export default function BalloonGame({ navigation, route }) {
       Animated.timing(balloon.scaleValue, {
         toValue: 1.3,
         duration: 100,
-        useNativeDriver: true,
+        useNativeDriver: false,
       }),
       Animated.timing(balloon.opacityValue, {
         toValue: 0,
         duration: 100,
-        useNativeDriver: true,
+        useNativeDriver: false,
       })
     ]).start(() => {
       // Remove popped balloon from array
@@ -246,42 +249,20 @@ export default function BalloonGame({ navigation, route }) {
     // Use refs to get latest values
     const finalScore = scoreRef.current;
     const finalCorrectAnswers = correctAnswersRef.current;
-    const finalTotalTaps = Math.max(totalTapsRef.current, 1); // Prevent division by zero
-    const timeTaken = 60; // Always 60 seconds
+    const finalTotalTaps = totalTapsRef.current;
     
     console.log('Game ended - Score:', finalScore, 'Correct:', finalCorrectAnswers, 'Total taps:', finalTotalTaps);
     
-    try {
-      const userId = await AsyncStorage.getItem('userId');
-      
-      await axios.post(`${API_BASE_URL}/api/balloon/score`, {
-        userId,
-        gameId: game.gameId,
-        score: finalScore,
-        correctAnswers: finalCorrectAnswers,
-        totalRounds: finalTotalTaps,
-        timeTaken
-      });
-      
+    setTimeout(() => {
       navigation.navigate('Results', {
         score: finalScore,
-        totalQuestions: finalTotalTaps,
         correctAnswers: finalCorrectAnswers,
+        totalQuestions: finalTotalTaps || finalCorrectAnswers || 1,
         gameType: 'balloon',
         language,
         level
       });
-    } catch (error) {
-      console.error('Error saving score:', error);
-      navigation.navigate('Results', {
-        score: finalScore,
-        totalQuestions: finalTotalTaps,
-        correctAnswers: finalCorrectAnswers,
-        gameType: 'balloon',
-        language,
-        level
-      });
-    }
+    }, 1000);
   };
 
   if (loading || !game) {
@@ -388,13 +369,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 15,
-    paddingTop: 40,
+    paddingHorizontal: 15,
+    paddingTop: 50,
+    paddingBottom: 12,
     backgroundColor: '#16213e',
   },
   backBtn: {
     color: '#4ECDC4',
     fontSize: 16,
+    paddingVertical: 8,
+    paddingRight: 12,
   },
   headerTitle: {
     color: '#fff',
