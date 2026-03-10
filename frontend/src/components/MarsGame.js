@@ -18,6 +18,13 @@ export default function MarsGame() {
   const [audio, setAudio] = useState(null);
 
   useEffect(() => {
+    setGame(null);
+    setCurrentQuestion(0);
+    setScore(0);
+    setCorrectCount(0);
+    setLoading(true);
+    setSelectedImage(null);
+    setShowFeedback(false);
     fetchGame();
     
     return () => {
@@ -26,7 +33,7 @@ export default function MarsGame() {
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [language, level]);
 
   const fetchGame = async () => {
     try {
