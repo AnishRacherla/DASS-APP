@@ -54,6 +54,17 @@ const GAMES = [
     path: '/akshara',
     category: 'Aksharas',
     special: true
+  },
+  {
+    id: 'swara',
+    title: 'Swara Match',
+    emoji: '🎴',
+    description: 'Find matching pairs of letters and images! Test your memory.',
+    color: '#3b82f6',
+    gradient: 'linear-gradient(135deg, #3b82f6, #1d4ed8)',
+    path: '/swara-game',
+    category: 'Memory',
+    special: true
   }
 ];
 

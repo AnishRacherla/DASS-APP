@@ -16,6 +16,7 @@ import Dashboard from './components/Dashboard';
 import WhackSelection from './components/WhackSelection';
 import WhackGame from './components/WhackGame';
 import AksharaGame from './components/AksharaGame';
+import SwaraGame from './components/swara/SwaraGame';
 import './App.css';
 
 function App() {
@@ -48,6 +49,9 @@ function App() {
 
           {/* Akshara Game (Tilak's unique game) */}
           <Route path="/akshara" element={<AksharaGame />} />
+
+          {/* Swara Memory Game */}
+          <Route path="/swara-game" element={<SwaraGame />} />
 
           {/* Fallback */}
           <Route path="*" element={<Navigate to="/" replace />} />

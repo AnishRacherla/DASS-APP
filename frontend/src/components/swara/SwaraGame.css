@@ -1,0 +1,120 @@
+.swara-game-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f0fdfa;
+    /* Light pastel background */
+    font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif;
+    padding: 20px;
+}
+
+.swara-header {
+    width: 100%;
+    max-width: 800px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.swara-header h1 {
+    color: #333;
+    margin: 0;
+    font-size: 2.5rem;
+}
+
+.back-btn {
+    background: #fff;
+    border: 2px solid #ccc;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #555;
+    cursor: pointer;
+    transition: transform 0.2s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.back-btn:hover {
+    transform: scale(1.05);
+    background: #f0f0f0;
+}
+
+.moves-counter {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #FF6B6B;
+    background: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.swara-board {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+/* Victory Overlay */
+.victory-modal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 3rem;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    border: 5px solid #4ECDC4;
+    animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.victory-modal h2 {
+    color: #FF6B6B;
+    font-size: 3rem;
+    margin-top: 0;
+}
+
+.play-again-btn {
+    background: #4ECDC4;
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    font-size: 1.5rem;
+    border-radius: 30px;
+    cursor: pointer;
+    margin-top: 1rem;
+    transition: transform 0.2s;
+}
+
+.play-again-btn:hover {
+    transform: scale(1.05);
+    background: #45b8b0;
+}
+
+@keyframes popIn {
+    0% {
+        transform: translate(-50%, -50%) scale(0);
+    }
+
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+@media (max-width: 600px) {
+    .swara-board {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .swara-header {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
