@@ -26,9 +26,32 @@ router.get('/:language', async (req, res) => {
       isActive: true 
     })
     .select('-assets.audio.data')
-    .sort({ level: 1 });
+    .sort({ gameId: 1, level: 1 });
     
     res.json({ success: true, games });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Get specific balloon game by gameId
+router.get('/id/:gameId', async (req, res) => {
+  try {
+    const { gameId } = req.params;
+    const game = await Game.findOne({
+      gameType: 'balloon',
+      gameId,
+      isActive: true
+    }).select('-assets.audio.data');
+
+    if (!game) {
+      return res.status(404).json({
+        success: false,
+        error: 'Balloon game not found'
+      });
+    }
+
+    res.json({ success: true, game });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }

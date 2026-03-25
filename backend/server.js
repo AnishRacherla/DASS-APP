@@ -19,6 +19,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/images', express.static(path.join(__dirname, 'assets/images')));
 app.use('/audio/hindi', express.static(path.join(__dirname, 'assets/audio/hindi')));
 app.use('/audio/telugu', express.static(path.join(__dirname, 'assets/audio/telugu')));
+app.use('/audio/hindi_letters', express.static(path.join(__dirname, 'assets/audio/hindi_letters')));
+app.use('/audio/telugu_letters', express.static(path.join(__dirname, 'assets/audio/telugu_letters')));
 
 // Routes
 app.use('/api/users', require('./routes/users'));
