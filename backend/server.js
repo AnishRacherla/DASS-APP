@@ -21,6 +21,8 @@ app.use('/audio/hindi', express.static(path.join(__dirname, 'assets/audio/hindi'
 app.use('/audio/telugu', express.static(path.join(__dirname, 'assets/audio/telugu')));
 app.use('/audio/hindi_letters', express.static(path.join(__dirname, 'assets/audio/hindi_letters')));
 app.use('/audio/telugu_letters', express.static(path.join(__dirname, 'assets/audio/telugu_letters')));
+app.use('/audio/swara', express.static(path.join(__dirname, 'assets/audio/swara')));
+app.use('/images/swara', express.static(path.join(__dirname, 'assets/images/swara')));
 
 // Routes
 app.use('/api/users', require('./routes/users'));
@@ -33,6 +35,7 @@ app.use('/api/lessons', require('./routes/lessons'));
 app.use('/api/mars-game', require('./routes/marsGame'));
 app.use('/api/whack', require('./routes/whackGame'));
 app.use('/api/akshara', require('./routes/aksharaGame'));
+app.use('/api/swaras', require('./routes/swaraGame'));
 
 // Test route
 app.get('/api/test', (req, res) => {

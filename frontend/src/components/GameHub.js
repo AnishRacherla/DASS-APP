@@ -57,13 +57,13 @@ const GAMES = [
   },
   {
     id: 'swara',
-    title: 'Swara Match',
-    emoji: '🎴',
-    description: 'Find matching pairs of letters and images! Test your memory.',
+    title: 'Swara Sing-Along',
+    emoji: '🎵',
+    description: 'Learn all 13 Hindi vowels through a fun sing-along experience with audio and images!',
     color: '#3b82f6',
     gradient: 'linear-gradient(135deg, #3b82f6, #1d4ed8)',
     path: '/swara-game',
-    category: 'Memory',
+    category: 'Sing-Along',
     special: true
   }
 ];
