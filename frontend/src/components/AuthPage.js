@@ -159,7 +159,7 @@ const AuthPage = () => {
         >
           <div className="auth-logo">🚀</div>
           <h1 className="auth-title">Letter Space Adventure</h1>
-          <p className="auth-subtitle">Learn Hindi & Telugu through 5 magical games!</p>
+          <p className="auth-subtitle">Learn Hindi & Telugu through 6 magical games!</p>
         </motion.div>
 
         {/* Game icons preview */}
@@ -169,6 +169,7 @@ const AuthPage = () => {
           <span title="Whack-a-Mole">🔨</span>
           <span title="Quiz">📝</span>
           <span title="Akshara Magic Lab">🧙‍♂️</span>
+          <span title="Consonant Quiz">🧸</span>
         </div>
 
         {/* Tabs */}

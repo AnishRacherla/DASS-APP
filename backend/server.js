@@ -35,7 +35,11 @@ app.use('/api/lessons', require('./routes/lessons'));
 app.use('/api/mars-game', require('./routes/marsGame'));
 app.use('/api/whack', require('./routes/whackGame'));
 app.use('/api/akshara', require('./routes/aksharaGame'));
+<<<<<<< HEAD
 app.use('/api/swaras', require('./routes/swaraGame'));
+=======
+app.use('/api/consonant', require('./routes/consonantQuiz'));
+>>>>>>> db558a39 (integrated consonant quiz game)
 
 // Test route
 app.get('/api/test', (req, res) => {

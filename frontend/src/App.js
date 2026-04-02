@@ -17,6 +17,7 @@ import WhackSelection from './components/WhackSelection';
 import WhackGame from './components/WhackGame';
 import AksharaGame from './components/AksharaGame';
 import SwaraGame from './components/swara/SwaraGame';
+import ConsonantQuiz from './components/consonantQuiz/ConsonantQuiz';
 import './App.css';
 
 function App() {
@@ -46,6 +47,7 @@ function App() {
           <Route path="/whack/:language" element={<WhackSelection />} />
           <Route path="/whack/:language/:level" element={<WhackGame />} />
           <Route path="/whack-select" element={<WhackSelection />} />
+          <Route path="/consonant-quiz" element={<ConsonantQuiz />} />
 
           {/* Akshara Game (Tilak's unique game) */}
           <Route path="/akshara" element={<AksharaGame />} />

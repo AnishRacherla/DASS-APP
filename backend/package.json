@@ -9,7 +9,11 @@
     "seed": "node seeds/seedQuizzes.js",
     "seed:balloon": "node seeds/seedBalloonGames.js",
     "seed:whack": "node seeds/seedWhackGames.js",
+<<<<<<< HEAD
     "seed:swara": "node seeds/seedSwaras.js",
+=======
+    "seed:consonants": "node seeds/seedConsonants.js",
+>>>>>>> db558a39 (integrated consonant quiz game)
     "test": "jest",
     "test:unit": "jest tests/unit",
     "test:acceptance": "jest tests/acceptance --testPathIgnorePatterns='.real.test.js'",
@@ -23,6 +27,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
+    "google-tts-api": "^2.0.2",
     "mongoose": "^7.6.3"
   },
   "devDependencies": {

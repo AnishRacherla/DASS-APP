@@ -143,6 +143,7 @@ router.get('/user/:userId/total', async (req, res) => {
       balloon: 0,
       mars: 0,
       whack: 0,
+      consonant: 0,
       total: 0
     };
 
@@ -159,6 +160,7 @@ router.get('/user/:userId/total', async (req, res) => {
       balloon: uniqueGames.filter(s => s.gameType === 'balloon').length,
       mars: uniqueGames.filter(s => s.gameType === 'mars').length,
       whack: uniqueGames.filter(s => s.gameType === 'whack').length,
+      consonant: uniqueGames.filter(s => s.gameType === 'consonant').length,
       total: uniqueGames.length
     };
 

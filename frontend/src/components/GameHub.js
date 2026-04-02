@@ -25,6 +25,17 @@ const GAMES = [
     category: 'Letters'
   },
   {
+    id: 'consonant',
+    title: 'Consonant Quiz',
+    emoji: '🧸',
+    description: 'Tap the sound and match the consonant. Fast rounds, big fun!',
+    color: '#06d6a0',
+    gradient: 'linear-gradient(135deg, #06d6a0, #1b9aaa)',
+    path: '/consonant-quiz',
+    category: 'Letters',
+    special: true
+  },
+  {
     id: 'mars',
     title: 'Mars Game',
     emoji: '🪐',
@@ -206,7 +217,7 @@ const GameHub = () => {
             <span className="hub-title-emoji">🌟</span>
           </h1>
           <p className="hub-subtitle">
-            5 amazing games to learn {language === 'hindi' ? 'Hindi (हिंदी)' : 'Telugu (తెలుగు)'} letters and words!
+            6 amazing games to learn {language === 'hindi' ? 'Hindi (हिंदी)' : 'Telugu (తెలుగు)'} letters and words!
           </p>
         </motion.div>
 
