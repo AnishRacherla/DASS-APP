@@ -76,6 +76,17 @@ const GAMES = [
     path: '/swara-game',
     category: 'Sing-Along',
     special: true
+  },
+  {
+    id: 'trace-vowel',
+    title: 'Trace the Vowel',
+    emoji: '✏️',
+    description: 'Learn to write Hindi vowels by tracing numbered strokes step by step!',
+    color: '#8b5cf6',
+    gradient: 'linear-gradient(135deg, #8b5cf6, #6d28d9)',
+    path: '/trace-vowel',
+    category: 'Writing',
+    special: true
   }
 ];
 
