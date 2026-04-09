@@ -17,6 +17,7 @@ import WhackSelection from './components/WhackSelection';
 import WhackGame from './components/WhackGame';
 import AksharaGame from './components/AksharaGame';
 import SwaraGame from './components/swara/SwaraGame';
+import SwaraMemoryGame from './components/swara/SwaraMemoryGame';
 import ConsonantQuiz from './components/consonantQuiz/ConsonantQuiz';
 import TraceVowelGame from './components/traceVowel/TraceVowelGame';
 import './App.css';
@@ -55,6 +56,7 @@ function App() {
 
           {/* Swara Memory Game */}
           <Route path="/swara-game" element={<SwaraGame />} />
+          <Route path="/swara-memory" element={<SwaraMemoryGame />} />
 
           {/* Trace the Vowel */}
           <Route path="/trace-vowel" element={<TraceVowelGame />} />

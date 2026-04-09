@@ -78,6 +78,17 @@ const GAMES = [
     special: true
   },
   {
+    id: 'swara-memory',
+    title: 'Swara Pair Cards',
+    emoji: '🃏',
+    description: 'Match Hindi vowel letters with their pictures! Fun memory card game.',
+    color: '#f59e0b',
+    gradient: 'linear-gradient(135deg, #f59e0b, #d97706)',
+    path: '/swara-memory',
+    category: 'Flashcards',
+    special: true
+  },
+  {
     id: 'trace-vowel',
     title: 'Trace the Vowel',
     emoji: '✏️',
