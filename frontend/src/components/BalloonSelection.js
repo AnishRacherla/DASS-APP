@@ -18,7 +18,13 @@ export default function BalloonSelection() {
   const fetchGames = async () => {
     try {
       const response = await axios.get(`http://localhost:5001/api/balloon/${language}`);
-      setGames(response.data.games);
+      const sortedGames = [...(response.data.games || [])].sort((a, b) => {
+        const aTrackOrder = a.gameId?.includes('vowels') ? 0 : 1;
+        const bTrackOrder = b.gameId?.includes('vowels') ? 0 : 1;
+        if (aTrackOrder !== bTrackOrder) return aTrackOrder - bTrackOrder;
+        return (a.level || 0) - (b.level || 0);
+      });
+      setGames(sortedGames);
       setLoading(false);
     } catch (error) {
       console.error('Error fetching games:', error);
@@ -58,7 +64,7 @@ export default function BalloonSelection() {
             <div
               key={game._id}
               className="level-card"
-              onClick={() => navigate('/balloon-game', { state: { language, level: game.level } })}
+              onClick={() => navigate('/balloon-game', { state: { language, level: game.level, gameId: game.gameId } })}
             >
               <div className="level-icon-container">
                 <span className="level-icon">{balloonEmojis[index % balloonEmojis.length]}</span>

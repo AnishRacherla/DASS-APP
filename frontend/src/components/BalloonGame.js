@@ -3,10 +3,12 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import './BalloonGame.css';
 
+const API_BASE = 'http://localhost:5001';
+
 export default function BalloonGame() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { language, level } = location.state || {};
+  const { language, level, gameId } = location.state || {};
   
   const [game, setGame] = useState(null);
   const [score, setScore] = useState(0);
@@ -14,12 +16,15 @@ export default function BalloonGame() {
   const [timeLeft, setTimeLeft] = useState(60);
   const [correctAnswers, setCorrectAnswers] = useState(0);
   const [balloons, setBalloons] = useState([]);
-  const [targetLetter, setTargetLetter] = useState('');
+  const [, setTargetLetter] = useState('');
   const [gameActive, setGameActive] = useState(true);
   
   const balloonIdCounter = useRef(0);
   const spawnTimerRef = useRef(null);
   const gameTimerRef = useRef(null);
+  const audioTimerRef = useRef(null);
+  const letterChangeTimerRef = useRef(null);
+  const audioRef = useRef(null);
 
   // Refs to track latest values for use inside interval callbacks (avoids stale closures)
   const scoreRef = useRef(0);
@@ -28,6 +33,78 @@ export default function BalloonGame() {
   const gameActiveRef = useRef(true);
   const targetLetterRef = useRef('');
   const availableLettersRef = useRef([]);
+  const letterAudioMapRef = useRef({});
+  const levelRef = useRef(level); // Store level for use in callbacks
+
+  // Get level parameters for current level
+  const getLevelParams = (lv) => {
+    switch(lv) {
+      case 3:
+        return {
+          targetLetterChance: 0.8,      // 80% chance target letter
+          letterChangeInterval: 10000,  // Change every 10 seconds
+          audioReplayInterval: 3000     // Announce every 3 seconds
+        };
+      case 2:
+        return {
+          targetLetterChance: 0.6,      // 60% chance target letter
+          letterChangeInterval: 20000,  // Change every 20 seconds
+          audioReplayInterval: 4000     // Announce every 4 seconds
+        };
+      case 1:
+      default:
+        return {
+          targetLetterChance: 0.4,      // 40% chance target letter
+          letterChangeInterval: null,   // No change (single letter for whole game)
+          audioReplayInterval: 5000     // Announce every 5 seconds
+        };
+    }
+  };
+
+  const resolveAudioUrl = (audioUrlOrPath) => {
+    if (!audioUrlOrPath) return '';
+    if (audioUrlOrPath.startsWith('http://') || audioUrlOrPath.startsWith('https://')) {
+      return audioUrlOrPath;
+    }
+    if (audioUrlOrPath.startsWith('/')) {
+      return `${API_BASE}${audioUrlOrPath}`;
+    }
+    return `${API_BASE}/${audioUrlOrPath}`;
+  };
+
+  const buildLetterAudioMap = async () => {
+    const response = await axios.get(`${API_BASE}/api/akshara/${language}/letters`);
+    const rows = Array.isArray(response.data) ? response.data : [];
+    const map = {};
+
+    rows.forEach((row) => {
+      if (!row?.symbol) return;
+      if (row.audioUrl) {
+        map[row.symbol] = resolveAudioUrl(row.audioUrl);
+      } else if (row.audioFileName) {
+        map[row.symbol] = `${API_BASE}/audio/${language}/${encodeURIComponent(row.audioFileName)}`;
+      }
+    });
+
+    letterAudioMapRef.current = map;
+  };
+
+  const playRecordedLetterAudio = (letter) => {
+    if (!letter) return;
+    const audioUrl = letterAudioMapRef.current[letter];
+    if (!audioUrl) {
+      console.warn(`No letter audio found in DB mapping for symbol: ${letter}`);
+      return;
+    }
+    const audio = audioRef.current || new Audio();
+    audioRef.current = audio;
+    audio.pause();
+    audio.currentTime = 0;
+    audio.src = audioUrl;
+    audio.play().catch((err) => {
+      console.warn('Audio playback blocked/failed:', err);
+    });
+  };
 
   useEffect(() => {
     fetchGame();
@@ -35,6 +112,11 @@ export default function BalloonGame() {
     return () => {
       if (spawnTimerRef.current) clearInterval(spawnTimerRef.current);
       if (gameTimerRef.current) clearInterval(gameTimerRef.current);
+      if (audioTimerRef.current) clearInterval(audioTimerRef.current);
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [language, level]);
@@ -47,27 +129,43 @@ export default function BalloonGame() {
     return () => {
       if (spawnTimerRef.current) clearInterval(spawnTimerRef.current);
       if (gameTimerRef.current) clearInterval(gameTimerRef.current);
+      if (audioTimerRef.current) clearInterval(audioTimerRef.current);
+      if (letterChangeTimerRef.current) clearInterval(letterChangeTimerRef.current);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [game, loading]);
 
   const fetchGame = async () => {
     try {
-      const response = await axios.get(`http://localhost:5001/api/balloon/${language}/${level}`);
+      const gameEndpoint = gameId
+        ? `${API_BASE}/api/balloon/id/${gameId}`
+        : `${API_BASE}/api/balloon/${language}/${level}`;
+      const response = await axios.get(gameEndpoint);
       const gameData = response.data.game;
       setGame(gameData);
+      levelRef.current = gameData?.level || level;
+
+      await buildLetterAudioMap();
       
       const letters = new Set();
       gameData.gameData.rounds.forEach(round => {
         round.balloons.forEach(letter => letters.add(letter));
+        // Also add the targetLetter just in case
+        letters.add(round.targetLetter);
       });
       const lettersArray = Array.from(letters);
       
-      if (gameData.gameData.rounds.length > 0) {
-        setTargetLetter(gameData.gameData.rounds[0].targetLetter);
-        targetLetterRef.current = gameData.gameData.rounds[0].targetLetter;
+      let initialTarget = '';
+      if (lettersArray.length > 0) {
+        initialTarget = lettersArray[Math.floor(Math.random() * lettersArray.length)];
+        setTargetLetter(initialTarget);
+        targetLetterRef.current = initialTarget;
       }
       availableLettersRef.current = lettersArray;
+      
+      // Play target letter audio immediately using letter-audio mapping from DB
+      playRecordedLetterAudio(initialTarget);
+      
       setLoading(false);
     } catch (error) {
       console.error('Error fetching game:', error);
@@ -77,6 +175,8 @@ export default function BalloonGame() {
   };
 
   const startGame = () => {
+    const levelParams = getLevelParams(levelRef.current);
+    
     gameTimerRef.current = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
@@ -87,6 +187,28 @@ export default function BalloonGame() {
       });
     }, 1000);
     
+    // Replay target letter audio at level-specific intervals
+    audioTimerRef.current = setInterval(() => {
+        if (gameActiveRef.current && targetLetterRef.current) {
+        playRecordedLetterAudio(targetLetterRef.current);
+        }
+    }, levelParams.audioReplayInterval);
+
+    // For Level 2 and 3: Add letter change timer
+    if (levelParams.letterChangeInterval) {
+      letterChangeTimerRef.current = setInterval(() => {
+        if (gameActiveRef.current && availableLettersRef.current.length > 0) {
+          const newTarget = availableLettersRef.current[
+            Math.floor(Math.random() * availableLettersRef.current.length)
+          ];
+          targetLetterRef.current = newTarget;
+          setTargetLetter(newTarget);
+          // Play audio for new letter immediately
+          playRecordedLetterAudio(newTarget);
+        }
+      }, levelParams.letterChangeInterval);
+    }
+
     spawnTimerRef.current = setInterval(() => {
       spawnBalloon();
     }, 600);
@@ -99,6 +221,8 @@ export default function BalloonGame() {
   const spawnBalloon = () => {
     const currentTarget = targetLetterRef.current;
     const currentLetters = availableLettersRef.current;
+    const levelParams = getLevelParams(levelRef.current);
+    
     if (!gameActiveRef.current || currentLetters.length === 0 || !currentTarget) return;
     
     setBalloons(prevBalloons => {
@@ -109,7 +233,8 @@ export default function BalloonGame() {
       const id = balloonIdCounter.current++;
       
       let letter;
-      if (Math.random() < 0.4) {
+      // Use level-specific chance for target letter
+      if (Math.random() < levelParams.targetLetterChance) {
         letter = currentTarget;
       } else {
         const wrongLetters = currentLetters.filter(l => l !== currentTarget);
@@ -178,6 +303,11 @@ export default function BalloonGame() {
     setGameActive(false);
     if (spawnTimerRef.current) clearInterval(spawnTimerRef.current);
     if (gameTimerRef.current) clearInterval(gameTimerRef.current);
+    if (audioTimerRef.current) clearInterval(audioTimerRef.current);
+    if (letterChangeTimerRef.current) clearInterval(letterChangeTimerRef.current);
+    if (audioRef.current) {
+      audioRef.current.pause();
+    }
     
     const finalScore = scoreRef.current;
     const finalCorrect = correctAnswersRef.current;
@@ -220,8 +350,14 @@ export default function BalloonGame() {
 
       <div className="balloon-game-content">
         <div className="target-letter-box">
-          <h2 className="target-label">Pop balloons with:</h2>
-          <div className="target-letter">{targetLetter}</div>
+          <h2 className="target-label">Listen carefully and pop the spoken letter</h2>
+          <button
+            type="button"
+            className="speak-again-btn"
+            onClick={() => playRecordedLetterAudio(targetLetterRef.current)}
+          >
+            Repeat Audio
+          </button>
         </div>
 
         <div className="balloons-area">
