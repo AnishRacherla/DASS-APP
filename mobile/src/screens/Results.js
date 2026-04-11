@@ -12,18 +12,19 @@ import axios from 'axios';
 import { API_BASE_URL, API_TIMEOUT } from '../config';
 
 export default function Results({ navigation, route }) {
-  const { score, totalQuestions, language, level, gameType, correctAnswers, penalties } = route.params;
+  const { score, totalQuestions, language, level, difficulty, gameType, correctAnswers, penalties } = route.params;
   const scoreSavedRef = useRef(false);
 
   const isBaloonGame = gameType === 'balloon';
   const isMarsGame = gameType === 'mars';
   const isWhackGame = gameType === 'whack';
+  const isBubbleShooterGame = gameType === 'bubble-shooter';
 
   const correctCount = correctAnswers !== undefined ? correctAnswers : score;
   const totalQuestionsValue = totalQuestions || correctCount || 1;
   const whackPenaltyCount = penalties || 0;
   const whackPassed = whackPenaltyCount === 0 && score >= 10;
-  const percentage = isWhackGame
+  const percentage = (isWhackGame || isBubbleShooterGame)
     ? (totalQuestionsValue > 0 ? ((correctCount / totalQuestionsValue) * 100) : 0)
     : totalQuestionsValue > 0
       ? ((correctCount / totalQuestionsValue) * 100)
@@ -66,6 +67,7 @@ export default function Results({ navigation, route }) {
 
   const getEmoji = () => {
     if (isWhackGame && whackPassed) return '🔨';
+    if (isBubbleShooterGame && score >= 30) return '🫧';
     if (percentage === 100) return '🏆';
     if (percentage >= 80) return '🌟';
     if (percentage >= 60) return '⭐';
@@ -77,6 +79,11 @@ export default function Results({ navigation, route }) {
     if (isWhackGame) {
       if (whackPassed && whackPenaltyCount === 0) return 'Sharp Aim!';
       if (score > 0) return 'Nice Reflexes!';
+      return 'Keep Practicing!';
+    }
+    if (isBubbleShooterGame) {
+      if (score >= 30) return 'Bubble Master!';
+      if (score > 0) return 'Nice Shooting!';
       return 'Keep Practicing!';
     }
     if (percentage === 100) return 'Perfect! All Correct!';
@@ -96,7 +103,7 @@ export default function Results({ navigation, route }) {
           
           <Text style={styles.title}>{getMessage()}</Text>
 
-          {(isBaloonGame || isMarsGame || isWhackGame) ? (
+          {(isBaloonGame || isMarsGame || isWhackGame || isBubbleShooterGame) ? (
             <View style={styles.scorePoints}>
               <Text style={styles.scoreLabel}>Total Score:</Text>
               <Text style={styles.scoreValue}>{score} Points</Text>
@@ -116,6 +123,8 @@ export default function Results({ navigation, route }) {
                 ? `${correctCount}/${totalQuestionsValue} Correct`
                 : isWhackGame
                   ? `${correctCount} Hits • ${whackPenaltyCount} Penalties`
+                  : isBubbleShooterGame
+                    ? `${correctCount} Correct Hits • ${penalties || 0} Wrong Hits`
                   : `${isNaN(percentage) ? '0' : percentage.toFixed(0)}% Correct`
             }
           </Text>
@@ -207,6 +216,35 @@ export default function Results({ navigation, route }) {
                   onPress={() => navigation.navigate('PlanetHome', { language })}
                 >
                   <Text style={styles.secondaryBtnText}>🏠 Back to Home</Text>
+                </TouchableOpacity>
+              </>
+            )}
+
+            {/* Bubble Shooter buttons */}
+            {isBubbleShooterGame && (
+              <>
+                <TouchableOpacity
+                  style={styles.primaryBtn}
+                  onPress={() => navigation.navigate('BubbleShooterGame', {
+                    language,
+                    difficulty: difficulty || (level >= 3 ? 'hard' : level === 2 ? 'medium' : 'easy')
+                  })}
+                >
+                  <Text style={styles.primaryBtnText}>🔄 Play Again</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.secondaryBtn}
+                  onPress={() => navigation.navigate('BubbleShooterSelection', { language })}
+                >
+                  <Text style={styles.secondaryBtnText}>🫧 Change Level</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.secondaryBtn}
+                  onPress={() => navigation.navigate('GameHub')}
+                >
+                  <Text style={styles.secondaryBtnText}>🏠 Back to Games</Text>
                 </TouchableOpacity>
               </>
             )}

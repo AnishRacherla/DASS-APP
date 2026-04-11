@@ -22,6 +22,15 @@ const GAMES = [
     category: 'Letters',
   },
   {
+    id: 'bubble-shooter',
+    title: 'Bubble Shooter',
+    emoji: '🫧',
+    description: 'Hear the consonant and shoot the matching bubble.',
+    color: '#38BDF8',
+    screen: 'BubbleShooterSelection',
+    category: 'Letters',
+  },
+  {
     id: 'mars',
     title: 'Mars Game',
     emoji: '🪐',
@@ -119,7 +128,7 @@ export default function GameHub({ navigation }) {
         {/* Header */}
         <Text style={styles.title}>🎮 Choose Your Game 🌟</Text>
         <Text style={styles.subtitle}>
-          5 amazing games to learn {language === 'hindi' ? 'Hindi (हिंदी)' : 'Telugu (తెలుగు)'} letters and words!
+          6 amazing games to learn {language === 'hindi' ? 'Hindi (हिंदी)' : 'Telugu (తెలుగు)'} letters and words!
         </Text>
 
         {/* Lessons Banner */}

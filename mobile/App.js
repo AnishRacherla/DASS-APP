@@ -34,6 +34,8 @@ import MarsLevelSelection from './src/screens/MarsLevelSelection';
 import MarsGame from './src/screens/MarsGame';
 import WhackSelection from './src/screens/WhackSelection';
 import WhackGame from './src/screens/WhackGame';
+import BubbleShooterSelection from './src/screens/BubbleShooterSelection';
+import BubbleShooterGame from './src/screens/BubbleShooterGame';
 import AksharaGame from './src/screens/AksharaGame';
 import Results from './src/screens/Results';
 import Dashboard from './src/screens/Dashboard';
@@ -64,6 +66,8 @@ export default function App() {
         <Stack.Screen name="MarsGame" component={MarsGame} />
         <Stack.Screen name="WhackSelection" component={WhackSelection} />
         <Stack.Screen name="WhackGame" component={WhackGame} />
+        <Stack.Screen name="BubbleShooterSelection" component={BubbleShooterSelection} />
+        <Stack.Screen name="BubbleShooterGame" component={BubbleShooterGame} />
         <Stack.Screen name="AksharaGame" component={AksharaGame} />
         <Stack.Screen name="Results" component={Results} />
         <Stack.Screen name="Dashboard" component={Dashboard} />
