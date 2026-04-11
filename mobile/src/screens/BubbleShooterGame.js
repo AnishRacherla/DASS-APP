@@ -548,8 +548,8 @@ export default function BubbleShooterGame({ navigation, route }) {
 
       <View style={styles.infoCard}>
         <Text style={styles.infoTitle}>Drag to aim, release to shoot</Text>
-        <Text style={styles.infoText}>Target changes every 10s. Sound repeats every 3s.</Text>
-        <Text style={styles.infoText}>Scoring: +10 correct, -5 wrong.</Text>
+        <Text style={styles.infoText}>The target changes every 10 seconds and repeats every 3 seconds.</Text>
+        <Text style={styles.infoText}>Only the outer layer and top layer bubbles can be cleared.</Text>
         {!audioUnlocked && Platform.OS === 'web' ? (
           <Text style={styles.infoWarn}>Web audio: drag once to enable sound playback.</Text>
         ) : null}
@@ -618,7 +618,7 @@ export default function BubbleShooterGame({ navigation, route }) {
         </View>
       </View>
 
-      <Text style={styles.footer}>Only outer-layer bubbles are valid targets. Use sound to match letters.</Text>
+      <Text style={styles.footer}>Easy mode only scores. Medium and hard use lives. New bubbles rise from the top after each hit.</Text>
     </View>
   );
 }
