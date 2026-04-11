@@ -19,12 +19,13 @@ export default function Results({ navigation, route }) {
   const isMarsGame = gameType === 'mars';
   const isWhackGame = gameType === 'whack';
   const isBubbleShooterGame = gameType === 'bubble-shooter';
+  const isWordSortingGame = gameType === 'word-sorting-basket';
 
   const correctCount = correctAnswers !== undefined ? correctAnswers : score;
   const totalQuestionsValue = totalQuestions || correctCount || 1;
   const whackPenaltyCount = penalties || 0;
   const whackPassed = whackPenaltyCount === 0 && score >= 10;
-  const percentage = (isWhackGame || isBubbleShooterGame)
+  const percentage = (isWhackGame || isBubbleShooterGame || isWordSortingGame)
     ? (totalQuestionsValue > 0 ? ((correctCount / totalQuestionsValue) * 100) : 0)
     : totalQuestionsValue > 0
       ? ((correctCount / totalQuestionsValue) * 100)
@@ -68,6 +69,7 @@ export default function Results({ navigation, route }) {
   const getEmoji = () => {
     if (isWhackGame && whackPassed) return '🔨';
     if (isBubbleShooterGame && score >= 30) return '🫧';
+    if (isWordSortingGame && score >= 30) return '🧺';
     if (percentage === 100) return '🏆';
     if (percentage >= 80) return '🌟';
     if (percentage >= 60) return '⭐';
@@ -84,6 +86,11 @@ export default function Results({ navigation, route }) {
     if (isBubbleShooterGame) {
       if (score >= 30) return 'Bubble Master!';
       if (score > 0) return 'Nice Shooting!';
+      return 'Keep Practicing!';
+    }
+    if (isWordSortingGame) {
+      if (score >= 30) return 'Sorting Master!';
+      if (score > 0) return 'Nice Sorting!';
       return 'Keep Practicing!';
     }
     if (percentage === 100) return 'Perfect! All Correct!';
@@ -103,7 +110,7 @@ export default function Results({ navigation, route }) {
           
           <Text style={styles.title}>{getMessage()}</Text>
 
-          {(isBaloonGame || isMarsGame || isWhackGame || isBubbleShooterGame) ? (
+          {(isBaloonGame || isMarsGame || isWhackGame || isBubbleShooterGame || isWordSortingGame) ? (
             <View style={styles.scorePoints}>
               <Text style={styles.scoreLabel}>Total Score:</Text>
               <Text style={styles.scoreValue}>{score} Points</Text>
@@ -125,6 +132,8 @@ export default function Results({ navigation, route }) {
                   ? `${correctCount} Hits • ${whackPenaltyCount} Penalties`
                   : isBubbleShooterGame
                     ? `${correctCount} Correct Hits • ${penalties || 0} Wrong Hits`
+                    : isWordSortingGame
+                      ? `${correctCount} Correct Placements • ${penalties || 0} Wrong Drops`
                   : `${isNaN(percentage) ? '0' : percentage.toFixed(0)}% Correct`
             }
           </Text>
@@ -238,6 +247,32 @@ export default function Results({ navigation, route }) {
                   onPress={() => navigation.navigate('BubbleShooterSelection', { language })}
                 >
                   <Text style={styles.secondaryBtnText}>🫧 Change Level</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.secondaryBtn}
+                  onPress={() => navigation.navigate('GameHub')}
+                >
+                  <Text style={styles.secondaryBtnText}>🏠 Back to Games</Text>
+                </TouchableOpacity>
+              </>
+            )}
+
+            {/* Word Sorting Basket buttons */}
+            {isWordSortingGame && (
+              <>
+                <TouchableOpacity
+                  style={styles.primaryBtn}
+                  onPress={() => navigation.navigate('WordSortingBasketGame', { language, level: level || 1 })}
+                >
+                  <Text style={styles.primaryBtnText}>🔄 Play Again</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.secondaryBtn}
+                  onPress={() => navigation.navigate('WordSortingBasketSelection', { language })}
+                >
+                  <Text style={styles.secondaryBtnText}>🧺 Change Level</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity

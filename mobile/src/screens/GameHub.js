@@ -31,6 +31,15 @@ const GAMES = [
     category: 'Letters',
   },
   {
+    id: 'word-sorting-basket',
+    title: 'Word Sorting Basket',
+    emoji: '🧺',
+    description: 'Drag mixed words into the right category basket.',
+    color: '#F59E0B',
+    screen: 'WordSortingBasketSelection',
+    category: 'Words',
+  },
+  {
     id: 'mars',
     title: 'Mars Game',
     emoji: '🪐',
@@ -128,7 +137,7 @@ export default function GameHub({ navigation }) {
         {/* Header */}
         <Text style={styles.title}>🎮 Choose Your Game 🌟</Text>
         <Text style={styles.subtitle}>
-          6 amazing games to learn {language === 'hindi' ? 'Hindi (हिंदी)' : 'Telugu (తెలుగు)'} letters and words!
+          {GAMES.length} amazing games to learn {language === 'hindi' ? 'Hindi (हिंदी)' : 'Telugu (తెలుగు)'} letters and words!
         </Text>
 
         {/* Lessons Banner */}

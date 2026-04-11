@@ -36,6 +36,8 @@ import WhackSelection from './src/screens/WhackSelection';
 import WhackGame from './src/screens/WhackGame';
 import BubbleShooterSelection from './src/screens/BubbleShooterSelection';
 import BubbleShooterGame from './src/screens/BubbleShooterGame';
+import WordSortingBasketSelection from './src/screens/WordSortingBasketSelection';
+import WordSortingBasketGame from './src/screens/WordSortingBasketGame';
 import AksharaGame from './src/screens/AksharaGame';
 import Results from './src/screens/Results';
 import Dashboard from './src/screens/Dashboard';
@@ -68,6 +70,8 @@ export default function App() {
         <Stack.Screen name="WhackGame" component={WhackGame} />
         <Stack.Screen name="BubbleShooterSelection" component={BubbleShooterSelection} />
         <Stack.Screen name="BubbleShooterGame" component={BubbleShooterGame} />
+        <Stack.Screen name="WordSortingBasketSelection" component={WordSortingBasketSelection} />
+        <Stack.Screen name="WordSortingBasketGame" component={WordSortingBasketGame} />
         <Stack.Screen name="AksharaGame" component={AksharaGame} />
         <Stack.Screen name="Results" component={Results} />
         <Stack.Screen name="Dashboard" component={Dashboard} />
