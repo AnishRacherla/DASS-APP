@@ -23,6 +23,7 @@ import TraceVowelGame from './components/traceVowel/TraceVowelGame';
 import ScavengerHub from './components/scavenger/ScavengerHub';
 import ScavengerGame from './components/scavenger/ScavengerGame';
 import VarnamalGame from './components/VarnamalGame';
+import MatraGame from './components/matraGame/MatraGame';
 import './App.css';
 
 function App() {
@@ -70,6 +71,9 @@ function App() {
 
           {/* Varnamala Puzzle */}
           <Route path="/varnamal" element={<VarnamalGame />} />
+
+          {/* Matra Magic Builder */}
+          <Route path="/matra-game" element={<MatraGame />} />
 
           {/* Fallback */}
           <Route path="*" element={<Navigate to="/" replace />} />

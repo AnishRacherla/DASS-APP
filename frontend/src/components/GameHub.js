@@ -120,6 +120,17 @@ const GAMES = [
     path: '/scavenger',
     category: 'Spot-It',
     special: true
+  },
+  {
+    id: 'matra',
+    title: 'Matra Magic Builder',
+    emoji: '✨',
+    description: 'Drag & drop matras onto consonants to build Hindi words! Learn all 11 matras through fun challenges.',
+    color: '#f43f5e',
+    gradient: 'linear-gradient(135deg, #f43f5e, #e11d48)',
+    path: '/matra-game',
+    category: 'Matras',
+    special: true
   }
 ];
 

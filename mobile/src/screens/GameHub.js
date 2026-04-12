@@ -69,6 +69,16 @@ const GAMES = [
     category: 'Puzzle',
     special: true,
   },
+  {
+    id: 'matra',
+    title: 'Matra Magic Builder',
+    emoji: '✨',
+    description: 'Drag & drop matras to build Hindi words! Learn all 11 matras.',
+    color: '#f43f5e',
+    screen: 'MatraGame',
+    category: 'Matras',
+    special: true,
+  },
 ];
 
 export default function GameHub({ navigation }) {
