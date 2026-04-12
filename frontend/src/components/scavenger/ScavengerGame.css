@@ -1,0 +1,522 @@
+/* ===== Scavenger Hunt — Shared Styles ===== */
+
+/* ===== Hub Screen ===== */
+
+.scav-hub {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    padding: 24px;
+    color: #fff;
+}
+
+.scav-hub-header {
+    text-align: center;
+    margin-bottom: 16px;
+    position: relative;
+}
+
+.scav-hub-header h1 {
+    font-size: 2rem;
+    margin: 8px 0 4px;
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.scav-hub-subtitle {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 1rem;
+}
+
+.scav-back-btn {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.7);
+    padding: 8px 18px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+.scav-back-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+}
+
+/* Language Toggle */
+.scav-lang-toggle {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin: 16px auto;
+}
+
+.scav-lang-btn {
+    padding: 8px 24px;
+    border: 2px solid rgba(255, 255, 255, 0.12);
+    border-radius: 24px;
+    background: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.scav-lang-btn.active {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    border-color: rgba(139, 92, 246, 0.6);
+    color: #fff;
+    box-shadow: 0 2px 12px rgba(99, 102, 241, 0.3);
+}
+
+.scav-lang-btn:hover:not(.active) {
+    background: rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* Scene Cards Grid */
+.scav-scenes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 20px;
+    max-width: 900px;
+    margin: 24px auto;
+    padding: 0 16px;
+}
+
+.scav-scene-card {
+    background: rgba(255, 255, 255, 0.06);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 18px;
+    padding: 24px 16px;
+    text-align: center;
+    cursor: pointer;
+    position: relative;
+    backdrop-filter: blur(10px);
+    transition: border-color 0.3s;
+}
+
+.scav-scene-card:hover {
+    border-color: var(--color);
+}
+
+.scav-scene-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    margin: 0 auto 12px;
+}
+
+.scav-scene-card h3 {
+    font-size: 1.1rem;
+    margin: 0 0 4px;
+    color: #fff;
+}
+
+.scav-scene-native {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.5);
+    margin: 0 0 8px;
+}
+
+.scav-scene-badge {
+    display: inline-block;
+    padding: 3px 12px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.08);
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+/* ===== Game Screen ===== */
+
+.scav-game {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #0f0c29, #1a1a2e);
+    display: flex;
+    flex-direction: column;
+}
+
+.scav-loading {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.6);
+    gap: 16px;
+}
+
+.scav-loader {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    border-top-color: #6366f1;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Game Header */
+.scav-game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.scav-game-info {
+    display: flex;
+    gap: 16px;
+}
+
+.scav-stat {
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 600;
+}
+
+/* Target Letter Prompt */
+.scav-target-prompt {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 12px;
+    background: rgba(255, 215, 0, 0.1);
+    border-bottom: 2px solid rgba(255, 215, 0, 0.2);
+}
+
+.scav-target-text {
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.scav-target-letter {
+    font-size: 1.8rem;
+    color: #FFD700;
+    text-shadow: 0 0 12px rgba(255, 215, 0, 0.5);
+}
+
+.scav-target-word {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.scav-audio-btn,
+.scav-hint-btn {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #fff;
+    padding: 6px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+}
+
+.scav-audio-btn:hover,
+.scav-hint-btn:hover {
+    background: rgba(255, 255, 255, 0.18);
+}
+
+.scav-hint-btn {
+    background: rgba(255, 165, 0, 0.15);
+    border-color: rgba(255, 165, 0, 0.3);
+}
+
+/* Scene Container */
+.scav-scene-container {
+    flex: 1;
+    position: relative;
+    cursor: crosshair;
+    overflow: hidden;
+    user-select: none;
+    margin: 0 auto;
+    width: 100%;
+    max-width: 900px;
+}
+
+.scav-scene-img {
+    width: 100%;
+    height: auto;
+    display: block;
+    pointer-events: none;
+}
+
+/* Hidden Letters */
+.scav-hidden-letter {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    font-size: 2.4rem;
+    font-weight: 900;
+    opacity: 0.6;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4), 0 0 12px rgba(255, 255, 255, 0.9);
+    pointer-events: none;
+    transition: all 0.4s;
+    z-index: 2;
+}
+
+.scav-hidden-letter.found {
+    opacity: 1 !important;
+    font-size: 2.2rem;
+    text-shadow: 0 0 20px rgba(255, 215, 0, 0.8), 0 0 40px rgba(255, 215, 0, 0.4);
+    z-index: 5;
+}
+
+/* Hint circle — pulsing red search area */
+.scav-hint-circle {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    width: 120px;
+    height: 120px;
+    border: 3px dashed #ff3333;
+    border-radius: 50%;
+    box-shadow: 0 0 30px rgba(255, 51, 51, 0.5), inset 0 0 25px rgba(255, 51, 51, 0.15);
+    pointer-events: none;
+    z-index: 8;
+}
+
+@keyframes hintPulse {
+
+    0%,
+    100% {
+        text-shadow: 0 0 8px rgba(255, 165, 0, 0.3);
+    }
+
+    50% {
+        text-shadow: 0 0 24px rgba(255, 165, 0, 0.8), 0 0 40px rgba(255, 165, 0, 0.4);
+    }
+}
+
+/* Tap Feedback */
+.scav-wrong-tap {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    font-size: 2rem;
+    color: #ff4444;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.scav-correct-tap {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    font-size: 1.5rem;
+    color: #FFD700;
+    pointer-events: none;
+    z-index: 10;
+    white-space: nowrap;
+}
+
+/* Found Letters Bar */
+.scav-found-bar {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px;
+    background: rgba(0, 0, 0, 0.4);
+}
+
+.scav-found-slot {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    font-weight: 700;
+    background: rgba(255, 255, 255, 0.06);
+    border: 2px dashed rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.25);
+    transition: all 0.3s;
+}
+
+.scav-found-slot.filled {
+    background: rgba(255, 215, 0, 0.15);
+    border: 2px solid rgba(255, 215, 0, 0.5);
+    color: #FFD700;
+    text-shadow: 0 0 8px rgba(255, 215, 0, 0.4);
+}
+
+/* ===== Completion Overlay ===== */
+
+.scav-complete-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.scav-complete-card {
+    background: linear-gradient(145deg, #1e1e3f, #2a2a5a);
+    border: 2px solid rgba(255, 215, 0, 0.3);
+    border-radius: 24px;
+    padding: 36px 32px;
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+    position: relative;
+}
+
+.scav-close-modal-btn {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: rgba(255, 255, 255, 0.6);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    font-size: 1.1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.scav-close-modal-btn:hover {
+    background: rgba(255, 68, 68, 0.8);
+    color: #fff;
+}
+
+.scav-complete-card h2 {
+    font-size: 2rem;
+    color: #FFD700;
+    margin: 0 0 4px;
+}
+
+.scav-complete-subtitle {
+    color: rgba(255, 255, 255, 0.6);
+    margin: 0 0 16px;
+}
+
+.scav-stars {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin: 12px 0 20px;
+}
+
+.scav-star {
+    font-size: 2.5rem;
+    filter: grayscale(1);
+    opacity: 0.3;
+}
+
+.scav-star.earned {
+    filter: none;
+    opacity: 1;
+}
+
+.scav-complete-stats {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+.scav-complete-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.scav-stat-label {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.scav-stat-value {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+.scav-complete-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.scav-action-btn {
+    padding: 12px 20px;
+    border-radius: 14px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+}
+
+.scav-action-btn.primary {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: #fff;
+}
+
+.scav-action-btn.primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(99, 102, 241, 0.4);
+}
+
+.scav-action-btn.secondary {
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    color: #000;
+}
+
+.scav-action-btn.outline {
+    background: transparent;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.scav-action-btn.outline:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+/* ===== Responsive ===== */
+
+@media (max-width: 600px) {
+    .scav-hub-header h1 {
+        font-size: 1.4rem;
+    }
+
+    .scav-scenes-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    .scav-hidden-letter {
+        font-size: 1.2rem;
+    }
+
+    .scav-hidden-letter.found {
+        font-size: 1.6rem;
+    }
+
+    .scav-target-letter {
+        font-size: 1.4rem;
+    }
+}

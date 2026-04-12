@@ -20,6 +20,8 @@ import SwaraGame from './components/swara/SwaraGame';
 import SwaraMemoryGame from './components/swara/SwaraMemoryGame';
 import ConsonantQuiz from './components/consonantQuiz/ConsonantQuiz';
 import TraceVowelGame from './components/traceVowel/TraceVowelGame';
+import ScavengerHub from './components/scavenger/ScavengerHub';
+import ScavengerGame from './components/scavenger/ScavengerGame';
 import './App.css';
 
 function App() {
@@ -60,6 +62,10 @@ function App() {
 
           {/* Trace the Vowel */}
           <Route path="/trace-vowel" element={<TraceVowelGame />} />
+
+          {/* Scavenger Hunt */}
+          <Route path="/scavenger" element={<ScavengerHub />} />
+          <Route path="/scavenger/play" element={<ScavengerGame />} />
 
           {/* Fallback */}
           <Route path="*" element={<Navigate to="/" replace />} />

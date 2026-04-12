@@ -37,6 +37,7 @@ app.use('/api/whack', require('./routes/whackGame'));
 app.use('/api/akshara', require('./routes/aksharaGame'));
 app.use('/api/swaras', require('./routes/swaraGame'));
 app.use('/api/consonant', require('./routes/consonantQuiz'));
+app.use('/api/scavenger', require('./routes/scavengerGame'));
 
 // Test route
 app.get('/api/test', (req, res) => {

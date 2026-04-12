@@ -98,6 +98,17 @@ const GAMES = [
     path: '/trace-vowel',
     category: 'Writing',
     special: true
+  },
+  {
+    id: 'scavenger',
+    title: 'Akshar Scavenger Hunt',
+    emoji: '🔍',
+    description: 'Find hidden consonants in colorful scenes! Tap the letters hiding in the kitchen, market, and more.',
+    color: '#10b981',
+    gradient: 'linear-gradient(135deg, #10b981, #059669)',
+    path: '/scavenger',
+    category: 'Spot-It',
+    special: true
   }
 ];
 
