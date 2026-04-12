@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, useCallback } from 'react';
+import React, { useRef, useState, useEffect, useCallback, useMemo } from 'react';
 import {
   samplePath,
   getClosestPointOnPath,
@@ -42,7 +42,7 @@ export default function TracingCanvas({ vowelData, onComplete, showHint, resetKe
   const [hintProgress, setHintProgress] = useState(0);
   const hintAnimRef = useRef(null);
 
-  const strokes = vowelData?.strokes || [];
+  const strokes = useMemo(() => vowelData?.strokes || [], [vowelData?.strokes]);
 
   // ─── Initialize / Reset ──────────────────────────────────
   useEffect(() => {

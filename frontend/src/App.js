@@ -22,6 +22,7 @@ import ConsonantQuiz from './components/consonantQuiz/ConsonantQuiz';
 import TraceVowelGame from './components/traceVowel/TraceVowelGame';
 import ScavengerHub from './components/scavenger/ScavengerHub';
 import ScavengerGame from './components/scavenger/ScavengerGame';
+import VarnamalGame from './components/VarnamalGame';
 import './App.css';
 
 function App() {
@@ -66,6 +67,9 @@ function App() {
           {/* Scavenger Hunt */}
           <Route path="/scavenger" element={<ScavengerHub />} />
           <Route path="/scavenger/play" element={<ScavengerGame />} />
+
+          {/* Varnamala Puzzle */}
+          <Route path="/varnamal" element={<VarnamalGame />} />
 
           {/* Fallback */}
           <Route path="*" element={<Navigate to="/" replace />} />

@@ -100,6 +100,17 @@ const GAMES = [
     special: true
   },
   {
+    id: 'varnamal',
+    title: 'Varnamala Puzzle',
+    emoji: '🧩',
+    description: 'Arrange consonants in alphabetical order! Drag and drop letters to complete the Varnamala.',
+    color: '#8b5cf6',
+    gradient: 'linear-gradient(135deg, #8b5cf6, #6366f1)',
+    path: '/varnamal',
+    category: 'Puzzle',
+    special: true
+  },
+  {
     id: 'scavenger',
     title: 'Akshar Scavenger Hunt',
     emoji: '🔍',

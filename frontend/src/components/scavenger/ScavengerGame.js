@@ -204,7 +204,6 @@ export default function ScavengerGame() {
     }
 
     const letters = scene.gameData.letters;
-    const targetLetter = letters[currentTarget];
 
     return (
         <div className="scav-game">

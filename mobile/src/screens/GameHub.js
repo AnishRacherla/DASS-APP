@@ -59,6 +59,16 @@ const GAMES = [
     category: 'Aksharas',
     special: true,
   },
+  {
+    id: 'varnamal',
+    title: 'Varnamala Puzzle',
+    emoji: '🧩',
+    description: 'Arrange consonants in alphabetical order! Drag and drop letters to complete the Varnamala.',
+    color: '#8b5cf6',
+    screen: 'VarnamalGame',
+    category: 'Puzzle',
+    special: true,
+  },
 ];
 
 export default function GameHub({ navigation }) {

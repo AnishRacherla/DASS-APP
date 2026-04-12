@@ -30,7 +30,6 @@ export default function TraceVowelGame() {
   const [resetKey, setResetKey] = useState(0);
   const [showHint, setShowHint] = useState(false);
   const [swaraData, setSwaraData] = useState([]); // from API
-  const [loading, setLoading] = useState(true);
 
   const tracingStartTime = useRef(Date.now());
 
@@ -45,8 +44,6 @@ export default function TraceVowelGame() {
         }
       } catch (err) {
         console.warn('Could not fetch swara data:', err);
-      } finally {
-        setLoading(false);
       }
     };
     fetchSwaras();
