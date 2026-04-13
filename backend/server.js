@@ -35,6 +35,7 @@ app.use('/api/lessons', require('./routes/lessons'));
 app.use('/api/mars-game', require('./routes/marsGame'));
 app.use('/api/whack', require('./routes/whackGame'));
 app.use('/api/akshara', require('./routes/aksharaGame'));
+app.use('/api/word-sorting-basket', require('./routes/wordSortingBasket'));
 app.use('/api/swaras', require('./routes/swaraGame'));
 app.use('/api/consonant', require('./routes/consonantQuiz'));
 

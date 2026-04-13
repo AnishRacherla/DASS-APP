@@ -6,7 +6,7 @@ import './Results.css';
 const Results = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { score, totalQuestions, language, level, correctAnswers, gameType, penalties, skipScoreSave } = location.state || {};
+  const { score, totalQuestions, language, level, difficulty, correctAnswers, gameType, penalties, skipScoreSave } = location.state || {};
   const scoreSavedRef = useRef(false); // useRef so guard works synchronously (useState is async)
 
   useEffect(() => {
@@ -50,19 +50,24 @@ const Results = () => {
   const isBaloonGame = gameType === 'balloon';
   const isMarsGame = gameType === 'mars';
   const isWhackGame = gameType === 'whack';
+  const isBubbleShooterGame = gameType === 'bubble-shooter';
+  const isWordSortingGame = gameType === 'word-sorting-basket';
   
   // For balloon: score is points, correctAnswers is number of correct balloons, totalQuestions is total taps
   // For mars/quiz: correctAnswers is correct count, totalQuestions is total questions
-  const displayScore = (isBaloonGame || isMarsGame || isWhackGame) ? score : (correctAnswers !== undefined ? correctAnswers : score);
+  const displayScore = (isBaloonGame || isMarsGame || isWhackGame || isBubbleShooterGame || isWordSortingGame)
+    ? score
+    : (correctAnswers !== undefined ? correctAnswers : score);
   
   // For balloon game, don't calculate percentage based on taps, just show if they got points
   const correctCount = correctAnswers !== undefined ? correctAnswers : score;
   const totalQuestionsValue = totalQuestions || correctCount || 1; // always use actual totalQuestions
   const whackPenaltyCount = penalties || 0;
   const whackPassed = whackPenaltyCount === 0 && score >= 10;
+  const bubbleWrongHits = penalties || 0;
   
   // Calculate percentage based on correct answers vs total questions
-  const percentage = isWhackGame
+  const percentage = (isWhackGame || isBubbleShooterGame || isWordSortingGame)
     ? (totalQuestionsValue > 0 ? ((correctCount / totalQuestionsValue) * 100) : 0)
     : totalQuestionsValue > 0
       ? ((correctCount / totalQuestionsValue) * 100)
@@ -75,6 +80,8 @@ const Results = () => {
 
   const getEmoji = () => {
     if (isWhackGame && whackPassed) return '🔨';
+    if (isBubbleShooterGame && score >= 30) return '🫧';
+    if (isWordSortingGame && score >= 30) return '🧺';
     if (percentage === 100) return '🏆';
     if (percentage >= 80) return '🌟';
     if (percentage >= 60) return '⭐';
@@ -86,6 +93,16 @@ const Results = () => {
     if (isWhackGame) {
       if (whackPassed && whackPenaltyCount === 0) return 'Sharp Aim!';
       if (score > 0) return 'Nice Reflexes!';
+      return 'Keep Practicing!';
+    }
+    if (isBubbleShooterGame) {
+      if (score >= 30) return 'Bubble Master!';
+      if (score > 0) return 'Nice Shooting!';
+      return 'Keep Practicing!';
+    }
+    if (isWordSortingGame) {
+      if (score >= 30) return 'Sorting Master!';
+      if (score > 0) return 'Nice Sorting!';
       return 'Keep Practicing!';
     }
     if (percentage === 100) return 'Perfect! All Correct!';
@@ -138,7 +155,7 @@ const Results = () => {
           </h1>
 
           <div className="score-display-large">
-            {isBaloonGame || isMarsGame || isWhackGame ? (
+            {isBaloonGame || isMarsGame || isWhackGame || isBubbleShooterGame || isWordSortingGame ? (
               <>
                 <span className="score-number">{displayScore}</span>
                 <span className="score-separator"> Points</span>
@@ -159,6 +176,10 @@ const Results = () => {
                 ? `${correctCount}/${totalQuestionsValue} Correct`
                 : isWhackGame
                   ? `${correctCount} Hits • ${whackPenaltyCount} Penalties`
+                  : isBubbleShooterGame
+                    ? `${correctCount} Correct Hits • ${bubbleWrongHits} Wrong Hits`
+                      : isWordSortingGame
+                        ? `${correctCount} Correct Placements • ${bubbleWrongHits} Wrong Drops`
                   : `${isNaN(percentage) ? '0' : percentage.toFixed(0)}% Correct`
             }
           </div>
@@ -252,6 +273,61 @@ const Results = () => {
                   onClick={() => navigate('/planet-home', { state: { language } })}
                 >
                   🏠 Back to Home
+                </button>
+              </>
+            )}
+
+            {/* For Bubble Shooter game */}
+            {gameType === 'bubble-shooter' && (
+              <>
+                <button
+                  className="btn btn-primary action-btn"
+                  onClick={() => {
+                    const replayDifficulty = difficulty || (level >= 3 ? 'hard' : level === 2 ? 'medium' : 'easy');
+                    navigate(`/bubble-shooter/${language}/${replayDifficulty}`);
+                  }}
+                >
+                  🔄 Play Again
+                </button>
+
+                <button
+                  className="btn btn-secondary action-btn"
+                  onClick={() => navigate('/bubble-shooter', { state: { language } })}
+                >
+                  🫧 Change Level
+                </button>
+
+                <button
+                  className="btn btn-secondary action-btn"
+                  onClick={() => navigate('/game-hub')}
+                >
+                  🏠 Back to Games
+                </button>
+              </>
+            )}
+
+            {/* For Word Sorting Basket game */}
+            {gameType === 'word-sorting-basket' && (
+              <>
+                <button
+                  className="btn btn-primary action-btn"
+                  onClick={() => navigate(`/word-sorting-basket/${language}/${level || 1}`, { state: { language, level } })}
+                >
+                  🔄 Play Again
+                </button>
+
+                <button
+                  className="btn btn-secondary action-btn"
+                  onClick={() => navigate('/word-sorting-basket', { state: { language } })}
+                >
+                  🧺 Change Level
+                </button>
+
+                <button
+                  className="btn btn-secondary action-btn"
+                  onClick={() => navigate('/game-hub')}
+                >
+                  🏠 Back to Games
                 </button>
               </>
             )}

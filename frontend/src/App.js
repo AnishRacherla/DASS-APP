@@ -7,6 +7,10 @@ import GameSelection from './components/GameSelection';
 import PlanetSelection from './components/PlanetSelection';
 import BalloonSelection from './components/BalloonSelection';
 import BalloonGame from './components/BalloonGame';
+import BubbleShooterSelection from './components/BubbleShooterSelection';
+import BubbleShooterGame from './components/BubbleShooterGame';
+import WordSortingBasketSelection from './components/WordSortingBasketSelection';
+import WordSortingBasketGame from './components/WordSortingBasketGame';
 import Lessons from './components/Lessons';
 import MarsGameSelection from './components/MarsGameSelection';
 import MarsGame from './components/MarsGame';
@@ -39,6 +43,10 @@ function App() {
           <Route path="/planet-selection" element={<PlanetSelection />} />
           <Route path="/balloon-selection" element={<BalloonSelection />} />
           <Route path="/balloon-game" element={<BalloonGame />} />
+          <Route path="/bubble-shooter" element={<BubbleShooterSelection />} />
+          <Route path="/bubble-shooter/:language/:difficulty" element={<BubbleShooterGame />} />
+          <Route path="/word-sorting-basket" element={<WordSortingBasketSelection />} />
+          <Route path="/word-sorting-basket/:language/:level" element={<WordSortingBasketGame />} />
           <Route path="/lessons" element={<Lessons />} />
           <Route path="/mars-games" element={<MarsGameSelection />} />
           <Route path="/mars-game" element={<MarsGame />} />

@@ -15,6 +15,26 @@ const GAMES = [
     category: 'Letters'
   },
   {
+    id: 'bubble-shooter',
+    title: 'Bubble Shooter',
+    emoji: '🫧',
+    description: 'Hear the consonant and shoot the matching bubble before the sound changes.',
+    color: '#38BDF8',
+    gradient: 'linear-gradient(135deg, #38BDF8, #0EA5E9)',
+    path: '/bubble-shooter',
+    category: 'Letters'
+  },
+  {
+    id: 'word-sorting-basket',
+    title: 'Word Sorting Basket',
+    emoji: '🧺',
+    description: 'Drag mixed words into the right category basket and score points.',
+    color: '#F59E0B',
+    gradient: 'linear-gradient(135deg, #F59E0B, #EF4444)',
+    path: '/word-sorting-basket',
+    category: 'Words'
+  },
+  {
     id: 'quiz',
     title: 'Audio Quiz',
     emoji: '📝',
@@ -141,6 +161,10 @@ const GameHub = () => {
       navigate(`/planets/${language}`);
     } else if (game.id === 'balloon') {
       navigate('/balloon-selection', { state: { language } });
+    } else if (game.id === 'bubble-shooter') {
+      navigate('/bubble-shooter', { state: { language } });
+    } else if (game.id === 'word-sorting-basket') {
+      navigate('/word-sorting-basket', { state: { language } });
     } else if (game.id === 'mars') {
       navigate('/mars-games', { state: { language } });
     } else if (game.id === 'akshara') {
@@ -239,7 +263,7 @@ const GameHub = () => {
             <span className="hub-title-emoji">🌟</span>
           </h1>
           <p className="hub-subtitle">
-            6 amazing games to learn {language === 'hindi' ? 'Hindi (हिंदी)' : 'Telugu (తెలుగు)'} letters and words!
+            {GAMES.length} amazing games to learn {language === 'hindi' ? 'Hindi (हिंदी)' : 'Telugu (తెలుగు)'} letters and words!
           </p>
         </motion.div>
 

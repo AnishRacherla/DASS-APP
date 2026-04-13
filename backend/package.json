@@ -11,6 +11,7 @@
     "seed:whack": "node seeds/seedWhackGames.js",
     "seed:swara": "node seeds/seedSwaras.js",
     "seed:consonants": "node seeds/seedConsonants.js",
+    "seed:word-sorting": "node seeds/seedWordSortingBasket.js",
     "test": "jest",
     "test:unit": "jest tests/unit",
     "test:acceptance": "jest tests/acceptance --testPathIgnorePatterns='.real.test.js'",
