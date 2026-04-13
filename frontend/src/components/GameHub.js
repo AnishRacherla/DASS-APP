@@ -173,6 +173,17 @@ const GAMES = [
     path: '/shabd',
     category: 'Word Games',
     special: true
+  },
+  {
+    id: 'fill-story',
+    title: 'Fill the Story',
+    emoji: '📖',
+    description: 'Fill blanks in funny stories with the right words! Read & hear the complete tale.',
+    color: '#f472b6',
+    gradient: 'linear-gradient(135deg, #f472b6, #a855f7)',
+    path: '/fill-story',
+    category: 'Stories',
+    special: true
   }
 ];
 

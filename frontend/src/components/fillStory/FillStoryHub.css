@@ -1,0 +1,353 @@
+/* ====== Fill Story Hub Styles ====== */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700;800&family=Noto+Sans+Telugu:wght@400;600;700;800&display=swap');
+
+.fsh-root {
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+  font-family: 'Noto Sans Devanagari', 'Noto Sans Telugu', 'Inter', sans-serif;
+  background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+}
+
+/* ---- Background Animations ---- */
+.fsh-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.fsh-stars {
+  position: absolute;
+  inset: 0;
+}
+
+.fsh-star {
+  position: absolute;
+  background: #fff;
+  border-radius: 50%;
+  animation: fshTwinkle 3s ease-in-out infinite alternate;
+}
+.fsh-star.s { width: 2px; height: 2px; opacity: 0.4; }
+.fsh-star.m { width: 3px; height: 3px; opacity: 0.6; }
+.fsh-star.l { width: 4px; height: 4px; opacity: 0.8; }
+
+@keyframes fshTwinkle {
+  0% { opacity: 0.2; transform: scale(0.8); }
+  100% { opacity: 1; transform: scale(1.2); }
+}
+
+.fsh-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.25;
+}
+.fsh-orb-1 {
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, #f472b6, transparent);
+  top: -100px; right: -100px;
+  animation: fshFloat 12s ease-in-out infinite alternate;
+}
+.fsh-orb-2 {
+  width: 350px; height: 350px;
+  background: radial-gradient(circle, #818cf8, transparent);
+  bottom: -80px; left: -80px;
+  animation: fshFloat 15s ease-in-out infinite alternate-reverse;
+}
+.fsh-orb-3 {
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, #fbbf24, transparent);
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  animation: fshFloat 10s ease-in-out infinite alternate;
+}
+
+@keyframes fshFloat {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(30px, -30px) scale(1.15); }
+}
+
+/* ---- Top Bar ---- */
+.fsh-topbar {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+}
+
+.fsh-back-btn {
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.25);
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-size: 15px;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+  font-family: inherit;
+  font-weight: 600;
+}
+.fsh-back-btn:hover {
+  background: rgba(255,255,255,0.22);
+  transform: translateX(-3px);
+}
+
+.fsh-lang-toggle {
+  display: flex;
+  gap: 8px;
+  background: rgba(255,255,255,0.08);
+  padding: 4px;
+  border-radius: 14px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.15);
+}
+
+.fsh-lang-btn {
+  padding: 8px 18px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: rgba(255,255,255,0.6);
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: inherit;
+  font-weight: 600;
+}
+.fsh-lang-btn.active {
+  background: linear-gradient(135deg, #f472b6, #a855f7);
+  color: #fff;
+  box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
+}
+
+/* ---- Header ---- */
+.fsh-header {
+  position: relative;
+  z-index: 5;
+  text-align: center;
+  padding: 20px 24px 10px;
+}
+
+.fsh-title-mascot {
+  font-size: 56px;
+  margin-bottom: 8px;
+  animation: fshBounce 2s ease-in-out infinite;
+}
+
+@keyframes fshBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+
+.fsh-title {
+  font-size: 42px;
+  font-weight: 800;
+  background: linear-gradient(135deg, #f9a8d4, #c084fc, #93c5fd);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0 0 8px;
+  line-height: 1.2;
+}
+
+.fsh-subtitle {
+  font-size: 17px;
+  color: rgba(255,255,255,0.7);
+  margin: 0;
+  font-weight: 400;
+}
+
+/* ---- Content ---- */
+.fsh-content {
+  position: relative;
+  z-index: 5;
+  padding: 24px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.fsh-loading {
+  text-align: center;
+  padding: 60px 0;
+  color: rgba(255,255,255,0.7);
+}
+
+.fsh-spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid rgba(255,255,255,0.15);
+  border-top-color: #c084fc;
+  border-radius: 50%;
+  animation: fshSpin 0.8s linear infinite;
+  margin: 0 auto 16px;
+}
+
+@keyframes fshSpin {
+  to { transform: rotate(360deg); }
+}
+
+.fsh-empty {
+  text-align: center;
+  padding: 60px 0;
+  color: rgba(255,255,255,0.6);
+}
+
+.fsh-empty-emoji {
+  font-size: 64px;
+  margin-bottom: 16px;
+}
+
+/* ====== Story Cards Grid ====== */
+.fsh-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+.fsh-card {
+  position: relative;
+  border: 2px solid;
+  border-radius: 22px;
+  padding: 24px;
+  cursor: pointer;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.fsh-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, transparent 40%);
+  pointer-events: none;
+  border-radius: 22px;
+}
+
+/* ---- Card Top Row ---- */
+.fsh-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.fsh-card-emoji {
+  font-size: 40px;
+  filter: drop-shadow(0 3px 6px rgba(0,0,0,0.3));
+}
+
+.fsh-card-level-badge {
+  width: 42px;
+  height: 42px;
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: 800;
+  color: #fff;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+/* ---- Card Title & Description ---- */
+.fsh-card-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.fsh-card-desc {
+  font-size: 14px;
+  color: rgba(255,255,255,0.8);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ---- Card Bottom Row ---- */
+.fsh-card-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  gap: 12px;
+}
+
+.fsh-card-diff {
+  display: inline-block;
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.fsh-card-diff.easy {
+  background: rgba(34, 197, 94, 0.35);
+  border: 1px solid rgba(34, 197, 94, 0.6);
+}
+.fsh-card-diff.medium {
+  background: rgba(245, 158, 11, 0.35);
+  border: 1px solid rgba(245, 158, 11, 0.6);
+}
+.fsh-card-diff.hard {
+  background: rgba(239, 68, 68, 0.35);
+  border: 1px solid rgba(239, 68, 68, 0.6);
+}
+
+/* ---- Play Button inside Card ---- */
+.fsh-card-play-btn {
+  padding: 10px 22px;
+  border: none;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  color: #fff;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: inherit;
+  backdrop-filter: blur(5px);
+}
+
+.fsh-card:hover .fsh-card-play-btn {
+  background: rgba(255, 255, 255, 0.35);
+  transform: scale(1.05);
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 640px) {
+  .fsh-title {
+    font-size: 30px;
+  }
+  .fsh-subtitle {
+    font-size: 14px;
+  }
+  .fsh-grid {
+    grid-template-columns: 1fr;
+  }
+  .fsh-topbar {
+    padding: 12px 16px;
+  }
+  .fsh-content {
+    padding: 16px;
+  }
+  .fsh-title-mascot {
+    font-size: 40px;
+  }
+  .fsh-card-title {
+    font-size: 20px;
+  }
+}

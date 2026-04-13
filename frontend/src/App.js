@@ -32,6 +32,8 @@ import WordJumbleSelection from './components/WordJumbleSelection';
 import WordJumbleGame from './components/WordJumbleGame';
 import ShabdHub from './components/shabd/ShabdHub';
 import ShabdMatch from './components/shabd/ShabdMatch';
+import FillStoryHub from './components/fillStory/FillStoryHub';
+import FillStoryGame from './components/fillStory/FillStoryGame';
 import './App.css';
 
 function App() {
@@ -94,6 +96,10 @@ function App() {
           {/* Shabd Games */}
           <Route path="/shabd" element={<ShabdHub />} />
           <Route path="/shabd/match/:language/:level" element={<ShabdMatch />} />
+
+          {/* Fill the Story */}
+          <Route path="/fill-story" element={<FillStoryHub />} />
+          <Route path="/fill-story/:language/:level" element={<FillStoryGame />} />
 
           {/* Fallback */}
           <Route path="*" element={<Navigate to="/" replace />} />
