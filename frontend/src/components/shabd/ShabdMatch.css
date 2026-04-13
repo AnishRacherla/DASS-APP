@@ -1,0 +1,235 @@
+.shabd-wrapper {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    font-family: 'Inter', 'Outfit', sans-serif;
+    color: white;
+    padding: 24px;
+}
+
+/* HUB STYLES */
+.shabd-hub-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.shabd-hub-header h1 {
+    font-size: 2.5rem;
+    margin: 8px 0;
+    color: #FFD700;
+}
+
+.shabd-lang-toggle {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 1rem;
+}
+
+.shabd-lang-btn {
+    padding: 10px 24px;
+    border-radius: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    background: rgba(0, 0, 0, 0.2);
+    color: white;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.shabd-lang-btn.active {
+    background: #FFD700;
+    color: #000;
+    border-color: #FFD700;
+}
+
+.shabd-levels-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.shabd-level-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: 24px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.shabd-level-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.shabd-level-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    background: rgba(255, 215, 0, 0.2);
+    color: #FFD700;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    margin-top: 8px;
+    text-transform: uppercase;
+}
+
+/* GAMEPLAY STYLES */
+.shabd-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 900px;
+    margin: 0 auto 2rem;
+}
+
+.shabd-score {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #FFD700;
+}
+
+.shabd-match-board-container {
+    position: relative;
+    width: 100%;
+}
+
+.shabd-svg-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.shabd-match-board {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.shabd-col {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    flex: 1;
+    max-width: 350px;
+}
+
+/* Cards */
+.shabd-img-card,
+.shabd-word-card {
+    background: white;
+    border-radius: 20px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    border: 4px solid transparent;
+    min-height: 120px;
+}
+
+.shabd-img-card img {
+    max-width: 100%;
+    max-height: 100px;
+    object-fit: contain;
+}
+
+.shabd-word-card {
+    color: #333;
+    font-size: 2.2rem;
+    font-weight: bold;
+}
+
+/* States */
+.shabd-img-card.selected,
+.shabd-word-card.selected {
+    border-color: #00BFFF;
+    box-shadow: 0 0 20px rgba(0, 191, 255, 0.5);
+    transform: scale(1.05);
+}
+
+.shabd-img-card.matched,
+.shabd-word-card.matched {
+    background: #e8f5e9;
+    border-color: #4CAF50;
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.shabd-word-card.wrong {
+    border-color: #F44336;
+    background: #FFEBEE;
+}
+
+.shabd-check {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 1.5rem;
+}
+
+/* Overlay */
+.shabd-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+}
+
+.shabd-complete-card {
+    background: #2a2a5a;
+    padding: 40px;
+    border-radius: 30px;
+    text-align: center;
+    border: 2px solid #FFD700;
+    position: relative;
+    width: 90%;
+    max-width: 450px;
+}
+
+.shabd-close-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.shabd-btn {
+    padding: 12px 24px;
+    font-size: 1.2rem;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    margin: 10px;
+    font-weight: bold;
+}
+
+.shabd-btn.primary {
+    background: #FFD700;
+    color: #000;
+}
+
+.shabd-btn.secondary {
+    background: transparent;
+    border: 2px solid white;
+    color: white;
+}

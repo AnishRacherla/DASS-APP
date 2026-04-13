@@ -30,6 +30,8 @@ import VarnamalGame from './components/VarnamalGame';
 import MatraGame from './components/matraGame/MatraGame';
 import WordJumbleSelection from './components/WordJumbleSelection';
 import WordJumbleGame from './components/WordJumbleGame';
+import ShabdHub from './components/shabd/ShabdHub';
+import ShabdMatch from './components/shabd/ShabdMatch';
 import './App.css';
 
 function App() {
@@ -88,6 +90,10 @@ function App() {
           {/* Word Jumble */}
           <Route path="/word-jumble" element={<WordJumbleSelection />} />
           <Route path="/word-jumble/:language/:level" element={<WordJumbleGame />} />
+
+          {/* Shabd Games */}
+          <Route path="/shabd" element={<ShabdHub />} />
+          <Route path="/shabd/match/:language/:level" element={<ShabdMatch />} />
 
           {/* Fallback */}
           <Route path="*" element={<Navigate to="/" replace />} />
