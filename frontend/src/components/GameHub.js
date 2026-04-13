@@ -153,17 +153,6 @@ const GAMES = [
     special: true
   },
   {
-    id: 'scrambled-sentences',
-    title: 'Scrambled Sentences',
-    emoji: '📖',
-    description: 'Drag and drop scrambled words to form correct sentences! Learn sentence structure.',
-    color: '#667eea',
-    gradient: 'linear-gradient(135deg, #667eea, #764ba2)',
-    path: '/scrambled-sentences',
-    category: 'Sentences',
-    special: true
-  },
-  {
     id: 'word-jumble',
     title: 'Word Jumble',
     emoji: '🌊',

@@ -79,6 +79,16 @@ const GAMES = [
     category: 'Matras',
     special: true,
   },
+  {
+    id: 'word-jumble',
+    title: 'Word Jumble',
+    emoji: '🌊',
+    description: 'Drag floating words into the correct order and press OK to score!',
+    color: '#06b6d4',
+    screen: 'WordJumbleSelection',
+    category: 'Sentences',
+    special: true,
+  },
 ];
 
 export default function GameHub({ navigation }) {

@@ -40,7 +40,6 @@ app.use('/api/swaras', require('./routes/swaraGame'));
 app.use('/api/consonant', require('./routes/consonantQuiz'));
 app.use('/api/scavenger', require('./routes/scavengerGame'));
 app.use('/api/matra-game', require('./routes/matraGame'));
-app.use('/api/scrambled-sentences', require('./routes/scrambledSentences'));
 app.use('/api/word-jumble', require('./routes/wordJumble'));
 
 // Test route
