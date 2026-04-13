@@ -151,6 +151,17 @@ const GAMES = [
     path: '/matra-game',
     category: 'Matras',
     special: true
+  },
+  {
+    id: 'shabd',
+    title: 'Shabd Match',
+    emoji: '🧩',
+    description: 'Match the Hindi/Telugu words to their colorful pictures!',
+    color: '#0ea5e9',
+    gradient: 'linear-gradient(135deg, #0ea5e9, #0284c7)',
+    path: '/shabd',
+    category: 'Word Games',
+    special: true
   }
 ];
 

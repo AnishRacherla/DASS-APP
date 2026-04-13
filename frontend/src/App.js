@@ -28,6 +28,8 @@ import ScavengerHub from './components/scavenger/ScavengerHub';
 import ScavengerGame from './components/scavenger/ScavengerGame';
 import VarnamalGame from './components/VarnamalGame';
 import MatraGame from './components/matraGame/MatraGame';
+import ShabdHub from './components/shabd/ShabdHub';
+import ShabdMatch from './components/shabd/ShabdMatch';
 import './App.css';
 
 function App() {
@@ -82,6 +84,10 @@ function App() {
 
           {/* Matra Magic Builder */}
           <Route path="/matra-game" element={<MatraGame />} />
+
+          {/* Shabd Games */}
+          <Route path="/shabd" element={<ShabdHub />} />
+          <Route path="/shabd/match/:language/:level" element={<ShabdMatch />} />
 
           {/* Fallback */}
           <Route path="*" element={<Navigate to="/" replace />} />

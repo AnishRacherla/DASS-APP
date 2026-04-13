@@ -40,6 +40,7 @@ app.use('/api/swaras', require('./routes/swaraGame'));
 app.use('/api/consonant', require('./routes/consonantQuiz'));
 app.use('/api/scavenger', require('./routes/scavengerGame'));
 app.use('/api/matra-game', require('./routes/matraGame'));
+app.use('/api/shabd', require('./routes/shabdGame'));
 
 // Test route
 app.get('/api/test', (req, res) => {
