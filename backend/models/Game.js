@@ -6,7 +6,7 @@ const gameSchema = new mongoose.Schema({
   gameType: {
     type: String,
     required: true,
-    enum: ['quiz', 'balloon', 'memory', 'spelling', 'story', 'tracing', 'whack']
+    enum: ['quiz', 'balloon', 'memory', 'spelling', 'story', 'tracing', 'whack', 'scavenger']
   },
   gameId: {
     type: String,
@@ -21,7 +21,7 @@ const gameSchema = new mongoose.Schema({
     type: String,
     required: false
   },
-  
+
   // Language and Level
   language: {
     type: String,
@@ -38,7 +38,7 @@ const gameSchema = new mongoose.Schema({
     enum: ['easy', 'medium', 'hard'],
     default: 'easy'
   },
-  
+
   // Game Content - Flexible structure for different game types
   gameData: {
     type: mongoose.Schema.Types.Mixed,
@@ -50,7 +50,7 @@ const gameSchema = new mongoose.Schema({
     // - For Spelling: words to spell
     // etc.
   },
-  
+
   // Game Configuration
   config: {
     timeLimit: {
@@ -75,7 +75,7 @@ const gameSchema = new mongoose.Schema({
       default: 'medium'
     }
   },
-  
+
   // Media Assets
   assets: {
     images: [{
@@ -93,7 +93,7 @@ const gameSchema = new mongoose.Schema({
       url: String
     }]
   },
-  
+
   // Metadata
   isActive: {
     type: Boolean,
@@ -110,7 +110,7 @@ const gameSchema = new mongoose.Schema({
 });
 
 // Update timestamp on save
-gameSchema.pre('save', function(next) {
+gameSchema.pre('save', function (next) {
   this.updatedAt = Date.now();
   next();
 });

@@ -24,6 +24,10 @@ import SwaraGame from './components/swara/SwaraGame';
 import SwaraMemoryGame from './components/swara/SwaraMemoryGame';
 import ConsonantQuiz from './components/consonantQuiz/ConsonantQuiz';
 import TraceVowelGame from './components/traceVowel/TraceVowelGame';
+import ScavengerHub from './components/scavenger/ScavengerHub';
+import ScavengerGame from './components/scavenger/ScavengerGame';
+import VarnamalGame from './components/VarnamalGame';
+import MatraGame from './components/matraGame/MatraGame';
 import './App.css';
 
 function App() {
@@ -68,6 +72,16 @@ function App() {
 
           {/* Trace the Vowel */}
           <Route path="/trace-vowel" element={<TraceVowelGame />} />
+
+          {/* Scavenger Hunt */}
+          <Route path="/scavenger" element={<ScavengerHub />} />
+          <Route path="/scavenger/play" element={<ScavengerGame />} />
+
+          {/* Varnamala Puzzle */}
+          <Route path="/varnamal" element={<VarnamalGame />} />
+
+          {/* Matra Magic Builder */}
+          <Route path="/matra-game" element={<MatraGame />} />
 
           {/* Fallback */}
           <Route path="*" element={<Navigate to="/" replace />} />

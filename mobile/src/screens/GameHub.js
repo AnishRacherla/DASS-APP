@@ -59,6 +59,26 @@ const GAMES = [
     category: 'Aksharas',
     special: true,
   },
+  {
+    id: 'varnamal',
+    title: 'Varnamala Puzzle',
+    emoji: '🧩',
+    description: 'Arrange consonants in alphabetical order! Drag and drop letters to complete the Varnamala.',
+    color: '#8b5cf6',
+    screen: 'VarnamalGame',
+    category: 'Puzzle',
+    special: true,
+  },
+  {
+    id: 'matra',
+    title: 'Matra Magic Builder',
+    emoji: '✨',
+    description: 'Drag & drop matras to build Hindi words! Learn all 11 matras.',
+    color: '#f43f5e',
+    screen: 'MatraGame',
+    category: 'Matras',
+    special: true,
+  },
 ];
 
 export default function GameHub({ navigation }) {

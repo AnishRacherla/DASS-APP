@@ -38,6 +38,8 @@ app.use('/api/akshara', require('./routes/aksharaGame'));
 app.use('/api/word-sorting-basket', require('./routes/wordSortingBasket'));
 app.use('/api/swaras', require('./routes/swaraGame'));
 app.use('/api/consonant', require('./routes/consonantQuiz'));
+app.use('/api/scavenger', require('./routes/scavengerGame'));
+app.use('/api/matra-game', require('./routes/matraGame'));
 
 // Test route
 app.get('/api/test', (req, res) => {

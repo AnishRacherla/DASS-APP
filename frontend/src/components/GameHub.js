@@ -118,6 +118,39 @@ const GAMES = [
     path: '/trace-vowel',
     category: 'Writing',
     special: true
+  },
+  {
+    id: 'varnamal',
+    title: 'Varnamala Puzzle',
+    emoji: '🧩',
+    description: 'Arrange consonants in alphabetical order! Drag and drop letters to complete the Varnamala.',
+    color: '#8b5cf6',
+    gradient: 'linear-gradient(135deg, #8b5cf6, #6366f1)',
+    path: '/varnamal',
+    category: 'Puzzle',
+    special: true
+  },
+  {
+    id: 'scavenger',
+    title: 'Akshar Scavenger Hunt',
+    emoji: '🔍',
+    description: 'Find hidden consonants in colorful scenes! Tap the letters hiding in the kitchen, market, and more.',
+    color: '#10b981',
+    gradient: 'linear-gradient(135deg, #10b981, #059669)',
+    path: '/scavenger',
+    category: 'Spot-It',
+    special: true
+  },
+  {
+    id: 'matra',
+    title: 'Matra Magic Builder',
+    emoji: '✨',
+    description: 'Drag & drop matras onto consonants to build Hindi words! Learn all 11 matras through fun challenges.',
+    color: '#f43f5e',
+    gradient: 'linear-gradient(135deg, #f43f5e, #e11d48)',
+    path: '/matra-game',
+    category: 'Matras',
+    special: true
   }
 ];
 
