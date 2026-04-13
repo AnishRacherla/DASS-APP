@@ -13,6 +13,7 @@
     "seed:consonants": "node seeds/seedConsonants.js",
     "seed:word-sorting": "node seeds/seedWordSortingBasket.js",
     "seed:scavenger": "node seeds/seedScavengerGames.js",
+    "seed:scrambled": "node seeds/seedScrambledSentences.js",
     "test": "jest",
     "test:unit": "jest tests/unit",
     "test:acceptance": "jest tests/acceptance --testPathIgnorePatterns='.real.test.js'",

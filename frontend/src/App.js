@@ -28,6 +28,10 @@ import ScavengerHub from './components/scavenger/ScavengerHub';
 import ScavengerGame from './components/scavenger/ScavengerGame';
 import VarnamalGame from './components/VarnamalGame';
 import MatraGame from './components/matraGame/MatraGame';
+import ScrambledSentenceSelection from './components/ScrambledSentenceSelection';
+import ScrambledSentenceGame from './components/ScrambledSentenceGame';
+import WordJumbleSelection from './components/WordJumbleSelection';
+import WordJumbleGame from './components/WordJumbleGame';
 import './App.css';
 
 function App() {
@@ -82,6 +86,14 @@ function App() {
 
           {/* Matra Magic Builder */}
           <Route path="/matra-game" element={<MatraGame />} />
+
+          {/* Scrambled Sentences */}
+          <Route path="/scrambled-sentences" element={<ScrambledSentenceSelection />} />
+          <Route path="/scrambled-sentences/:language/:level" element={<ScrambledSentenceGame />} />
+
+          {/* Word Jumble */}
+          <Route path="/word-jumble" element={<WordJumbleSelection />} />
+          <Route path="/word-jumble/:language/:level" element={<WordJumbleGame />} />
 
           {/* Fallback */}
           <Route path="*" element={<Navigate to="/" replace />} />

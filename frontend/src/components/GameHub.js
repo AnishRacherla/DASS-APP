@@ -151,6 +151,28 @@ const GAMES = [
     path: '/matra-game',
     category: 'Matras',
     special: true
+  },
+  {
+    id: 'scrambled-sentences',
+    title: 'Scrambled Sentences',
+    emoji: '📖',
+    description: 'Drag and drop scrambled words to form correct sentences! Learn sentence structure.',
+    color: '#667eea',
+    gradient: 'linear-gradient(135deg, #667eea, #764ba2)',
+    path: '/scrambled-sentences',
+    category: 'Sentences',
+    special: true
+  },
+  {
+    id: 'word-jumble',
+    title: 'Word Jumble',
+    emoji: '🌊',
+    description: 'Words float freely on the board — drag them into the right order and press OK to score!',
+    color: '#06b6d4',
+    gradient: 'linear-gradient(135deg, #06b6d4, #0284c7)',
+    path: '/word-jumble',
+    category: 'Sentences',
+    special: true
   }
 ];
 
