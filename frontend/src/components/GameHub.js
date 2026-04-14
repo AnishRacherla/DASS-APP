@@ -184,6 +184,17 @@ const GAMES = [
     path: '/fill-story',
     category: 'Stories',
     special: true
+  },
+  {
+    id: 'crossword',
+    title: 'Kids Crossword',
+    emoji: '🎮',
+    description: 'Solve crossword puzzles with picture clues! Learn new words level by level.',
+    color: '#8b5cf6',
+    gradient: 'linear-gradient(135deg, #8b5cf6, #6d28d9)',
+    path: '/crossword',
+    category: 'Puzzles',
+    special: true
   }
 ];
 

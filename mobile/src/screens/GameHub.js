@@ -60,6 +60,16 @@ const GAMES = [
     special: true,
   },
   {
+    id: 'swara',
+    title: 'Swara Sing-Along',
+    emoji: '🎵',
+    description: 'Learn Hindi vowels with picture, pronunciation, and audio practice.',
+    color: '#3b82f6',
+    screen: 'SwaraGame',
+    category: 'Vowels',
+    special: true,
+  },
+  {
     id: 'varnamal',
     title: 'Varnamala Puzzle',
     emoji: '🧩',
@@ -87,6 +97,16 @@ const GAMES = [
     color: '#06b6d4',
     screen: 'WordJumbleSelection',
     category: 'Sentences',
+    special: true,
+  },
+  {
+    id: 'crossword',
+    title: 'Kids Crossword',
+    emoji: '🎮',
+    description: 'Solve 5 crossword puzzles in sequence with 4 stars per puzzle.',
+    color: '#8b5cf6',
+    screen: 'CrosswordGame',
+    category: 'Puzzles',
     special: true,
   },
 ];

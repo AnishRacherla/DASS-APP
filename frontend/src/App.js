@@ -34,6 +34,7 @@ import ShabdHub from './components/shabd/ShabdHub';
 import ShabdMatch from './components/shabd/ShabdMatch';
 import FillStoryHub from './components/fillStory/FillStoryHub';
 import FillStoryGame from './components/fillStory/FillStoryGame';
+import CrosswordGame from './components/CrosswordGame';
 import './App.css';
 
 function App() {
@@ -100,6 +101,10 @@ function App() {
           {/* Fill the Story */}
           <Route path="/fill-story" element={<FillStoryHub />} />
           <Route path="/fill-story/:language/:level" element={<FillStoryGame />} />
+
+          {/* Crossword Game */}
+          <Route path="/crossword" element={<CrosswordGame />} />
+          <Route path="/crossword-game" element={<CrosswordGame />} />
 
           {/* Fallback */}
           <Route path="*" element={<Navigate to="/" replace />} />

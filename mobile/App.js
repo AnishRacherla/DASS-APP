@@ -45,6 +45,9 @@ import Dashboard from './src/screens/Dashboard';
 import MatraGame from './src/screens/MatraGame';
 import WordJumbleSelection from './src/screens/WordJumbleSelection';
 import WordJumbleGame from './src/screens/WordJumbleGame';
+import SwaraGame from './src/screens/SwaraGame';
+import CrosswordHub from './src/screens/CrosswordHub';
+import CrosswordGame from './src/screens/CrosswordGame';
 
 const Stack = createNativeStackNavigator();
 
@@ -81,8 +84,11 @@ export default function App() {
         <Stack.Screen name="Results" component={Results} />
         <Stack.Screen name="Dashboard" component={Dashboard} />
         <Stack.Screen name="MatraGame" component={MatraGame} />
+        <Stack.Screen name="SwaraGame" component={SwaraGame} />
         <Stack.Screen name="WordJumbleSelection" component={WordJumbleSelection} />
         <Stack.Screen name="WordJumbleGame" component={WordJumbleGame} />
+        <Stack.Screen name="CrosswordHub" component={CrosswordHub} />
+        <Stack.Screen name="CrosswordGame" component={CrosswordGame} />
       </Stack.Navigator>
     </NavigationContainer>
     </ErrorBoundary>

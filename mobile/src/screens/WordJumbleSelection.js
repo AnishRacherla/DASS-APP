@@ -12,6 +12,17 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { API_BASE_URL, API_TIMEOUT } from '../config';
 
+const API_BASE_CANDIDATES = Array.from(
+  new Set([
+    API_BASE_URL,
+    'http://10.2.138.72:5001',
+    'http://10.201.48.5:5001',
+    'http://10.2.143.103:5001',
+    'http://172.25.80.189:5001',
+    'http://10.0.2.2:5001',
+  ])
+);
+
 export default function WordJumbleSelection({ navigation, route }) {
   const [language, setLanguage] = useState(
     route.params?.language || 'hindi'
@@ -19,6 +30,25 @@ export default function WordJumbleSelection({ navigation, route }) {
   const [levels, setLevels] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [activeApiBase, setActiveApiBase] = useState(API_BASE_URL);
+
+  const requestWithFallback = async (path, options = {}) => {
+    const orderedBases = [activeApiBase, ...API_BASE_CANDIDATES.filter((b) => b !== activeApiBase)];
+    let lastError = null;
+    for (const base of orderedBases) {
+      try {
+        const response = await axios.get(`${base}${path}`, {
+          timeout: API_TIMEOUT,
+          ...options,
+        });
+        if (base !== activeApiBase) setActiveApiBase(base);
+        return response;
+      } catch (error) {
+        lastError = error;
+      }
+    }
+    throw lastError;
+  };
 
   useEffect(() => {
     loadLanguage();
@@ -39,13 +69,12 @@ export default function WordJumbleSelection({ navigation, route }) {
     try {
       setLoading(true);
       setError(null);
-      const res = await axios.get(`${API_BASE_URL}/api/word-jumble/levels`, {
+      const res = await requestWithFallback('/api/word-jumble/levels', {
         params: { language },
-        timeout: API_TIMEOUT,
       });
       setLevels(res.data || []);
     } catch (err) {
-      setError('Could not load levels. Is the server running?');
+      setError('Could not load levels. Check backend and Wi-Fi.');
     } finally {
       setLoading(false);
     }

@@ -22,6 +22,16 @@ const WORD_W_BASE = 100; // min width per word
 const CORRECT_PTS = 10;
 const WRONG_PTS = -5;
 const TOTAL = 5;
+const API_BASE_CANDIDATES = Array.from(
+  new Set([
+    API_BASE_URL,
+    'http://10.2.138.72:5001',
+    'http://10.201.48.5:5001',
+    'http://10.2.143.103:5001',
+    'http://172.25.80.189:5001',
+    'http://10.0.2.2:5001',
+  ])
+);
 
 function shuffleArr(arr) {
   const a = [...arr];
@@ -125,6 +135,25 @@ export default function WordJumbleGame({ navigation, route }) {
   const [finished, setFinished] = useState(false);
   const [scoreHistory, setScoreHistory] = useState([]);
   const boardOffsetRef = useRef({ x: 0, y: 0 });
+  const [activeApiBase, setActiveApiBase] = useState(API_BASE_URL);
+
+  const requestWithFallback = useCallback(async (path, options = {}) => {
+    const orderedBases = [activeApiBase, ...API_BASE_CANDIDATES.filter((b) => b !== activeApiBase)];
+    let lastError = null;
+    for (const base of orderedBases) {
+      try {
+        const response = await axios.get(`${base}${path}`, {
+          timeout: API_TIMEOUT,
+          ...options,
+        });
+        if (base !== activeApiBase) setActiveApiBase(base);
+        return response;
+      } catch (error) {
+        lastError = error;
+      }
+    }
+    throw lastError;
+  }, [activeApiBase]);
 
   const t = (hi, te, en) =>
     language === 'hindi' ? hi : language === 'telugu' ? te : en;
@@ -133,19 +162,18 @@ export default function WordJumbleGame({ navigation, route }) {
   useEffect(() => {
     const fetch = async () => {
       try {
-        const res = await axios.get(`${API_BASE_URL}/api/word-jumble/play`, {
+        const res = await requestWithFallback('/api/word-jumble/play', {
           params: { language, level },
-          timeout: API_TIMEOUT,
         });
         setGameData(res.data);
       } catch (err) {
-        setFeedback({ correct: false, message: 'Failed to load. Check server.' });
+        setFeedback({ correct: false, message: 'Failed to load. Check backend and Wi-Fi.' });
       } finally {
         setLoading(false);
       }
     };
     fetch();
-  }, [language, level]);
+  }, [language, level, requestWithFallback]);
 
   useEffect(() => {
     if (gameData?.sentences?.length && !loading) {

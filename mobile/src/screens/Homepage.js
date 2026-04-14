@@ -4,11 +4,42 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { API_BASE_URL, API_TIMEOUT } from '../config';
 
+const API_BASE_CANDIDATES = Array.from(
+  new Set([
+    API_BASE_URL,
+    'http://10.201.48.5:5001',
+    'http://10.2.143.103:5001',
+    'http://172.25.80.189:5001',
+    'http://10.0.2.2:5001',
+    'http://127.0.0.1:5001',
+  ])
+);
+
 export default function Homepage({ navigation }) {
   const [selectedLanguage, setSelectedLanguage] = useState('');
   const [showForm, setShowForm] = useState(false);
   const [name, setName] = useState('');
   const [age, setAge] = useState('5');
+  const [activeApiBase, setActiveApiBase] = useState(API_BASE_URL);
+
+  const requestWithFallback = async (path, options = {}) => {
+    const orderedBases = [activeApiBase, ...API_BASE_CANDIDATES.filter((b) => b !== activeApiBase)];
+    let lastError = null;
+    for (const base of orderedBases) {
+      try {
+        const response = await axios({
+          url: `${base}${path}`,
+          timeout: API_TIMEOUT,
+          ...options,
+        });
+        if (base !== activeApiBase) setActiveApiBase(base);
+        return response;
+      } catch (error) {
+        lastError = error;
+      }
+    }
+    throw lastError;
+  };
 
   const handleLanguageSelect = (lang) => {
     setSelectedLanguage(lang);
@@ -21,11 +52,14 @@ export default function Homepage({ navigation }) {
       return;
     }
     try {
-      const res = await axios.post(API_BASE_URL + '/api/users', {
-        name: name.trim(),
-        age: parseInt(age),
-        language: selectedLanguage,
-      }, { timeout: API_TIMEOUT });
+      const res = await requestWithFallback('/api/users', {
+        method: 'post',
+        data: {
+          name: name.trim(),
+          age: parseInt(age),
+          language: selectedLanguage,
+        },
+      });
 
       if (res.data.success) {
         await AsyncStorage.multiSet([
@@ -36,7 +70,7 @@ export default function Homepage({ navigation }) {
         navigation.navigate('PlanetHome', { language: selectedLanguage });
       }
     } catch (e) {
-      Alert.alert('Error', 'Something went wrong! Please try again.');
+      Alert.alert('Error', 'Cannot reach backend. Check server and Wi-Fi.');
     }
   };
 
