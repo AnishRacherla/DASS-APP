@@ -30,6 +30,9 @@ import VarnamalGame from './components/VarnamalGame';
 import MatraGame from './components/matraGame/MatraGame';
 import ShabdHub from './components/shabd/ShabdHub';
 import ShabdMatch from './components/shabd/ShabdMatch';
+import StoryTimeHub from './components/storyTime/StoryTimeHub';
+import StoryTimePlayer from './components/storyTime/StoryTimePlayer';
+import StoryTimeQuiz from './components/storyTime/StoryTimeQuiz';
 import './App.css';
 
 function App() {
@@ -88,6 +91,11 @@ function App() {
           {/* Shabd Games */}
           <Route path="/shabd" element={<ShabdHub />} />
           <Route path="/shabd/match/:language/:level" element={<ShabdMatch />} />
+
+          {/* Story Time */}
+          <Route path="/story-time" element={<StoryTimeHub />} />
+          <Route path="/story-time/play/:storyId" element={<StoryTimePlayer />} />
+          <Route path="/story-time/quiz/:storyId" element={<StoryTimeQuiz />} />
 
           {/* Fallback */}
           <Route path="*" element={<Navigate to="/" replace />} />

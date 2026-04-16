@@ -162,6 +162,17 @@ const GAMES = [
     path: '/shabd',
     category: 'Word Games',
     special: true
+  },
+  {
+    id: 'story-time',
+    title: 'Story Time Quiz',
+    emoji: '📖',
+    description: 'Read popular short stories and answer fun questions to test your understanding!',
+    color: '#e91e63',
+    gradient: 'linear-gradient(135deg, #e91e63, #c2185b)',
+    path: '/story-time',
+    category: 'Reading',
+    special: true
   }
 ];
 

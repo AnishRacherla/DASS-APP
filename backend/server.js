@@ -22,6 +22,7 @@ app.use('/audio/telugu', express.static(path.join(__dirname, 'assets/audio/telug
 app.use('/audio/hindi_letters', express.static(path.join(__dirname, 'assets/audio/hindi_letters')));
 app.use('/audio/telugu_letters', express.static(path.join(__dirname, 'assets/audio/telugu_letters')));
 app.use('/audio/swara', express.static(path.join(__dirname, 'assets/audio/swara')));
+app.use('/audio/storyTime', express.static(path.join(__dirname, 'assets/audio/storyTime')));
 app.use('/images/swara', express.static(path.join(__dirname, 'assets/images/swara')));
 
 // Routes
