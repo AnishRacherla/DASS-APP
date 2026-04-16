@@ -55,40 +55,33 @@ const ShabdMatch = () => {
         fetchLevel();
     }, [language, level]);
 
-    const playAudio = (item) => {
-        const playFallback = () => {
-            const audio = new Audio(`${API_BASE}${item.audio}`);
-            audio.play().catch(e => console.log('Audio play failed:', e));
-        };
+    const playAudio = React.useCallback((item) => {
+        if (!item.audio) return;
 
+        // Stop any currently playing speech synthesis if active
         if ('speechSynthesis' in window) {
-            const langCode = language === 'telugu' ? 'te-IN' : 'hi-IN';
-            const voices = window.speechSynthesis.getVoices();
-            const hasVoice = voices.some(v => v.lang.startsWith(langCode) || v.lang.startsWith(language === 'telugu' ? 'te' : 'hi'));
-
-            // If voices are loaded but the exact language is absent, fallback immediately
-            if (voices.length > 0 && !hasVoice) {
-                return playFallback();
-            }
-
             window.speechSynthesis.cancel();
-
-            const utterance = new SpeechSynthesisUtterance(item.word);
-            utterance.lang = langCode;
-            utterance.rate = 0.2;
-            utterance.pitch = 1.1;
-
-            // If speech synthesis silently fails or errors, try MP3
-            utterance.onerror = playFallback;
-
-            window.speechSynthesis.speak(utterance);
-        } else {
-            playFallback();
         }
-    };
+
+        const audioUrl = item.audio.startsWith('http') ? item.audio : `${API_BASE}${item.audio}`;
+        console.log("Playing audio:", audioUrl);
+
+        const audio = new Audio(audioUrl);
+        audio.play().catch(err => {
+            console.error("Audio playback failed, falling back to synthesis", err);
+
+            // Text-to-speech fallback only if MP3 fails
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(item.word);
+                utterance.lang = language === 'telugu' ? 'te-IN' : 'hi-IN';
+                utterance.rate = 0.8;
+                window.speechSynthesis.speak(utterance);
+            }
+        });
+    }, [language]);
 
     // Calculate lines between matched pairs
-    const updateLines = () => {
+    const updateLines = React.useCallback(() => {
         if (!containerRef.current) return;
         const containerRect = containerRef.current.getBoundingClientRect();
 
@@ -114,15 +107,18 @@ const ShabdMatch = () => {
         }).filter(Boolean);
 
         setLines(newLines);
-    };
+    }, [matchedPairs]);
 
     // Recalculate lines when matched pairs change or window resizes
     useEffect(() => {
         // Small delay to ensure DOM is updated
-        setTimeout(updateLines, 50);
+        const timer = setTimeout(updateLines, 50);
         window.addEventListener('resize', updateLines);
-        return () => window.removeEventListener('resize', updateLines);
-    }, [matchedPairs, imagesCol, wordsCol]);
+        return () => {
+            clearTimeout(timer);
+            window.removeEventListener('resize', updateLines);
+        };
+    }, [updateLines]);
 
     // Evaluation Logic
     useEffect(() => {
@@ -144,7 +140,7 @@ const ShabdMatch = () => {
                 }, 800);
             }
         }
-    }, [selectedImage, selectedWord]);
+    }, [selectedImage, selectedWord, playAudio]);
 
     useEffect(() => {
         if (imagesCol.length > 0 && matchedPairs.length === imagesCol.length) {

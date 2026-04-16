@@ -23,6 +23,7 @@ app.use('/audio/hindi_letters', express.static(path.join(__dirname, 'assets/audi
 app.use('/audio/telugu_letters', express.static(path.join(__dirname, 'assets/audio/telugu_letters')));
 app.use('/audio/swara', express.static(path.join(__dirname, 'assets/audio/swara')));
 app.use('/audio/storyTime', express.static(path.join(__dirname, 'assets/audio/storyTime')));
+app.use('/audio/shabd', express.static(path.join(__dirname, 'assets/audio/shabd')));
 app.use('/images/swara', express.static(path.join(__dirname, 'assets/images/swara')));
 
 // Routes
@@ -41,7 +42,10 @@ app.use('/api/swaras', require('./routes/swaraGame'));
 app.use('/api/consonant', require('./routes/consonantQuiz'));
 app.use('/api/scavenger', require('./routes/scavengerGame'));
 app.use('/api/matra-game', require('./routes/matraGame'));
+app.use('/api/word-jumble', require('./routes/wordJumble'));
 app.use('/api/shabd', require('./routes/shabdGame'));
+app.use('/api/fill-story', require('./routes/fillStory'));
+app.use('/api/crossword', require('./routes/crosswordGame'));
 
 // Test route
 app.get('/api/test', (req, res) => {

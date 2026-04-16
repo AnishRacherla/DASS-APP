@@ -153,6 +153,17 @@ const GAMES = [
     special: true
   },
   {
+    id: 'word-jumble',
+    title: 'Word Jumble',
+    emoji: '🌊',
+    description: 'Words float freely on the board — drag them into the right order and press OK to score!',
+    color: '#06b6d4',
+    gradient: 'linear-gradient(135deg, #06b6d4, #0284c7)',
+    path: '/word-jumble',
+    category: 'Sentences',
+    special: true
+  },
+  {
     id: 'shabd',
     title: 'Shabd Match',
     emoji: '🧩',
@@ -172,6 +183,28 @@ const GAMES = [
     gradient: 'linear-gradient(135deg, #e91e63, #c2185b)',
     path: '/story-time',
     category: 'Reading',
+    special: true
+  },
+  {
+    id: 'fill-story',
+    title: 'Fill the Story',
+    emoji: '📖',
+    description: 'Fill blanks in funny stories with the right words! Read & hear the complete tale.',
+    color: '#f472b6',
+    gradient: 'linear-gradient(135deg, #f472b6, #a855f7)',
+    path: '/fill-story',
+    category: 'Stories',
+    special: true
+  },
+  {
+    id: 'crossword',
+    title: 'Kids Crossword',
+    emoji: '🎮',
+    description: 'Solve crossword puzzles with picture clues! Learn new words level by level.',
+    color: '#8b5cf6',
+    gradient: 'linear-gradient(135deg, #8b5cf6, #6d28d9)',
+    path: '/crossword',
+    category: 'Puzzles',
     special: true
   }
 ];

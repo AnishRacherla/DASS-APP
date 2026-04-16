@@ -5,8 +5,6 @@ import {
   TouchableOpacity,
   StyleSheet,
   ScrollView,
-  PanResponder,
-  Animated,
   Alert,
   Dimensions,
 } from 'react-native';
@@ -62,6 +60,7 @@ export default function VarnamalGame({ navigation }) {
   }));
   const [shakeSlot, setShakeSlot] = useState(null);
   const [draggingItem, setDraggingItem] = useState(null);
+  const [wrongSlots, setWrongSlots] = useState({});
   const timerRef = useRef(null);
 
   const consonants = language === 'telugu' ? TELUGU_CONSONANTS : HINDI_CONSONANTS;
@@ -109,7 +108,12 @@ export default function VarnamalGame({ navigation }) {
   const handleDrop = useCallback((slotIndex) => {
     if (!draggingItem) return;
 
-    const { letter, index: bankIndex } = draggingItem;
+    if (placed[slotIndex] !== null) {
+      setDraggingItem(null);
+      return;
+    }
+
+    const { letter, id } = draggingItem;
 
     if (letter === consonants[slotIndex]) {
       // Correct!
@@ -123,22 +127,31 @@ export default function VarnamalGame({ navigation }) {
           [language]: {
             ...current,
             placed: nextPlaced,
-            bank: current.bank.filter(item => item.id !== `${language}-${bankIndex}`),
+            bank: current.bank.filter(item => item.id !== id),
             score: current.score + 1
           }
         };
       });
-
-      // Show success feedback
-      Alert.alert('Correct!', 'Great job! 🎉', [{ text: 'Continue' }]);
+      setWrongSlots(prev => {
+        const next = { ...prev };
+        delete next[slotIndex];
+        return next;
+      });
     } else {
       // Wrong – shake
       setShakeSlot(slotIndex);
+      setWrongSlots(prev => ({ ...prev, [slotIndex]: true }));
       setTimeout(() => setShakeSlot(null), 600);
-      Alert.alert('Try Again', 'That\'s not the right position. Keep trying!', [{ text: 'OK' }]);
+      setTimeout(() => {
+        setWrongSlots(prev => {
+          const next = { ...prev };
+          delete next[slotIndex];
+          return next;
+        });
+      }, 700);
     }
     setDraggingItem(null);
-  }, [consonants, language, draggingItem]);
+  }, [consonants, language, draggingItem, placed]);
 
   // Check completion
   useEffect(() => {
@@ -251,6 +264,7 @@ export default function VarnamalGame({ navigation }) {
                     style={[
                       styles.dropSlot,
                       isPlaced && styles.filledSlot,
+                      wrongSlots[globalIdx] && styles.wrongSlot,
                       shakeSlot === globalIdx && styles.shakeSlot
                     ]}
                     onPress={() => handleDrop(globalIdx)}
@@ -456,6 +470,11 @@ const styles = StyleSheet.create({
   shakeSlot: {
     borderColor: '#ff6b6b',
     backgroundColor: 'rgba(255, 107, 107, 0.15)',
+  },
+  wrongSlot: {
+    borderColor: '#ff6b6b',
+    backgroundColor: 'rgba(255, 107, 107, 0.22)',
+    borderStyle: 'solid',
   },
   placedLetter: {
     fontSize: 24,

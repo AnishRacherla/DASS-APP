@@ -28,11 +28,16 @@ import ScavengerHub from './components/scavenger/ScavengerHub';
 import ScavengerGame from './components/scavenger/ScavengerGame';
 import VarnamalGame from './components/VarnamalGame';
 import MatraGame from './components/matraGame/MatraGame';
+import WordJumbleSelection from './components/WordJumbleSelection';
+import WordJumbleGame from './components/WordJumbleGame';
 import ShabdHub from './components/shabd/ShabdHub';
 import ShabdMatch from './components/shabd/ShabdMatch';
 import StoryTimeHub from './components/storyTime/StoryTimeHub';
 import StoryTimePlayer from './components/storyTime/StoryTimePlayer';
 import StoryTimeQuiz from './components/storyTime/StoryTimeQuiz';
+import FillStoryHub from './components/fillStory/FillStoryHub';
+import FillStoryGame from './components/fillStory/FillStoryGame';
+import CrosswordGame from './components/CrosswordGame';
 import './App.css';
 
 function App() {
@@ -88,6 +93,10 @@ function App() {
           {/* Matra Magic Builder */}
           <Route path="/matra-game" element={<MatraGame />} />
 
+          {/* Word Jumble */}
+          <Route path="/word-jumble" element={<WordJumbleSelection />} />
+          <Route path="/word-jumble/:language/:level" element={<WordJumbleGame />} />
+
           {/* Shabd Games */}
           <Route path="/shabd" element={<ShabdHub />} />
           <Route path="/shabd/match/:language/:level" element={<ShabdMatch />} />
@@ -97,11 +106,19 @@ function App() {
           <Route path="/story-time/play/:storyId" element={<StoryTimePlayer />} />
           <Route path="/story-time/quiz/:storyId" element={<StoryTimeQuiz />} />
 
+          {/* Fill the Story */}
+          <Route path="/fill-story" element={<FillStoryHub />} />
+          <Route path="/fill-story/:language/:level" element={<FillStoryGame />} />
+
+          {/* Crossword Game */}
+          <Route path="/crossword" element={<CrosswordGame />} />
+          <Route path="/crossword-game" element={<CrosswordGame />} />
+
           {/* Fallback */}
           <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </div>
-    </Router>
+        </Routes >
+      </div >
+    </Router >
   );
 }
 

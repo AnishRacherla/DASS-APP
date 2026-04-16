@@ -4,6 +4,17 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { API_BASE_URL, API_TIMEOUT } from '../config';
 
+const API_BASE_CANDIDATES = Array.from(
+  new Set([
+    API_BASE_URL,
+    'http://10.201.48.5:5001',
+    'http://10.2.143.103:5001',
+    'http://172.25.80.189:5001',
+    'http://10.0.2.2:5001',
+    'http://127.0.0.1:5001',
+  ])
+);
+
 export default function AuthPage({ navigation }) {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
@@ -13,6 +24,28 @@ export default function AuthPage({ navigation }) {
   const [language, setLanguage] = useState('hindi');
   const [loading, setLoading] = useState(false);
   const [checking, setChecking] = useState(true);
+  const [activeApiBase, setActiveApiBase] = useState(API_BASE_URL);
+
+  const requestWithFallback = async (path, options = {}) => {
+    const orderedBases = [activeApiBase, ...API_BASE_CANDIDATES.filter((b) => b !== activeApiBase)];
+    let lastError = null;
+
+    for (const base of orderedBases) {
+      try {
+        const response = await axios({
+          url: `${base}${path}`,
+          timeout: API_TIMEOUT,
+          ...options,
+        });
+        if (base !== activeApiBase) setActiveApiBase(base);
+        return response;
+      } catch (error) {
+        lastError = error;
+      }
+    }
+
+    throw lastError;
+  };
 
   useEffect(() => {
     checkExistingLogin();
@@ -35,11 +68,10 @@ export default function AuthPage({ navigation }) {
     }
     setLoading(true);
     try {
-      const res = await axios.post(
-        API_BASE_URL + '/api/akshara/auth/login',
-        { email: email.trim().toLowerCase(), password },
-        { timeout: API_TIMEOUT }
-      );
+      const res = await requestWithFallback('/api/akshara/auth/login', {
+        method: 'post',
+        data: { email: email.trim().toLowerCase(), password },
+      });
       const player = res.data.player;
       await AsyncStorage.multiSet([
         ['playerId', player._id],
@@ -50,18 +82,20 @@ export default function AuthPage({ navigation }) {
         ['isLoggedIn', 'true'],
       ]);
       try {
-        const legacyRes = await axios.post(
-          API_BASE_URL + '/api/users/find-or-create',
-          { name: player.playerName, language: player.language || 'hindi' },
-          { timeout: API_TIMEOUT }
-        );
+        const legacyRes = await requestWithFallback('/api/users/find-or-create', {
+          method: 'post',
+          data: { name: player.playerName, language: player.language || 'hindi' },
+        });
         if (legacyRes.data?.success && legacyRes.data?.user?._id) {
           await AsyncStorage.setItem('userId', legacyRes.data.user._id);
         }
       } catch (e) {}
       navigation.replace('GameHub');
     } catch (err) {
-      const msg = err.response?.data?.error || err.response?.data?.message || 'Something went wrong';
+      const msg =
+        err.response?.data?.error ||
+        err.response?.data?.message ||
+        'Cannot reach backend. Check server and Wi-Fi.';
       Alert.alert('Login Failed', msg);
     }
     setLoading(false);
@@ -78,11 +112,10 @@ export default function AuthPage({ navigation }) {
     }
     setLoading(true);
     try {
-      const res = await axios.post(
-        API_BASE_URL + '/api/akshara/auth/signup',
-        { email: email.trim().toLowerCase(), password, playerName: playerName.trim(), language },
-        { timeout: API_TIMEOUT }
-      );
+      const res = await requestWithFallback('/api/akshara/auth/signup', {
+        method: 'post',
+        data: { email: email.trim().toLowerCase(), password, playerName: playerName.trim(), language },
+      });
       const player = res.data.player;
       await AsyncStorage.multiSet([
         ['playerId', player._id],
@@ -93,18 +126,20 @@ export default function AuthPage({ navigation }) {
         ['isLoggedIn', 'true'],
       ]);
       try {
-        const legacyRes = await axios.post(
-          API_BASE_URL + '/api/users',
-          { name: playerName.trim(), age: parseInt(age), language },
-          { timeout: API_TIMEOUT }
-        );
+        const legacyRes = await requestWithFallback('/api/users', {
+          method: 'post',
+          data: { name: playerName.trim(), age: parseInt(age), language },
+        });
         if (legacyRes.data?.success) {
           await AsyncStorage.setItem('userId', legacyRes.data.user._id);
         }
       } catch (e) {}
       navigation.replace('GameHub');
     } catch (err) {
-      const msg = err.response?.data?.error || err.response?.data?.message || 'Something went wrong';
+      const msg =
+        err.response?.data?.error ||
+        err.response?.data?.message ||
+        'Cannot reach backend. Check server and Wi-Fi.';
       Alert.alert('Registration Failed', msg);
     }
     setLoading(false);
