@@ -46,6 +46,7 @@ app.use('/api/word-jumble', require('./routes/wordJumble'));
 app.use('/api/shabd', require('./routes/shabdGame'));
 app.use('/api/fill-story', require('./routes/fillStory'));
 app.use('/api/crossword', require('./routes/crosswordGame'));
+app.use('/api/missing-matra', require('./routes/missingMatraFill'));
 
 // Test route
 app.get('/api/test', (req, res) => {
