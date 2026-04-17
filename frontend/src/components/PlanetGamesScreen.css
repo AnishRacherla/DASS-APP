@@ -1,275 +1,218 @@
-/* PlanetGamesScreen.css */
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
-
-* {
-    box-sizing: border-box;
-}
-
 .planet-screen {
     min-height: 100vh;
-    font-family: 'Nunito', sans-serif;
-    background: radial-gradient(ellipse at 20% 10%, #1a0533 0%, #0a0118 60%, #00091a 100%);
-    overflow-x: hidden;
+    padding: 20px;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
     position: relative;
+    overflow-x: hidden;
+    font-family: 'Poppins', 'Inter', sans-serif;
+    color: white;
 }
 
-/* starfield reuse */
-.planet-screen .stage-stars {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 0;
+/* Themes */
+.planet-screen.theme-forest {
+    background: linear-gradient(180deg, #0f172a 0%, #166534 40%, #064e3b 100%);
 }
 
-.planet-screen .stage-star {
-    position: absolute;
-    border-radius: 50%;
-    background: #fff;
-    animation: twinkle2 4s ease-in-out infinite alternate;
+.planet-screen.theme-canyon {
+    background: linear-gradient(180deg, #1e1b4b 0%, #7c2d12 40%, #451a03 100%);
 }
 
-.planet-screen .stage-star.s {
-    width: 2px;
-    height: 2px;
-    opacity: .4;
+.planet-screen.theme-clouds {
+    background: linear-gradient(180deg, #020617 0%, #7e22ce 40%, #4c1d95 100%);
 }
 
-.planet-screen .stage-star.m {
-    width: 3px;
-    height: 3px;
-    opacity: .6;
+.planet-screen.theme-crystals {
+    background: linear-gradient(180deg, #020617 0%, #1e3a8a 40%, #0f172a 100%);
 }
 
-.planet-screen .stage-star.l {
-    width: 4px;
-    height: 4px;
-    opacity: .9;
-}
-
-@keyframes twinkle2 {
-    from {
-        opacity: .1
-    }
-
-    to {
-        opacity: .9
-    }
-}
-
-/* back bar */
 .ps-topbar {
-    position: sticky;
-    top: 0;
-    z-index: 100;
     display: flex;
     align-items: center;
-    gap: 16px;
-    padding: 12px 24px;
-    background: rgba(10, 1, 24, .85);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(255, 255, 255, .08);
+    justify-content: space-between;
+    padding: 10px 20px;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    margin-bottom: 20px;
+    max-width: 1000px;
+    margin: 0 auto 40px auto;
 }
 
 .ps-back-btn {
+    background: rgba(255, 255, 255, 0.1);
     border: none;
-    cursor: pointer;
-    background: rgba(255, 255, 255, .08);
-    color: #e2e8f0;
-    font-weight: 800;
-    font-size: .9rem;
-    padding: 8px 16px;
+    color: white;
+    padding: 10px 20px;
     border-radius: 12px;
-    transition: background .2s;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.2s;
 }
 
 .ps-back-btn:hover {
-    background: rgba(255, 255, 255, .16);
+    background: rgba(255, 255, 255, 0.2);
 }
 
 .ps-planet-badge {
-    font-size: 1.6rem;
+    font-size: 3rem;
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
 }
 
 .ps-stage-info h2 {
-    font-size: 1.2rem;
-    font-weight: 900;
-    color: #fff;
-    margin: 0;
+    margin: 0 0 5px 0;
+    font-size: 1.5rem;
 }
 
 .ps-stage-info span {
-    font-size: .78rem;
-    color: #94a3b8;
+    color: #cbd5e1;
+    font-size: 0.9rem;
 }
 
-/* progress summary */
-.ps-progress-bar-wrap {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 12px 24px 0;
+/* Winding Path */
+.path-container {
     position: relative;
-    z-index: 1;
-}
-
-.ps-prog-bar {
-    flex: 1;
-    height: 8px;
-    background: rgba(255, 255, 255, .1);
-    border-radius: 10px;
-    overflow: hidden;
-}
-
-.ps-prog-fill {
-    height: 100%;
-    border-radius: 10px;
-    transition: width .6s ease;
-}
-
-.ps-prog-label {
-    font-size: .8rem;
-    font-weight: 700;
-    color: #94a3b8;
-    white-space: nowrap;
-}
-
-/* hero */
-.ps-hero {
-    position: relative;
-    z-index: 1;
-    padding: 32px 24px 8px;
-    text-align: center;
-}
-
-.ps-hero h1 {
-    font-size: clamp(1.4rem, 3.5vw, 2.2rem);
-    font-weight: 900;
-    color: #fff;
-    margin: 0 0 6px;
-}
-
-.ps-hero p {
-    color: #94a3b8;
-    font-size: .9rem;
-    margin: 0;
-}
-
-/* game grid */
-.ps-game-grid {
-    position: relative;
-    z-index: 1;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 18px;
-    max-width: 900px;
+    max-width: 600px;
     margin: 0 auto;
-    padding: 24px;
+    padding: 40px 0;
 }
 
-/* game card */
-.ps-game-card {
-    position: relative;
-    background: rgba(255, 255, 255, .05);
-    border: 1px solid rgba(255, 255, 255, .1);
-    border-radius: 20px;
-    padding: 22px 20px;
-    cursor: pointer;
-    transition: border-color .3s, background .3s;
-    overflow: hidden;
-}
-
-.ps-game-card:hover {
-    background: rgba(255, 255, 255, .09);
-    border-color: rgba(255, 255, 255, .25);
-}
-
-.ps-card-glow {
+.path-svg {
     position: absolute;
-    inset: 0;
-    background: var(--card-gradient);
-    opacity: 0;
-    transition: opacity .3s;
-    border-radius: 20px;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
 }
 
-.ps-game-card:hover .ps-card-glow {
-    opacity: .08;
-}
-
-.ps-card-top {
+.path-node-wrapper {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    width: 280px;
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 12px;
+    flex-direction: column;
+    align-items: center;
+    z-index: 10;
 }
 
-.ps-card-emoji {
-    font-size: 2.4rem;
-    line-height: 1;
+.path-node {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 3rem;
+    cursor: pointer;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    border: 6px solid rgba(255, 255, 255, 0.3);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    background-color: #1f2937;
+    position: relative;
 }
 
-.ps-card-stars {
+.path-node.unlocked {
+    border-color: white;
+    background-color: var(--card-color, #3b82f6);
+}
+
+.path-node.locked {
+    filter: grayscale(100%) brightness(0.6);
+    cursor: not-allowed;
+    border-color: #4b5563;
+}
+
+.path-node.active-bounce {
+    animation: bounceNode 2s infinite ease-in-out;
+    border-color: #fcd34d;
+    box-shadow: 0 0 30px rgba(252, 211, 77, 0.5);
+}
+
+@keyframes bounceNode {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.node-stars {
+    position: absolute;
+    bottom: -15px;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 4px 10px;
+    border-radius: 20px;
     display: flex;
     gap: 2px;
+    font-size: 0.8rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
 }
 
-.ps-star {
-    font-size: .9rem;
+.node-star {
+    opacity: 0.3;
 }
 
-.ps-star.earned {
-    filter: none;
+.node-star.earned {
+    opacity: 1;
 }
 
-.ps-star.empty {
-    opacity: .25;
+.node-title-card {
+    background: rgba(0, 0, 0, 0.85);
+    border-radius: 16px;
+    padding: 12px 20px;
+    margin-top: 25px;
+    text-align: center;
+    width: 100%;
+    border: 2px solid var(--card-color, #4b5563);
+    backdrop-filter: blur(10px);
 }
 
-.ps-card-title {
-    font-size: 1rem;
-    font-weight: 900;
-    color: #fff;
-    margin: 0 0 4px;
+.node-title-card h3 {
+    margin: 0 0 5px 0;
+    font-size: 1.1rem;
+    color: white;
 }
 
-.ps-card-category {
-    font-size: .7rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: .06em;
-    opacity: .6;
-    color: #fff;
+.node-title-card p {
+    margin: 0;
+    font-size: 0.8rem;
+    color: #9ca3af;
 }
 
-.ps-card-desc {
-    font-size: .78rem;
-    color: #94a3b8;
-    margin: 8px 0 16px;
-    line-height: 1.45;
-}
-
-.ps-play-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
+.play-prompt-btn {
+    margin-top: 10px;
+    background: white;
+    color: black;
     border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: bold;
     cursor: pointer;
-    background: var(--card-gradient);
-    color: #fff;
-    font-weight: 800;
-    font-size: .85rem;
-    padding: 8px 18px;
-    border-radius: 12px;
-    transition: opacity .2s, transform .2s;
+    transition: transform 0.2s;
 }
 
-.ps-play-btn:hover {
-    opacity: .88;
-    transform: translateY(-1px);
+.play-prompt-btn:hover {
+    transform: scale(1.05);
 }
 
-@media (max-width: 500px) {
-    .ps-game-grid {
-        grid-template-columns: 1fr;
-    }
+.lock-icon {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background: #1f2937;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1rem;
+    border: 2px solid #4b5563;
 }

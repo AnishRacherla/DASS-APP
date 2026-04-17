@@ -27,12 +27,19 @@ const PlanetGamesScreen = () => {
     const stage = STAGES.find(s => s.id === stageNum);
     const games = useMemo(() => GAMES.filter(g => g.stage === stageNum), [stageNum]);
 
-    const played = games.filter(g => getStars(g.id) >= 0).length;
+    const playedPositions = games.map(g => getStars(g.id) >= 0);
+    const playedCount = playedPositions.filter(Boolean).length;
 
-    const handleGameClick = (game) => {
-        // Mark as played immediately — just launching counts for unlock
+    // A game unlocks if it's the first one OR the previous one has been played
+    const isGameUnlocked = (idx) => idx === 0 || playedPositions[idx - 1];
+
+    // The 'active' game is the first unplayed one, or the very last one if all played
+    const activeIdx = Math.min(playedPositions.findIndex(p => !p) !== -1 ? playedPositions.findIndex(p => !p) : games.length - 1, games.length - 1);
+
+    const handleGameClick = (game, idx) => {
+        if (!isGameUnlocked(idx)) return; // Locked
+
         markPlayed(game.id);
-        // Store which planet we came from — back buttons in each game read this
         localStorage.setItem('lastStage', stageNum.toString());
 
         switch (game.id) {
@@ -55,23 +62,36 @@ const PlanetGamesScreen = () => {
             case 'swara': navigate('/swara-game', { state: { language } }); break;
             case 'swara-memory': navigate('/swara-memory', { state: { language } }); break;
             case 'trace-vowel': navigate('/trace-vowel', { state: { language } }); break;
+            case 'missing-matra': navigate('/missing-matra', { state: { language } }); break;
             default: navigate(game.path, { state: { language } });
         }
     };
 
     if (!stage) return <div style={{ color: '#fff', padding: 40 }}>Stage not found.</div>;
 
-    return (
-        <div className="planet-screen">
-            {/* Starfield */}
-            <div className="stage-stars">
-                {[...Array(50)].map((_, i) => (
-                    <div key={i} className={`stage-star ${['s', 'm', 'l'][i % 3]}`}
-                        style={{ left: `${(i * 43 + 11) % 100}%`, top: `${(i * 67 + 7) % 100}%`, animationDelay: `${(i * .3) % 5}s` }} />
-                ))}
-            </div>
+    // Get assigned theme
+    const themeClass = ['theme-forest', 'theme-canyon', 'theme-clouds', 'theme-crystals'][stageNum - 1] || 'theme-clouds';
 
-            {/* Top bar */}
+    // SVG Path calculation
+    const SPACING = 180;
+    const OFFSET_Y = 100;
+    const getX = (idx) => [50, 20, 50, 80][idx % 4];
+
+    const generatePathData = () => {
+        if (games.length === 0) return '';
+        let d = `M ${getX(0)} ${OFFSET_Y}`;
+        for (let i = 1; i < games.length; i++) {
+            const px = getX(i - 1);
+            const py = (i - 1) * SPACING + OFFSET_Y;
+            const cx = getX(i);
+            const cy = i * SPACING + OFFSET_Y;
+            d += ` C ${px} ${py + 90}, ${cx} ${cy - 90}, ${cx} ${cy}`;
+        }
+        return d;
+    };
+
+    return (
+        <div className={`planet-screen ${themeClass}`}>
             <div className="ps-topbar">
                 <button className="ps-back-btn" onClick={() => navigate('/stages')}>← Planets</button>
                 <div className="ps-planet-badge">{stage.planet}</div>
@@ -81,50 +101,62 @@ const PlanetGamesScreen = () => {
                 </div>
             </div>
 
-            {/* Progress */}
-            <div className="ps-progress-bar-wrap">
-                <div className="ps-prog-bar">
-                    <motion.div className="ps-prog-fill"
-                        style={{ background: stage.gradient }}
-                        initial={{ width: 0 }}
-                        animate={{ width: `${games.length > 0 ? Math.round((played / games.length) * 100) : 0}%` }}
-                        transition={{ duration: 0.8 }}
-                    />
-                </div>
-                <span className="ps-prog-label">{played}/{games.length} games played</span>
-            </div>
-
-            {/* Hero */}
-            <motion.div className="ps-hero" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
-                <h1>{stage.planet} {stage.name} — {stage.subtitle}</h1>
+            <motion.div className="ps-hero" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} style={{ textAlign: 'center', marginBottom: '20px' }}>
+                <h1>{stage.planet} {stage.name}</h1>
                 <p>{stage.desc}</p>
+                <div style={{ background: 'rgba(0,0,0,0.5)', padding: '5px 15px', borderRadius: '20px', display: 'inline-block', marginTop: '10px' }}>
+                    {playedCount}/{games.length} Complete
+                </div>
             </motion.div>
 
-            {/* Game grid — entire card is clickable */}
-            <div className="ps-game-grid">
-                {games.map((game, i) => (
-                    <motion.div
-                        key={game.id}
-                        className="ps-game-card"
-                        style={{ '--card-gradient': game.gradient, '--card-color': game.color, cursor: 'pointer' }}
-                        initial={{ opacity: 0, y: 30 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.05 * i + 0.2, type: 'spring', stiffness: 200 }}
-                        whileHover={{ y: -5, scale: 1.02 }}
-                        whileTap={{ scale: 0.97 }}
-                        onClick={() => handleGameClick(game)}
-                    >
-                        <div className="ps-card-glow" />
-                        <div className="ps-card-top">
-                            <span className="ps-card-emoji">{game.emoji}</span>
-                            <StarRow gameId={game.id} />
+            <div className="path-container" style={{ height: `${games.length * SPACING + 200}px` }}>
+                <svg className="path-svg" viewBox={`0 0 100 ${games.length * SPACING + 200}`} preserveAspectRatio="none">
+                    <path d={generatePathData()} stroke="rgba(255, 255, 255, 0.2)" strokeWidth="4" strokeLinecap="round" strokeDasharray="8 8" fill="none" />
+                </svg>
+
+                {games.map((game, i) => {
+                    const unlocked = isGameUnlocked(i);
+                    const isActive = i === activeIdx;
+                    const stars = getStars(game.id);
+
+                    return (
+                        <div key={game.id} className="path-node-wrapper"
+                            style={{ top: `${i * SPACING + OFFSET_Y}px`, left: `${getX(i)}%` }}
+                        >
+                            <div
+                                className={`path-node ${unlocked ? 'unlocked' : 'locked'} ${isActive ? 'active-bounce' : ''}`}
+                                style={{ '--card-color': game.color }}
+                                onClick={() => handleGameClick(game, i)}
+                            >
+                                {unlocked ? game.emoji : '🔒'}
+
+                                {unlocked && (
+                                    <div className="node-stars">
+                                        {[1, 2, 3].map(n => (
+                                            <span key={n} className={`node-star ${stars >= n ? 'earned' : ''}`}>⭐</span>
+                                        ))}
+                                    </div>
+                                )}
+
+                                {!unlocked && <div className="lock-icon">🔒</div>}
+                            </div>
+
+                            {isActive && (
+                                <motion.div
+                                    className="node-title-card"
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                >
+                                    <h3>{game.title}</h3>
+                                    <p>{game.description}</p>
+                                    <button className="play-prompt-btn" onClick={() => handleGameClick(game, i)}>
+                                        Play ▶
+                                    </button>
+                                </motion.div>
+                            )}
                         </div>
-                        <div className="ps-card-title">{game.title}</div>
-                        <div className="ps-card-category">{game.category}</div>
-                        <p className="ps-card-desc">{game.description}</p>
-                        <div className="ps-play-btn">▶ Play</div>
-                    </motion.div>
-                ))}
+                    );
+                })}
             </div>
         </div>
     );
