@@ -75,7 +75,7 @@ const AuthPage = () => {
           localStorage.setItem('userLanguage', formData.language);
           localStorage.setItem('isLoggedIn', 'true');
 
-          navigate('/game-hub');
+          navigate('/stages');
         }
       } else {
         // Login
@@ -112,7 +112,7 @@ const AuthPage = () => {
             console.warn('Legacy user lookup failed:', err.message);
           }
 
-          navigate('/game-hub');
+          navigate('/stages');
         }
       }
     } catch (err) {
@@ -295,8 +295,8 @@ const AuthPage = () => {
             {loading
               ? '⏳ Please wait...'
               : mode === 'login'
-              ? '🚀 Login & Play!'
-              : '✨ Create Account & Play!'
+                ? '🚀 Login & Play!'
+                : '✨ Create Account & Play!'
             }
           </motion.button>
         </form>

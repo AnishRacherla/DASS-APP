@@ -1,0 +1,478 @@
+/* StageHub.css — full-page planetary journey */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+
+* {
+    box-sizing: border-box;
+}
+
+.stage-hub {
+    min-height: 100vh;
+    background: radial-gradient(ellipse at 20% 10%, #1a0533 0%, #0a0118 60%, #00091a 100%);
+    font-family: 'Nunito', sans-serif;
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* ---------- starfield ---------- */
+.stage-stars {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.stage-star {
+    position: absolute;
+    border-radius: 50%;
+    background: #fff;
+    animation: twinkle 4s ease-in-out infinite alternate;
+}
+
+.stage-star.s {
+    width: 2px;
+    height: 2px;
+    opacity: .4;
+}
+
+.stage-star.m {
+    width: 3px;
+    height: 3px;
+    opacity: .6;
+}
+
+.stage-star.l {
+    width: 4px;
+    height: 4px;
+    opacity: .9;
+}
+
+@keyframes twinkle {
+    from {
+        opacity: .1;
+    }
+
+    to {
+        opacity: .9;
+    }
+}
+
+/* ---------- topbar ---------- */
+.stage-topbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 24px;
+    background: rgba(10, 1, 24, 0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 255, 255, .08);
+}
+
+.topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.stage-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #a78bfa, #818cf8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 1.1rem;
+    color: #fff;
+}
+
+.stage-username {
+    color: #e2e8f0;
+    font-weight: 700;
+    font-size: .95rem;
+}
+
+.stage-welcome {
+    color: #94a3b8;
+    font-size: .78rem;
+    display: block;
+}
+
+.topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.streak-badge {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: rgba(251, 146, 60, .15);
+    border: 1px solid rgba(251, 146, 60, .4);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: .85rem;
+    font-weight: 800;
+    color: #fb923c;
+}
+
+.lang-toggle {
+    display: flex;
+    background: rgba(255, 255, 255, .08);
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.lang-btn {
+    border: none;
+    cursor: pointer;
+    padding: 6px 14px;
+    background: transparent;
+    color: #94a3b8;
+    font-weight: 700;
+    font-size: .8rem;
+    transition: all .2s;
+}
+
+.lang-btn.active {
+    background: #7c3aed;
+    color: #fff;
+    border-radius: 20px;
+}
+
+.logout-btn {
+    border: none;
+    cursor: pointer;
+    background: rgba(255, 255, 255, .08);
+    border-radius: 10px;
+    padding: 8px;
+    font-size: 1.1rem;
+    transition: background .2s;
+}
+
+.logout-btn:hover {
+    background: rgba(239, 68, 68, .3);
+}
+
+/* ---------- hero header ---------- */
+.stage-hero {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 48px 24px 16px;
+}
+
+.stage-hero h1 {
+    font-size: clamp(1.6rem, 4vw, 2.6rem);
+    font-weight: 900;
+    color: #fff;
+    margin: 0 0 8px;
+    text-shadow: 0 0 30px rgba(167, 139, 250, .6);
+}
+
+.stage-hero p {
+    color: #94a3b8;
+    font-size: 1rem;
+    margin: 0;
+}
+
+/* ---------- planet path ---------- */
+.planet-path {
+    position: relative;
+    z-index: 1;
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 32px 24px 80px;
+    display: flex;
+    flex-direction: column;
+    gap: 0px;
+}
+
+/* connector line */
+.planet-path::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 60px;
+    bottom: 60px;
+    width: 4px;
+    background: linear-gradient(to bottom, rgba(167, 139, 250, .3), rgba(56, 189, 248, .1));
+    border-radius: 4px;
+    z-index: 0;
+}
+
+/* ---------- planet card ---------- */
+.planet-card {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    background: rgba(255, 255, 255, .04);
+    border: 1px solid rgba(255, 255, 255, .08);
+    border-radius: 24px;
+    padding: 24px 28px;
+    margin: 12px 0;
+    cursor: pointer;
+    transition: border-color .3s, background .3s;
+    overflow: hidden;
+}
+
+.planet-card:hover:not(.locked) {
+    background: rgba(255, 255, 255, .08);
+    border-color: rgba(255, 255, 255, .2);
+}
+
+.planet-card.locked {
+    cursor: not-allowed;
+    opacity: .55;
+    filter: grayscale(.6);
+}
+
+/* glow orb behind planet emoji */
+.planet-glow {
+    position: absolute;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    left: -20px;
+    top: -20px;
+    filter: blur(40px);
+    opacity: .25;
+}
+
+.planet-icon-wrap {
+    position: relative;
+    flex: 0 0 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.planet-emoji {
+    font-size: 3.2rem;
+    line-height: 1;
+    filter: drop-shadow(0 4px 16px var(--planet-color, #7c3aed));
+    animation: float-planet 4s ease-in-out infinite;
+}
+
+@keyframes float-planet {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-6px);
+    }
+}
+
+.planet-stage-tag {
+    font-size: .65rem;
+    font-weight: 800;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    background: var(--planet-color, #7c3aed);
+    color: #fff;
+    border-radius: 20px;
+    padding: 2px 8px;
+}
+
+.planet-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.planet-stage-label {
+    font-size: .75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--planet-color, #7c3aed);
+    margin-bottom: 4px;
+}
+
+.planet-name {
+    font-size: 1.35rem;
+    font-weight: 900;
+    color: #fff;
+    margin: 0 0 2px;
+}
+
+.planet-subtitle {
+    font-size: .78rem;
+    font-weight: 700;
+    color: #94a3b8;
+    margin: 0 0 10px;
+}
+
+.planet-desc {
+    font-size: .82rem;
+    color: #cbd5e1;
+    margin: 0 0 14px;
+    line-height: 1.5;
+}
+
+/* progress bar */
+.planet-progress {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.progress-bar {
+    flex: 1;
+    height: 8px;
+    background: rgba(255, 255, 255, .1);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    border-radius: 10px;
+    background: var(--planet-color, #7c3aed);
+    transition: width .6s ease;
+}
+
+.progress-label {
+    font-size: .75rem;
+    font-weight: 700;
+    color: #94a3b8;
+    white-space: nowrap;
+}
+
+/* badge */
+.planet-badge {
+    font-size: 1.5rem;
+    flex: 0 0 auto;
+}
+
+.lock-icon {
+    font-size: 1.5rem;
+    flex: 0 0 auto;
+}
+
+.planet-arrow {
+    font-size: 1.3rem;
+    color: rgba(255, 255, 255, .4);
+    flex: 0 0 auto;
+    transition: color .2s, transform .2s;
+}
+
+.planet-card:hover:not(.locked) .planet-arrow {
+    color: #fff;
+    transform: translateX(4px);
+}
+
+/* ---------- mascot ---------- */
+.mascot-bubble {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 200;
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+}
+
+.mascot-emoji {
+    font-size: 2.4rem;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, .5));
+}
+
+.mascot-speech {
+    background: rgba(30, 10, 60, .9);
+    border: 1px solid rgba(167, 139, 250, .4);
+    border-radius: 16px 16px 0 16px;
+    padding: 10px 14px;
+    max-width: 200px;
+    font-size: .8rem;
+    font-weight: 700;
+    color: #e2e8f0;
+    line-height: 1.4;
+    backdrop-filter: blur(8px);
+}
+
+/* ---------- celebration overlay ---------- */
+.celebration-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 500;
+    background: rgba(0, 0, 0, .7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.celebration-card {
+    background: linear-gradient(135deg, #1e0546, #0c1a42);
+    border: 2px solid rgba(167, 139, 250, .5);
+    border-radius: 28px;
+    padding: 48px 36px;
+    text-align: center;
+    max-width: 360px;
+    width: 90%;
+}
+
+.celebration-card h2 {
+    font-size: 1.8rem;
+    color: #fff;
+    margin: 0 0 8px;
+}
+
+.celebration-card p {
+    color: #94a3b8;
+    font-size: 1rem;
+    margin: 0 0 24px;
+}
+
+.badge-reveal {
+    font-size: 4rem;
+    animation: pop-in .4s cubic-bezier(.18, 1.6, .6, 1);
+}
+
+@keyframes pop-in {
+    from {
+        transform: scale(0) rotate(-20deg);
+    }
+
+    to {
+        transform: scale(1) rotate(0);
+    }
+}
+
+.celebration-btn {
+    border: none;
+    cursor: pointer;
+    padding: 12px 32px;
+    background: linear-gradient(135deg, #7c3aed, #3b82f6);
+    color: #fff;
+    font-weight: 800;
+    font-size: 1rem;
+    border-radius: 14px;
+    margin-top: 8px;
+}
+
+@media (max-width: 600px) {
+    .planet-card {
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+
+    .planet-path::before {
+        display: none;
+    }
+
+    .mascot-bubble {
+        bottom: 12px;
+        right: 12px;
+    }
+}

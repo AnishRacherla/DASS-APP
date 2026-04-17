@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { storyTimeData } from '../../data/storyTimeData';
 import Confetti from 'react-confetti';
+import { saveStars } from '../../hooks/useGameProgress';
 import './StoryTime.css';
 
 const StoryTimeQuiz = () => {
@@ -31,6 +32,9 @@ const StoryTimeQuiz = () => {
             if (currentQIndex < story.quiz.length - 1) {
                 setCurrentQIndex(prev => prev + 1);
             } else {
+                const finalScore = score + (index === currentQ.correctIndex ? 1 : 0);
+                const stars = finalScore === story.quiz.length ? 3 : finalScore >= Math.ceil(story.quiz.length / 2) ? 2 : 1;
+                saveStars('story-time', stars);
                 setShowResults(true);
             }
         }, 1500);
@@ -59,12 +63,12 @@ const StoryTimeQuiz = () => {
                             whileHover={{ scale: selectedOption === null ? 1.02 : 1 }}
                             whileTap={{ scale: selectedOption === null ? 0.98 : 1 }}
                             className={`quiz-option ${selectedOption !== null
-                                    ? i === currentQ.correctIndex
-                                        ? 'correct'
-                                        : selectedOption === i
-                                            ? 'incorrect'
-                                            : ''
-                                    : ''
+                                ? i === currentQ.correctIndex
+                                    ? 'correct'
+                                    : selectedOption === i
+                                        ? 'incorrect'
+                                        : ''
+                                : ''
                                 }`}
                             onClick={() => handleOptionSelect(i)}
                         >

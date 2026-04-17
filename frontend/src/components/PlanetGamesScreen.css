@@ -1,0 +1,275 @@
+/* PlanetGamesScreen.css */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+
+* {
+    box-sizing: border-box;
+}
+
+.planet-screen {
+    min-height: 100vh;
+    font-family: 'Nunito', sans-serif;
+    background: radial-gradient(ellipse at 20% 10%, #1a0533 0%, #0a0118 60%, #00091a 100%);
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* starfield reuse */
+.planet-screen .stage-stars {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.planet-screen .stage-star {
+    position: absolute;
+    border-radius: 50%;
+    background: #fff;
+    animation: twinkle2 4s ease-in-out infinite alternate;
+}
+
+.planet-screen .stage-star.s {
+    width: 2px;
+    height: 2px;
+    opacity: .4;
+}
+
+.planet-screen .stage-star.m {
+    width: 3px;
+    height: 3px;
+    opacity: .6;
+}
+
+.planet-screen .stage-star.l {
+    width: 4px;
+    height: 4px;
+    opacity: .9;
+}
+
+@keyframes twinkle2 {
+    from {
+        opacity: .1
+    }
+
+    to {
+        opacity: .9
+    }
+}
+
+/* back bar */
+.ps-topbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 24px;
+    background: rgba(10, 1, 24, .85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 255, 255, .08);
+}
+
+.ps-back-btn {
+    border: none;
+    cursor: pointer;
+    background: rgba(255, 255, 255, .08);
+    color: #e2e8f0;
+    font-weight: 800;
+    font-size: .9rem;
+    padding: 8px 16px;
+    border-radius: 12px;
+    transition: background .2s;
+}
+
+.ps-back-btn:hover {
+    background: rgba(255, 255, 255, .16);
+}
+
+.ps-planet-badge {
+    font-size: 1.6rem;
+}
+
+.ps-stage-info h2 {
+    font-size: 1.2rem;
+    font-weight: 900;
+    color: #fff;
+    margin: 0;
+}
+
+.ps-stage-info span {
+    font-size: .78rem;
+    color: #94a3b8;
+}
+
+/* progress summary */
+.ps-progress-bar-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 24px 0;
+    position: relative;
+    z-index: 1;
+}
+
+.ps-prog-bar {
+    flex: 1;
+    height: 8px;
+    background: rgba(255, 255, 255, .1);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.ps-prog-fill {
+    height: 100%;
+    border-radius: 10px;
+    transition: width .6s ease;
+}
+
+.ps-prog-label {
+    font-size: .8rem;
+    font-weight: 700;
+    color: #94a3b8;
+    white-space: nowrap;
+}
+
+/* hero */
+.ps-hero {
+    position: relative;
+    z-index: 1;
+    padding: 32px 24px 8px;
+    text-align: center;
+}
+
+.ps-hero h1 {
+    font-size: clamp(1.4rem, 3.5vw, 2.2rem);
+    font-weight: 900;
+    color: #fff;
+    margin: 0 0 6px;
+}
+
+.ps-hero p {
+    color: #94a3b8;
+    font-size: .9rem;
+    margin: 0;
+}
+
+/* game grid */
+.ps-game-grid {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 18px;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 24px;
+}
+
+/* game card */
+.ps-game-card {
+    position: relative;
+    background: rgba(255, 255, 255, .05);
+    border: 1px solid rgba(255, 255, 255, .1);
+    border-radius: 20px;
+    padding: 22px 20px;
+    cursor: pointer;
+    transition: border-color .3s, background .3s;
+    overflow: hidden;
+}
+
+.ps-game-card:hover {
+    background: rgba(255, 255, 255, .09);
+    border-color: rgba(255, 255, 255, .25);
+}
+
+.ps-card-glow {
+    position: absolute;
+    inset: 0;
+    background: var(--card-gradient);
+    opacity: 0;
+    transition: opacity .3s;
+    border-radius: 20px;
+}
+
+.ps-game-card:hover .ps-card-glow {
+    opacity: .08;
+}
+
+.ps-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+}
+
+.ps-card-emoji {
+    font-size: 2.4rem;
+    line-height: 1;
+}
+
+.ps-card-stars {
+    display: flex;
+    gap: 2px;
+}
+
+.ps-star {
+    font-size: .9rem;
+}
+
+.ps-star.earned {
+    filter: none;
+}
+
+.ps-star.empty {
+    opacity: .25;
+}
+
+.ps-card-title {
+    font-size: 1rem;
+    font-weight: 900;
+    color: #fff;
+    margin: 0 0 4px;
+}
+
+.ps-card-category {
+    font-size: .7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    opacity: .6;
+    color: #fff;
+}
+
+.ps-card-desc {
+    font-size: .78rem;
+    color: #94a3b8;
+    margin: 8px 0 16px;
+    line-height: 1.45;
+}
+
+.ps-play-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: none;
+    cursor: pointer;
+    background: var(--card-gradient);
+    color: #fff;
+    font-weight: 800;
+    font-size: .85rem;
+    padding: 8px 18px;
+    border-radius: 12px;
+    transition: opacity .2s, transform .2s;
+}
+
+.ps-play-btn:hover {
+    opacity: .88;
+    transform: translateY(-1px);
+}
+
+@media (max-width: 500px) {
+    .ps-game-grid {
+        grid-template-columns: 1fr;
+    }
+}

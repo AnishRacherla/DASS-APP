@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { saveStars } from '../../hooks/useGameProgress';
 import './ShabdMatch.css';
 
 const API_BASE = 'http://localhost:5001';
@@ -144,9 +145,13 @@ const ShabdMatch = () => {
 
     useEffect(() => {
         if (imagesCol.length > 0 && matchedPairs.length === imagesCol.length) {
+            // Award stars based on score (10 pts per pair)
+            const maxScore = imagesCol.length * 10;
+            const stars = score >= maxScore ? 3 : score >= maxScore * 0.6 ? 2 : 1;
+            saveStars('shabd', stars);
             setTimeout(() => setGameComplete(true), 1500);
         }
-    }, [matchedPairs, imagesCol]);
+    }, [matchedPairs, imagesCol, score]);
 
     // Handlers to allow bidirectional clicking
     const handleImageClick = (item) => {

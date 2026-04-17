@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import './GameHub.css';
 
-const GAMES = [
+export const GAMES = [
+  // ─── Stage 1 — Earth (पहचान / Vowels) ────────────────────────────────────
   {
     id: 'balloon',
     title: 'Balloon Pop',
@@ -12,27 +13,8 @@ const GAMES = [
     color: '#FF6B6B',
     gradient: 'linear-gradient(135deg, #FF6B6B, #ee5a24)',
     path: '/balloon-selection',
-    category: 'Letters'
-  },
-  {
-    id: 'bubble-shooter',
-    title: 'Bubble Shooter',
-    emoji: '🫧',
-    description: 'Hear the consonant and shoot the matching bubble before the sound changes.',
-    color: '#38BDF8',
-    gradient: 'linear-gradient(135deg, #38BDF8, #0EA5E9)',
-    path: '/bubble-shooter',
-    category: 'Letters'
-  },
-  {
-    id: 'word-sorting-basket',
-    title: 'Word Sorting Basket',
-    emoji: '🧺',
-    description: 'Drag mixed words into the right category basket and score points.',
-    color: '#F59E0B',
-    gradient: 'linear-gradient(135deg, #F59E0B, #EF4444)',
-    path: '/word-sorting-basket',
-    category: 'Words'
+    category: 'Letters',
+    stage: 1
   },
   {
     id: 'quiz',
@@ -42,49 +24,8 @@ const GAMES = [
     color: '#4ECDC4',
     gradient: 'linear-gradient(135deg, #4ECDC4, #44bd9e)',
     path: '/planet-selection',
-    category: 'Letters'
-  },
-  {
-    id: 'consonant',
-    title: 'Consonant Quiz',
-    emoji: '🧸',
-    description: 'Tap the sound and match the consonant. Fast rounds, big fun!',
-    color: '#06d6a0',
-    gradient: 'linear-gradient(135deg, #06d6a0, #1b9aaa)',
-    path: '/consonant-quiz',
     category: 'Letters',
-    special: true
-  },
-  {
-    id: 'mars',
-    title: 'Mars Game',
-    emoji: '🪐',
-    description: 'Match images with words on Mars! Learn vocabulary through space adventure.',
-    color: '#FF4757',
-    gradient: 'linear-gradient(135deg, #ff4757, #c44569)',
-    path: '/mars-games',
-    category: 'Words'
-  },
-  {
-    id: 'whack',
-    title: 'Whack-a-Letter',
-    emoji: '🔨',
-    description: 'Whack the correct letters as they pop up! Fast-paced fun learning.',
-    color: '#ffa502',
-    gradient: 'linear-gradient(135deg, #ffa502, #e17055)',
-    path: '/whack-select',
-    category: 'Letters'
-  },
-  {
-    id: 'akshara',
-    title: 'Akshara Magic Lab',
-    emoji: '🧙‍♂️',
-    description: '8 magical levels! Learn aksharas through combining, splitting & word mastery.',
-    color: '#a855f7',
-    gradient: 'linear-gradient(135deg, #a855f7, #6366f1)',
-    path: '/akshara',
-    category: 'Aksharas',
-    special: true
+    stage: 1
   },
   {
     id: 'swara',
@@ -95,7 +36,8 @@ const GAMES = [
     gradient: 'linear-gradient(135deg, #3b82f6, #1d4ed8)',
     path: '/swara-game',
     category: 'Sing-Along',
-    special: true
+    special: true,
+    stage: 1
   },
   {
     id: 'swara-memory',
@@ -106,7 +48,8 @@ const GAMES = [
     gradient: 'linear-gradient(135deg, #f59e0b, #d97706)',
     path: '/swara-memory',
     category: 'Flashcards',
-    special: true
+    special: true,
+    stage: 1
   },
   {
     id: 'trace-vowel',
@@ -117,7 +60,44 @@ const GAMES = [
     gradient: 'linear-gradient(135deg, #8b5cf6, #6d28d9)',
     path: '/trace-vowel',
     category: 'Writing',
-    special: true
+    special: true,
+    stage: 1
+  },
+
+  // ─── Stage 2 — Mars (अक्षर / Consonants) ─────────────────────────────────
+  {
+    id: 'consonant',
+    title: 'Consonant Quiz',
+    emoji: '🧸',
+    description: 'Tap the sound and match the consonant. Fast rounds, big fun!',
+    color: '#06d6a0',
+    gradient: 'linear-gradient(135deg, #06d6a0, #1b9aaa)',
+    path: '/consonant-quiz',
+    category: 'Letters',
+    special: true,
+    stage: 2
+  },
+  {
+    id: 'bubble-shooter',
+    title: 'Bubble Shooter',
+    emoji: '🫧',
+    description: 'Hear the consonant and shoot the matching bubble before the sound changes.',
+    color: '#38BDF8',
+    gradient: 'linear-gradient(135deg, #38BDF8, #0EA5E9)',
+    path: '/bubble-shooter',
+    category: 'Letters',
+    stage: 2
+  },
+  {
+    id: 'whack',
+    title: 'Whack-a-Letter',
+    emoji: '🔨',
+    description: 'Whack the correct letters as they pop up! Fast-paced fun learning.',
+    color: '#ffa502',
+    gradient: 'linear-gradient(135deg, #ffa502, #e17055)',
+    path: '/whack-select',
+    category: 'Letters',
+    stage: 2
   },
   {
     id: 'varnamal',
@@ -128,7 +108,8 @@ const GAMES = [
     gradient: 'linear-gradient(135deg, #8b5cf6, #6366f1)',
     path: '/varnamal',
     category: 'Puzzle',
-    special: true
+    special: true,
+    stage: 2
   },
   {
     id: 'scavenger',
@@ -139,8 +120,34 @@ const GAMES = [
     gradient: 'linear-gradient(135deg, #10b981, #059669)',
     path: '/scavenger',
     category: 'Spot-It',
-    special: true
+    special: true,
+    stage: 2
   },
+  {
+    id: 'akshara',
+    title: 'Akshara Magic Lab',
+    emoji: '🧙‍♂️',
+    description: '8 magical levels! Learn aksharas through combining, splitting & word mastery.',
+    color: '#a855f7',
+    gradient: 'linear-gradient(135deg, #a855f7, #6366f1)',
+    path: '/akshara',
+    category: 'Aksharas',
+    special: true,
+    stage: 2
+  },
+  {
+    id: 'mars',
+    title: 'Mars Game',
+    emoji: '🪐',
+    description: 'Match images with words on Mars! Learn vocabulary through space adventure.',
+    color: '#FF4757',
+    gradient: 'linear-gradient(135deg, #ff4757, #c44569)',
+    path: '/mars-games',
+    category: 'Words',
+    stage: 2
+  },
+
+  // ─── Stage 3 — Jupiter (शब्द / Words & Matras) ────────────────────────────
   {
     id: 'matra',
     title: 'Matra Magic Builder',
@@ -150,18 +157,8 @@ const GAMES = [
     gradient: 'linear-gradient(135deg, #f43f5e, #e11d48)',
     path: '/matra-game',
     category: 'Matras',
-    special: true
-  },
-  {
-    id: 'word-jumble',
-    title: 'Word Jumble',
-    emoji: '🌊',
-    description: 'Words float freely on the board — drag them into the right order and press OK to score!',
-    color: '#06b6d4',
-    gradient: 'linear-gradient(135deg, #06b6d4, #0284c7)',
-    path: '/word-jumble',
-    category: 'Sentences',
-    special: true
+    special: true,
+    stage: 3
   },
   {
     id: 'shabd',
@@ -172,29 +169,31 @@ const GAMES = [
     gradient: 'linear-gradient(135deg, #0ea5e9, #0284c7)',
     path: '/shabd',
     category: 'Word Games',
-    special: true
+    special: true,
+    stage: 3
   },
   {
-    id: 'story-time',
-    title: 'Story Time Quiz',
-    emoji: '📖',
-    description: 'Read popular short stories and answer fun questions to test your understanding!',
-    color: '#e91e63',
-    gradient: 'linear-gradient(135deg, #e91e63, #c2185b)',
-    path: '/story-time',
-    category: 'Reading',
-    special: true
+    id: 'word-jumble',
+    title: 'Word Jumble',
+    emoji: '🌊',
+    description: 'Words float freely on the board — drag them into the right order and press OK to score!',
+    color: '#06b6d4',
+    gradient: 'linear-gradient(135deg, #06b6d4, #0284c7)',
+    path: '/word-jumble',
+    category: 'Sentences',
+    special: true,
+    stage: 3
   },
   {
-    id: 'fill-story',
-    title: 'Fill the Story',
-    emoji: '📖',
-    description: 'Fill blanks in funny stories with the right words! Read & hear the complete tale.',
-    color: '#f472b6',
-    gradient: 'linear-gradient(135deg, #f472b6, #a855f7)',
-    path: '/fill-story',
-    category: 'Stories',
-    special: true
+    id: 'word-sorting-basket',
+    title: 'Word Sorting Basket',
+    emoji: '🧺',
+    description: 'Drag mixed words into the right category basket and score points.',
+    color: '#F59E0B',
+    gradient: 'linear-gradient(135deg, #F59E0B, #EF4444)',
+    path: '/word-sorting-basket',
+    category: 'Words',
+    stage: 3
   },
   {
     id: 'crossword',
@@ -205,7 +204,34 @@ const GAMES = [
     gradient: 'linear-gradient(135deg, #8b5cf6, #6d28d9)',
     path: '/crossword',
     category: 'Puzzles',
-    special: true
+    special: true,
+    stage: 3
+  },
+
+  // ─── Stage 4 — Saturn (वाक्य / Sentences & Stories) ──────────────────────
+  {
+    id: 'story-time',
+    title: 'Story Time Quiz',
+    emoji: '📖',
+    description: 'Read popular short stories and answer fun questions to test your understanding!',
+    color: '#e91e63',
+    gradient: 'linear-gradient(135deg, #e91e63, #c2185b)',
+    path: '/story-time',
+    category: 'Reading',
+    special: true,
+    stage: 4
+  },
+  {
+    id: 'fill-story',
+    title: 'Fill the Story',
+    emoji: '📝',
+    description: 'Fill blanks in funny stories with the right words! Read & hear the complete tale.',
+    color: '#f472b6',
+    gradient: 'linear-gradient(135deg, #f472b6, #a855f7)',
+    path: '/fill-story',
+    category: 'Stories',
+    special: true,
+    stage: 4
   }
 ];
 

@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
 import MemoryCard from './MemoryCard';
 import { HINDI_SWARAS, TELUGU_SWARAS, LEVELS } from './SwaraData';
+import { saveStars } from '../../hooks/useGameProgress';
 import './SwaraMemoryGame.css';
 
 // Shuffle array helper
@@ -117,6 +118,14 @@ export default function SwaraMemoryGame() {
                         if (updated.length === level.pairs) {
                             setIsRunning(false);
                             setGameComplete(true);
+                            // Award stars based on efficiency (fewer moves = more stars)
+                            // eslint-disable-next-line react-hooks/exhaustive-deps
+                            setMoves(m => {
+                                const efficiency = level.pairs / (m + 1);
+                                const stars = efficiency >= 0.8 ? 3 : efficiency >= 0.5 ? 2 : 1;
+                                saveStars('swara-memory', stars);
+                                return m;
+                            });
                             confetti({
                                 particleCount: 200,
                                 spread: 100,
@@ -160,7 +169,7 @@ export default function SwaraMemoryGame() {
             <div className="smg-page">
                 <div className="smg-bg-particles" />
                 <header className="smg-header">
-                    <button className="smg-back-btn" onClick={() => navigate('/game-hub')}>
+                    <button className="smg-back-btn" onClick={() => navigate('/stages')}>
                         ← Back to Games
                     </button>
                     <h1>🃏 {language === 'telugu' ? 'స్వర జోడీ' : 'स्वर जोड़ी'} — Swara Pair Cards</h1>
@@ -240,7 +249,7 @@ export default function SwaraMemoryGame() {
                             <button className="smg-levels-btn" onClick={() => setLevel(null)}>
                                 📋 Change Level
                             </button>
-                            <button className="smg-home-btn" onClick={() => navigate('/game-hub')}>
+                            <button className="smg-home-btn" onClick={() => navigate('/stages')}>
                                 🏠 Game Hub
                             </button>
                         </div>

@@ -1,7 +1,9 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import AuthPage from './components/AuthPage';
 import GameHub from './components/GameHub';
+import StageHub from './components/StageHub';
+import PlanetGamesScreen from './components/PlanetGamesScreen';
 import PlanetHome from './components/PlanetHome';
 import GameSelection from './components/GameSelection';
 import PlanetSelection from './components/PlanetSelection';
@@ -40,6 +42,17 @@ import FillStoryGame from './components/fillStory/FillStoryGame';
 import CrosswordGame from './components/CrosswordGame';
 import './App.css';
 
+// Smart redirect: all old navigate('/game-hub') calls go back to the
+// planet the user was on (stored in localStorage by PlanetGamesScreen).
+const GameHubRedirect = () => {
+  const navigate = useNavigate();
+  useEffect(() => {
+    const lastStage = localStorage.getItem('lastStage');
+    navigate(lastStage ? `/stages/${lastStage}` : '/stages', { replace: true });
+  }, [navigate]);
+  return null;
+};
+
 function App() {
   return (
     <Router>
@@ -48,8 +61,13 @@ function App() {
           {/* Auth */}
           <Route path="/" element={<AuthPage />} />
 
-          {/* Game Hub - All 5 Games */}
-          <Route path="/game-hub" element={<GameHub />} />
+          {/* Stage Hub — 4 Planet Journey */}
+          <Route path="/stages" element={<StageHub />} />
+          <Route path="/stages/:stageId" element={<PlanetGamesScreen />} />
+
+          {/* Game Hub (legacy flat view, kept as fallback) */}
+          <Route path="/game-hub" element={<GameHubRedirect />} />
+          <Route path="/game-hub-flat" element={<GameHub />} />
 
           {/* Original games */}
           <Route path="/planet-home" element={<PlanetHome />} />
