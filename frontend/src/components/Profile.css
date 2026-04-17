@@ -1,0 +1,181 @@
+﻿@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+
+.profile-container {
+  padding: 2rem;
+  max-width: 1000px;
+  margin: 0 auto;
+  text-align: center;
+  font-family: 'Nunito', sans-serif;
+  color: #fff;
+  min-height: 100vh;
+}
+
+.profile-header {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  margin-bottom: 3rem;
+  position: relative;
+}
+
+.profile-header h1 {
+  color: #fff;
+  margin-bottom: 0.5rem;
+  font-size: 2.2rem;
+  font-weight: 800;
+}
+
+.profile-header p {
+  color: #94a3b8;
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.back-btn {
+  position: absolute;
+  top: 1.5rem;
+  left: 1.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.95rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.back-btn::before {
+  content: '←';
+  font-size: 1.2rem;
+}
+
+.back-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateX(-4px);
+}
+
+.stages-container h2 {
+  color: #e2e8f0;
+  margin-bottom: 2rem;
+  font-size: 1.8rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.profile-planets-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 2rem;
+}
+
+.profile-planet-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 2rem 1.5rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  display: flex !important; /* Overriding global if any */
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  position: relative;
+  overflow: hidden;
+  gap: 10px !important;
+}
+
+.profile-planet-card:hover {
+  transform: translateY(-8px);
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+}
+
+.profile-planet-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+}
+
+.profile-earth::before { background: #22d3ee; }
+.profile-mars::before { background: #f97316; }
+.profile-jupiter::before { background: #fb923c; }
+.profile-saturn::before { background: #a78bfa; }
+
+.profile-planet-icon {
+  font-size: 4rem;
+  margin-bottom: 0.5rem;
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.4));
+  animation: float 4s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.profile-planet-card h3 {
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+.profile-stage-title {
+  color: #94a3b8;
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-align: center;
+}
+
+.profile-stars-earned {
+  color: #fbd38d;
+  font-size: 1rem;
+  font-weight: bold;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 10px 16px;
+  border-radius: 12px;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(251, 211, 141, 0.2);
+  width: 100%;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 10px;
+}
+
+.star-icon {
+  color: #fbbf24;
+  font-size: 1.3rem;
+  text-shadow: 0 0 8px rgba(251, 191, 36, 0.6);
+}
+
+.no-stars {
+  color: #64748b;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.profile-loading, .profile-error {
+  text-align: center;
+  padding: 4rem;
+  font-size: 1.5rem;
+  font-family: 'Nunito', sans-serif;
+  color: #e2e8f0;
+}

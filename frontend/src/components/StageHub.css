@@ -1,4 +1,4 @@
-/* StageHub.css — full-page planetary journey */
+﻿/* StageHub.css â€” full-page planetary journey */
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
 
 * {
@@ -476,3 +476,6 @@
         right: 12px;
     }
 }
+
+.profile-btn { background: #a78bfa; color: white; border: none; border-radius: 20px; padding: 6px 15px; font-weight: bold; cursor: pointer; transition: background 0.2s; margin-right: 15px; }
+.profile-btn:hover { background: #8b5cf6; }

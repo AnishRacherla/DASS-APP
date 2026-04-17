@@ -132,9 +132,12 @@ const PlanetGamesScreen = () => {
 
                                 {unlocked && (
                                     <div className="node-stars">
-                                        {[1, 2, 3].map(n => (
-                                            <span key={n} className={`node-star ${stars >= n ? 'earned' : ''}`}>⭐</span>
-                                        ))}
+                                        <div className="node-stars-icons">
+                                            {[1, 2, 3].map(n => (
+                                                <span key={n} className={`node-star ${stars >= n ? 'earned' : ''}`}>⭐</span>
+                                            ))}
+                                        </div>
+                                        {stars >= 0 && <div className="node-stars-text">{Math.max(0, stars)}/3</div>}
                                     </div>
                                 )}
 

@@ -19,6 +19,37 @@ const Results = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [score, navigate, skipScoreSave]);
 
+  const isBaloonGame = gameType === 'balloon';
+  const isMarsGame = gameType === 'mars';
+  const isWhackGame = gameType === 'whack';
+  const isBubbleShooterGame = gameType === 'bubble-shooter';
+  const isWordSortingGame = gameType === 'word-sorting-basket';
+  
+  const displayScore = (isBaloonGame || isMarsGame || isWhackGame || isBubbleShooterGame || isWordSortingGame)
+    ? score
+    : (correctAnswers !== undefined ? correctAnswers : score);
+  
+  const correctCount = correctAnswers !== undefined ? correctAnswers : score;
+  const totalQuestionsValue = totalQuestions || correctCount || 1;
+  const whackPenaltyCount = typeof penalties !== 'undefined' ? penalties : 0;
+  const whackPassed = whackPenaltyCount === 0 && score >= 10;
+  
+  const percentage = (isWhackGame || isBubbleShooterGame || isWordSortingGame)
+    ? (totalQuestionsValue > 0 ? ((correctCount / totalQuestionsValue) * 100) : 0)
+    : totalQuestionsValue > 0
+      ? ((correctCount / totalQuestionsValue) * 100)
+      : (displayScore > 0 ? 100 : 0);
+    
+  let stars = 1;
+  if (isWhackGame) {
+    stars = whackPassed ? (whackPenaltyCount === 0 && score >= 30 ? 3 : 2) : 1;
+  } else if (isBaloonGame || isMarsGame || isWordSortingGame) {
+    // For point-based games
+    stars = score >= 30 ? 3 : score >= 15 ? 2 : 1;
+  } else {
+    stars = percentage >= 80 ? 3 : percentage >= 50 ? 2 : 1;
+  }
+
   const saveScore = async () => {
     if (scoreSavedRef.current) return; // Prevent duplicate saves (useRef is synchronous)
     scoreSavedRef.current = true; // lock immediately before any await
@@ -27,15 +58,22 @@ const Results = () => {
     if (!userId) return;
 
     try {
-      await axios.post('http://localhost:5001/api/scores', {
+      const response = await axios.post('http://localhost:5001/api/scores', {
         userId,
         gameType: gameType || 'quiz',
         language,
         level: level || 1,
         score,
+        stars,
         correctAnswers: correctAnswers !== undefined ? correctAnswers : score,
         totalQuestions
       });
+      // Optionally save to local storage or game progress context
+      import('../hooks/useGameProgress').then(({ saveStars }) => {
+        const averageStars = response?.data?.averageStars !== undefined ? response.data.averageStars : stars;
+        saveStars(gameType || 'quiz', averageStars);
+      }).catch(err => console.error('Failed to import saveStars:', err));
+
     } catch (error) {
       console.error('Error saving score:', error);
       scoreSavedRef.current = false; // allow retry on error
@@ -45,38 +83,10 @@ const Results = () => {
   if (!score && score !== 0) {
     return null;
   }
-
-  // For balloon and mars games, show raw score. For others, use correctAnswers
-  const isBaloonGame = gameType === 'balloon';
-  const isMarsGame = gameType === 'mars';
-  const isWhackGame = gameType === 'whack';
-  const isBubbleShooterGame = gameType === 'bubble-shooter';
-  const isWordSortingGame = gameType === 'word-sorting-basket';
   
-  // For balloon: score is points, correctAnswers is number of correct balloons, totalQuestions is total taps
-  // For mars/quiz: correctAnswers is correct count, totalQuestions is total questions
-  const displayScore = (isBaloonGame || isMarsGame || isWhackGame || isBubbleShooterGame || isWordSortingGame)
-    ? score
-    : (correctAnswers !== undefined ? correctAnswers : score);
+  const bubbleWrongHits = typeof penalties !== 'undefined' ? penalties : 0;
   
-  // For balloon game, don't calculate percentage based on taps, just show if they got points
-  const correctCount = correctAnswers !== undefined ? correctAnswers : score;
-  const totalQuestionsValue = totalQuestions || correctCount || 1; // always use actual totalQuestions
-  const whackPenaltyCount = penalties || 0;
-  const whackPassed = whackPenaltyCount === 0 && score >= 10;
-  const bubbleWrongHits = penalties || 0;
-  
-  // Calculate percentage based on correct answers vs total questions
-  const percentage = (isWhackGame || isBubbleShooterGame || isWordSortingGame)
-    ? (totalQuestionsValue > 0 ? ((correctCount / totalQuestionsValue) * 100) : 0)
-    : totalQuestionsValue > 0
-      ? ((correctCount / totalQuestionsValue) * 100)
-      : (displayScore > 0 ? 100 : 0);
-    
   const passed = isWhackGame ? whackPassed : (correctCount >= Math.ceil(totalQuestionsValue * 0.6));
-  const stars = isWhackGame
-    ? (whackPassed ? (whackPenaltyCount === 0 && score >= 30 ? 3 : 2) : 1)
-    : (percentage >= 80 ? 3 : percentage >= 60 ? 2 : 1);
 
   const getEmoji = () => {
     if (isWhackGame && whackPassed) return '🔨';

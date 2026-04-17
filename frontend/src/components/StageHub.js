@@ -150,6 +150,7 @@ const StageHub = () => {
                     {streak > 0 && (
                         <div className="streak-badge">🔥 {streak} day streak</div>
                     )}
+                    <button className="profile-btn" onClick={() => navigate('/profile')} title="Go to Profile">👤 Profile</button>
                     <div className="lang-toggle">
                         <button className={`lang-btn ${language === 'hindi' ? 'active' : ''}`} onClick={() => handleLanguageChange('hindi')}>Hindi</button>
                         <button className={`lang-btn ${language === 'telugu' ? 'active' : ''}`} onClick={() => handleLanguageChange('telugu')}>Telugu</button>

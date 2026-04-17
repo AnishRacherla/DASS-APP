@@ -31,9 +31,15 @@ export default function Results({ navigation, route }) {
       ? ((correctCount / totalQuestionsValue) * 100)
       : (score > 0 ? 100 : 0);
   const passed = isWhackGame ? whackPassed : (correctCount >= Math.ceil(totalQuestionsValue * 0.6));
-  const stars = isWhackGame
-    ? (whackPassed ? (whackPenaltyCount === 0 && score >= 30 ? 3 : 2) : 1)
-    : (percentage >= 80 ? 3 : percentage >= 60 ? 2 : 1);
+  
+  let stars = 1;
+  if (isWhackGame) {
+    stars = whackPassed ? (whackPenaltyCount === 0 && score >= 30 ? 3 : 2) : 1;
+  } else if (isBaloonGame || isMarsGame || isWordSortingGame) {
+    stars = score >= 30 ? 3 : score >= 15 ? 2 : 1;
+  } else {
+    stars = percentage >= 80 ? 3 : percentage >= 50 ? 2 : 1;
+  }
 
   useEffect(() => {
     if (!score && score !== 0) {
@@ -51,15 +57,19 @@ export default function Results({ navigation, route }) {
       const userId = await AsyncStorage.getItem('userId');
       if (!userId) return;
 
-      await axios.post(`${API_BASE_URL}/api/scores`, {
+      const response = await axios.post(`${API_BASE_URL}/api/scores`, {
         userId,
         gameType: gameType || 'quiz',
         language,
         level: level || 1,
         score,
+        stars,
         correctAnswers: correctAnswers !== undefined ? correctAnswers : score,
         totalQuestions,
       }, { timeout: API_TIMEOUT });
+      
+      const averageStars = response?.data?.averageStars !== undefined ? response.data.averageStars : stars;
+      await AsyncStorage.setItem(`stars_${gameType || 'quiz'}`, String(averageStars));
     } catch (error) {
       console.log('Score save failed (non-critical):', error?.message);
       scoreSavedRef.current = false;

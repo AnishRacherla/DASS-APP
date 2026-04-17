@@ -145,22 +145,42 @@
 
 .node-stars {
     position: absolute;
-    bottom: -15px;
-    background: rgba(0, 0, 0, 0.8);
-    padding: 4px 10px;
-    border-radius: 20px;
+    bottom: -45px;
+    background: rgba(0, 0, 0, 0.85);
+    padding: 6px 12px;
+    border-radius: 12px;
     display: flex;
-    gap: 2px;
-    font-size: 0.8rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    z-index: 10;
+    min-width: 60px;
+}
+
+.node-stars-icons {
+    display: flex;
+    gap: 3px;
+    font-size: 1.1rem;
 }
 
 .node-star {
-    opacity: 0.3;
+    filter: grayscale(100%) brightness(60%) opacity(40%);
+    transition: all 0.3s ease;
 }
 
 .node-star.earned {
-    opacity: 1;
+    filter: grayscale(0%) brightness(120%) drop-shadow(0 0 6px gold);
+    transform: scale(1.15);
+}
+
+.node-stars-text {
+    font-size: 0.8rem;
+    color: #fff;
+    font-weight: 700;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+    letter-spacing: 1px;
 }
 
 .node-title-card {

@@ -15,7 +15,6 @@ const scoreSchema = new mongoose.Schema({
   },
   gameType: {
     type: String,
-    enum: ['quiz', 'balloon', 'mars', 'memory', 'spelling', 'story', 'tracing', 'whack', 'akshara', 'consonant', 'matra'],
     default: 'quiz'
   },
   gameId: {
@@ -39,6 +38,10 @@ const scoreSchema = new mongoose.Schema({
   score: {
     type: Number,
     required: true
+  },
+  stars: {
+    type: Number,
+    default: 0
   },
   correctAnswers: {
     type: Number,

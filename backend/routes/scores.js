@@ -20,6 +20,7 @@ router.post('/', async (req, res) => {
 
     // Use raw score without any scaling
     const finalScore = score;
+    const finalStars = req.body.stars || 0;
 
     // Check if this game/level was played before
     const previousScore = await Score.findOne({
@@ -36,6 +37,7 @@ router.post('/', async (req, res) => {
       language,
       level: level || 1,
       score: finalScore,
+      stars: finalStars,
       correctAnswers: correctAnswers || 0,
       totalQuestions: totalQuestions || 5,
       answers
@@ -80,10 +82,30 @@ router.post('/', async (req, res) => {
     progress.updatedAt = Date.now();
     await progress.save();
 
+    // Calculate updated average stars for this game type
+    const userScores = await Score.find({ userId, gameType, language });
+    const levelStarsMap = {};
+    userScores.forEach(s => {
+      const lvl = s.level || 1;
+      // if multiple attempts, keep the latest or highest? We usually sort by completedAt -1 above.
+      // But Score.find() without sort might return mixed. Let's just track the latest for each level logic as earlier,
+      // or simply the highest stars. Let's use highest stars per level for average.
+      levelStarsMap[lvl] = Math.max(levelStarsMap[lvl] || 0, s.stars || 0);
+    });
+    
+    let sumStars = 0;
+    let countLevels = 0;
+    Object.values(levelStarsMap).forEach(st => {
+      sumStars += st;
+      countLevels++;
+    });
+    const averageStars = countLevels > 0 ? Math.round(sumStars / countLevels) : 0;
+
     res.status(201).json({
       success: true,
       score: newScore,
       progress,
+      averageStars,
       message: previousScore ? 'Score updated' : 'Score saved'
     });
   } catch (error) {
@@ -138,37 +160,41 @@ router.get('/user/:userId/total', async (req, res) => {
     });
 
     // Calculate totals by game type using only latest scores
-    const gameTypeTotals = {
-      quiz: 0,
-      balloon: 0,
-      mars: 0,
-      whack: 0,
-      consonant: 0,
-      total: 0
-    };
+    const gameTypeTotals = {};
+    const gameTypeStarsSum = {};
+    const gameTypeLevelCount = {};
+    let totalScore = 0;
 
     Object.values(latestScores).forEach(score => {
       const gameType = score.gameType || 'quiz';
       gameTypeTotals[gameType] = (gameTypeTotals[gameType] || 0) + score.score;
-      gameTypeTotals.total += score.score;
+      totalScore += score.score;
+      
+      // For stars calculation
+      gameTypeStarsSum[gameType] = (gameTypeStarsSum[gameType] || 0) + (score.stars || 0);
+      gameTypeLevelCount[gameType] = (gameTypeLevelCount[gameType] || 0) + 1;
+    });
+
+    const averageStars = {};
+    Object.keys(gameTypeLevelCount).forEach(type => {
+      averageStars[type] = Math.round(gameTypeStarsSum[type] / gameTypeLevelCount[type]);
     });
 
     // Count unique games played (unique game-level combinations)
     const uniqueGames = Object.values(latestScores);
     const gamesPlayed = {
-      quiz: uniqueGames.filter(s => s.gameType === 'quiz').length,
-      balloon: uniqueGames.filter(s => s.gameType === 'balloon').length,
-      mars: uniqueGames.filter(s => s.gameType === 'mars').length,
-      whack: uniqueGames.filter(s => s.gameType === 'whack').length,
-      consonant: uniqueGames.filter(s => s.gameType === 'consonant').length,
       total: uniqueGames.length
     };
+    Object.keys(gameTypeLevelCount).forEach(type => {
+      gamesPlayed[type] = gameTypeLevelCount[type];
+    });
 
     res.json({
       success: true,
-      totalScore: gameTypeTotals.total,
+      totalScore,
       gameTypeTotals,
       gamesPlayed,
+      averageStars,
       language
     });
   } catch (error) {

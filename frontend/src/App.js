@@ -41,6 +41,7 @@ import FillStoryHub from './components/fillStory/FillStoryHub';
 import FillStoryGame from './components/fillStory/FillStoryGame';
 import CrosswordGame from './components/CrosswordGame';
 import MissingMatraFill from './components/missingMatra/MissingMatraFill';
+import Profile from './components/Profile';
 import './App.css';
 
 // Smart redirect: all old navigate('/game-hub') calls go back to the
@@ -61,7 +62,8 @@ function App() {
         <Routes>
           {/* Auth */}
           <Route path="/" element={<AuthPage />} />
-
+          {/* Profile User Page */}
+          <Route path="/profile" element={<Profile />} />
           {/* Stage Hub — 4 Planet Journey */}
           <Route path="/stages" element={<StageHub />} />
           <Route path="/stages/:stageId" element={<PlanetGamesScreen />} />
