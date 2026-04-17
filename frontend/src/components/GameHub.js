@@ -206,6 +206,17 @@ const GAMES = [
     path: '/crossword',
     category: 'Puzzles',
     special: true
+  },
+  {
+    id: 'missing-matra',
+    title: 'Missing Matra Fill',
+    emoji: '🔤',
+    description: 'A matra is missing from the word — can you spot and fill it in? 3 levels of fun!',
+    color: '#ec4899',
+    gradient: 'linear-gradient(135deg, #ec4899, #8b5cf6)',
+    path: '/missing-matra',
+    category: 'Matras',
+    special: true
   }
 ];
 

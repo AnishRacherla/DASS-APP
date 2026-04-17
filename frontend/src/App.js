@@ -38,6 +38,7 @@ import StoryTimeQuiz from './components/storyTime/StoryTimeQuiz';
 import FillStoryHub from './components/fillStory/FillStoryHub';
 import FillStoryGame from './components/fillStory/FillStoryGame';
 import CrosswordGame from './components/CrosswordGame';
+import MissingMatraFill from './components/missingMatra/MissingMatraFill';
 import './App.css';
 
 function App() {
@@ -113,6 +114,9 @@ function App() {
           {/* Crossword Game */}
           <Route path="/crossword" element={<CrosswordGame />} />
           <Route path="/crossword-game" element={<CrosswordGame />} />
+
+          {/* Missing Matra Fill */}
+          <Route path="/missing-matra" element={<MissingMatraFill />} />
 
           {/* Fallback */}
           <Route path="*" element={<Navigate to="/" replace />} />
