@@ -1,26 +1,41 @@
 {
   "name": "literacy-game-backend",
   "version": "1.0.0",
-  "description": "Backend API for Literacy Game Mobile App",
+  "description": "Backend server for literacy game",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
-    "seed": "node seeds/seedQuizzes.js"
+    "seed": "node seeds/seedQuizzes.js",
+    "seed:balloon": "node seeds/seedBalloonGames.js",
+    "seed:whack": "node seeds/seedWhackGames.js",
+    "seed:swara": "node seeds/seedSwaras.js",
+    "seed:consonants": "node seeds/seedConsonants.js",
+    "seed:word-sorting": "node seeds/seedWordSortingBasket.js",
+    "seed:scavenger": "node seeds/seedScavengerGames.js",
+    "seed:scrambled": "node seeds/seedScrambledSentences.js",
+    "seed:crossword": "node seeds/seedCrossword.js",
+    "test": "jest",
+    "test:unit": "jest tests/unit",
+    "test:acceptance": "jest tests/acceptance --testPathIgnorePatterns='.real.test.js'",
+    "test:acceptance:real": "jest tests/acceptance --testMatch='**/*.real.test.js' --runInBand",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:all": "jest --coverage --verbose"
   },
-  "keywords": ["literacy", "quiz", "education"],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
-    "express": "^4.18.2",
-    "mongoose": "^8.0.0",
+    "bcryptjs": "^3.0.3",
     "cors": "^2.8.5",
-    "dotenv": "^16.3.1"
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "google-tts-api": "^2.0.2",
+    "mongoose": "^7.6.3",
+    "packages": "^0.0.8"
   },
   "devDependencies": {
-    "nodemon": "^3.0.1"
-  },
-  "engines": {
-    "node": ">=18.0.0"
+    "@jest/globals": "^29.7.0",
+    "jest": "^29.7.0",
+    "nodemon": "^3.0.1",
+    "supertest": "^7.2.2"
   }
 }

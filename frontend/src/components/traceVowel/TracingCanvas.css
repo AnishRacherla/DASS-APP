@@ -1,0 +1,203 @@
+/* TracingCanvas.css — Animations and styling for the SVG tracing canvas */
+
+.tracing-canvas-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+  aspect-ratio: 250 / 300;
+  background: linear-gradient(145deg, #fefce8, #fff7ed, #fef3c7);
+  border-radius: 20px;
+  border: 3px solid #e5e7eb;
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  overflow: hidden;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: crosshair;
+}
+
+.tracing-canvas-wrapper.shake {
+  animation: canvasShake 0.35s ease-in-out;
+}
+
+.tracing-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Ghost stroke — full letter outline, very light */
+.stroke-ghost {
+  fill: none;
+  stroke: #d1d5db;
+  stroke-width: 12;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 8, 8;
+  opacity: 0.5;
+}
+
+/* Locked stroke — numbered but not yet active */
+.stroke-locked {
+  fill: none;
+  stroke: #c4b5fd;
+  stroke-width: 10;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 6, 10;
+  opacity: 0.3;
+}
+
+/* Active stroke guide — the stroke the child should trace */
+.stroke-active-guide {
+  fill: none;
+  stroke: #a78bfa;
+  stroke-width: 14;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 4, 8;
+  opacity: 0.55;
+  filter: url(#glowFilter);
+}
+
+/* Traced progress overlay — colored fill that grows as child traces */
+.stroke-traced {
+  fill: none;
+  stroke: url(#tracedGradient);
+  stroke-width: 14;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke-dashoffset 0.05s linear;
+  pointer-events: none;
+}
+
+/* Completed stroke — fully traced, golden */
+.stroke-completed {
+  fill: none;
+  stroke: #f59e0b;
+  stroke-width: 13;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.95;
+  filter: drop-shadow(0 0 4px rgba(245, 158, 11, 0.5));
+}
+
+/* Start point — pulsing green circle */
+.start-dot {
+  fill: #22c55e;
+  filter: drop-shadow(0 0 6px rgba(34, 197, 94, 0.6));
+  animation: pulseDot 1.2s ease-in-out infinite;
+}
+
+/* Stroke number label */
+.stroke-number-bg {
+  fill: rgba(139, 92, 246, 0.9);
+}
+.stroke-number-text {
+  fill: #ffffff;
+  font-size: 14px;
+  font-weight: 700;
+  text-anchor: middle;
+  dominant-baseline: central;
+  pointer-events: none;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+.stroke-number-completed .stroke-number-bg {
+  fill: rgba(245, 158, 11, 0.9);
+}
+
+/* Direction arrow */
+.direction-arrow {
+  fill: none;
+  stroke: #7c3aed;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+/* Sparkle effect for completed strokes */
+.sparkle-particle {
+  animation: sparkleFloat 0.8s ease-out forwards;
+  pointer-events: none;
+}
+
+/* Background guide letter */
+.background-guide-char {
+  font-family: 'Mukta', 'Noto Sans Devanagari', sans-serif;
+  font-size: 200px;
+  font-weight: 700;
+  fill: #e5e7eb;
+  opacity: 0.5;
+  text-anchor: middle;
+  dominant-baseline: central;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* ─── Keyframes ─────────────────────────────────────── */
+
+@keyframes pulseDot {
+  0%, 100% {
+    r: 10;
+    opacity: 0.9;
+  }
+  50% {
+    r: 14;
+    opacity: 1;
+  }
+}
+
+@keyframes canvasShake {
+  0%, 100% { transform: translateX(0); }
+  15% { transform: translateX(-4px); }
+  30% { transform: translateX(4px); }
+  45% { transform: translateX(-3px); }
+  60% { transform: translateX(3px); }
+  75% { transform: translateX(-1px); }
+}
+
+@keyframes sparkleFloat {
+  0% {
+    opacity: 1;
+    transform: scale(1) translate(0, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.3) translate(var(--dx), var(--dy));
+  }
+}
+
+/* Off-path indicator — red border flash */
+.tracing-canvas-wrapper.off-path {
+  border-color: #fca5a5;
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.08),
+    inset 0 0 0 2px rgba(239, 68, 68, 0.2);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.tracing-canvas-wrapper:not(.off-path) {
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+/* Hint animation — ghost hand tracing */
+.hint-trace {
+  fill: none;
+  stroke: #60a5fa;
+  stroke-width: 14;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.hint-dot {
+  fill: #3b82f6;
+  opacity: 0.7;
+  pointer-events: none;
+}

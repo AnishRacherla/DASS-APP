@@ -1,0 +1,57 @@
+# --- Office / Temp ---
+~$*.doc*
+~$*.xls*
+*.tmp
+
+# --- Node / JS Monorepo ---
+node_modules/
+**/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# --- Build Artifacts ---
+build/
+dist/
+coverage/
+**/build/
+**/dist/
+**/coverage/
+.cache/
+
+# --- Environment / Secrets ---
+.env
+.env.*
+!.env.example
+!.env.sample
+*.pem
+*.key
+*.p8
+*.p12
+*.jks
+
+# --- Expo / React Native / EAS ---
+.expo/
+.expo-shared/
+web-build/
+.eas/
+*.apk
+*.aab
+*.ipa
+*.mobileprovision
+.metro-health-check*
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+.pytest_cache/
+venv/
+.venv/
+
+# --- OS / Editor ---
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+

@@ -33,7 +33,7 @@ const hindiQuizzes = [
   {
     language: 'hindi',
     level: 1,
-    planetName: 'Planet 1: Basic Letters',
+    planetName: '🌊 Ocean: Basic Letters',
     questions: [
       {
         questionId: 1,
@@ -80,7 +80,7 @@ const hindiQuizzes = [
   {
     language: 'hindi',
     level: 2,
-    planetName: 'Planet 2: Vowel Practice',
+    planetName: '🏞️ Land: Vowel Practice',
     questions: [
       {
         questionId: 1,
@@ -127,7 +127,7 @@ const hindiQuizzes = [
   {
     language: 'hindi',
     level: 3,
-    planetName: 'Planet 3: Consonants',
+    planetName: '⛰️ Mountains: Consonants',
     questions: [
       {
         questionId: 1,
@@ -177,7 +177,7 @@ const teluguQuizzes = [
   {
     language: 'telugu',
     level: 1,
-    planetName: 'Planet 1: Basic Letters',
+    planetName: '🌊 Ocean: Basic Letters',
     questions: [
       {
         questionId: 1,
@@ -224,7 +224,7 @@ const teluguQuizzes = [
   {
     language: 'telugu',
     level: 2,
-    planetName: 'Planet 2: Vowel Practice',
+    planetName: '🏞️ Land: Vowel Practice',
     questions: [
       {
         questionId: 1,
@@ -271,7 +271,7 @@ const teluguQuizzes = [
   {
     language: 'telugu',
     level: 3,
-    planetName: 'Planet 3: Consonants',
+    planetName: '⛰️ Mountains: Consonants',
     questions: [
       {
         questionId: 1,

@@ -1,0 +1,536 @@
+/* TraceVowelGame.css — Full game screen styling */
+
+/* ─── Root Container ─────────────────────────────────── */
+.trace-game {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1e1b4b 0%, #312e81 30%, #4c1d95 60%, #581c87 100%);
+  color: #fff;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Animated background particles */
+.trace-bg-particles {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+.trace-bg-particles::before,
+.trace-bg-particles::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.08;
+  animation: floatOrb 20s ease-in-out infinite;
+}
+.trace-bg-particles::before {
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, #a78bfa, transparent);
+  top: -100px;
+  right: -100px;
+}
+.trace-bg-particles::after {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, #f472b6, transparent);
+  bottom: -80px;
+  left: -80px;
+  animation-delay: -10s;
+}
+
+@keyframes floatOrb {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(30px, -40px) scale(1.1); }
+  50% { transform: translate(-20px, 30px) scale(0.95); }
+  75% { transform: translate(40px, 20px) scale(1.05); }
+}
+
+/* ─── Header ─────────────────────────────────────────── */
+.trace-header {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.trace-back-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #e0e7ff;
+  padding: 10px 18px;
+  border-radius: 12px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 500;
+}
+.trace-back-btn:hover {
+  background: rgba(255, 255, 255, 0.18);
+  transform: translateY(-1px);
+}
+
+.trace-header h1 {
+  font-size: 22px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #c4b5fd, #f9a8d4, #fbbf24);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0;
+}
+
+/* ─── Content wrapper ────────────────────────────────── */
+.trace-content {
+  position: relative;
+  z-index: 10;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+/* ─── Welcome Screen ─────────────────────────────────── */
+.trace-welcome {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 70vh;
+  text-align: center;
+  gap: 20px;
+}
+.trace-welcome-emoji {
+  font-size: 80px;
+  animation: bounceEmoji 1.5s ease-in-out infinite;
+}
+@keyframes bounceEmoji {
+  0%, 100% { transform: translateY(0) rotate(-5deg); }
+  50% { transform: translateY(-15px) rotate(5deg); }
+}
+.trace-welcome h2 {
+  font-size: 36px;
+  font-weight: 800;
+  margin: 0;
+  background: linear-gradient(135deg, #c4b5fd, #fbbf24);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.trace-welcome p {
+  font-size: 18px;
+  color: #c4b5fd;
+  max-width: 400px;
+  line-height: 1.5;
+}
+.trace-start-btn {
+  padding: 16px 48px;
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+  border: none;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 6px 25px rgba(109, 40, 217, 0.4);
+}
+.trace-start-btn:hover {
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 10px 35px rgba(109, 40, 217, 0.5);
+}
+
+/* ─── Vowel Selection Grid ───────────────────────────── */
+.trace-selection {
+  text-align: center;
+}
+.trace-selection h2 {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.trace-selection p {
+  color: #c4b5fd;
+  font-size: 16px;
+  margin-bottom: 28px;
+}
+
+.vowel-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+  gap: 14px;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.vowel-card {
+  position: relative;
+  background: rgba(255, 255, 255, 0.08);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 18px 8px 14px;
+  cursor: pointer;
+  transition: all 0.25s;
+  text-align: center;
+  backdrop-filter: blur(8px);
+}
+.vowel-card:hover {
+  background: rgba(255, 255, 255, 0.14);
+  transform: translateY(-4px) scale(1.02);
+  border-color: rgba(139, 92, 246, 0.5);
+  box-shadow: 0 8px 25px rgba(139, 92, 246, 0.25);
+}
+.vowel-card-letter {
+  font-size: 36px;
+  font-weight: 700;
+  display: block;
+  margin-bottom: 4px;
+  line-height: 1.2;
+}
+.vowel-card-stars {
+  font-size: 13px;
+  letter-spacing: 1px;
+}
+.vowel-card.completed {
+  border-color: rgba(245, 158, 11, 0.5);
+  background: rgba(245, 158, 11, 0.08);
+}
+.vowel-card.completed .vowel-card-letter {
+  color: #fbbf24;
+}
+
+/* ─── Tracing Screen ─────────────────────────────────── */
+.trace-screen {
+  display: grid;
+  grid-template-columns: 1fr 260px;
+  gap: 24px;
+  align-items: start;
+}
+
+@media (max-width: 768px) {
+  .trace-screen {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Left: canvas area */
+.trace-main {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Vowel info bar */
+.trace-vowel-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: rgba(255, 255, 255, 0.07);
+  padding: 14px 20px;
+  border-radius: 16px;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.trace-vowel-letter {
+  font-size: 48px;
+  font-weight: 800;
+  line-height: 1;
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.trace-vowel-word {
+  font-size: 20px;
+  color: #c4b5fd;
+  font-weight: 500;
+}
+.trace-vowel-audio-btn {
+  margin-left: auto;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #fff;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  font-size: 22px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.trace-vowel-audio-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.1);
+}
+
+/* Action buttons below canvas */
+.trace-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.trace-action-btn {
+  padding: 10px 22px;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.08);
+  color: #e0e7ff;
+  cursor: pointer;
+  transition: all 0.2s;
+  backdrop-filter: blur(8px);
+}
+.trace-action-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+}
+.trace-action-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+}
+.trace-action-btn.hint-btn {
+  background: rgba(59, 130, 246, 0.15);
+  border-color: rgba(59, 130, 246, 0.3);
+  color: #93c5fd;
+}
+.trace-action-btn.hint-btn:hover {
+  background: rgba(59, 130, 246, 0.25);
+}
+
+/* Right: stroke progress panel */
+.trace-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.stroke-progress-panel {
+  background: rgba(255, 255, 255, 0.07);
+  border-radius: 16px;
+  padding: 20px;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.stroke-progress-title {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 14px;
+  color: #c4b5fd;
+}
+
+.stroke-progress-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.5);
+}
+.stroke-progress-item:last-child {
+  border-bottom: none;
+}
+.stroke-progress-item.active {
+  color: #c4b5fd;
+  font-weight: 600;
+}
+.stroke-progress-item.completed {
+  color: #fbbf24;
+}
+
+.stroke-num {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
+}
+.stroke-progress-item.active .stroke-num {
+  background: rgba(139, 92, 246, 0.4);
+  color: #e0e7ff;
+  box-shadow: 0 0 12px rgba(139, 92, 246, 0.3);
+}
+.stroke-progress-item.completed .stroke-num {
+  background: rgba(245, 158, 11, 0.4);
+  color: #fef3c7;
+}
+
+.stroke-bar-wrapper {
+  flex: 1;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.stroke-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  background: linear-gradient(90deg, #22c55e, #16a34a);
+  transition: width 0.15s ease-out;
+}
+.stroke-progress-item.completed .stroke-bar-fill {
+  background: linear-gradient(90deg, #f59e0b, #fbbf24);
+}
+
+/* Swara image */
+.trace-swara-image-card {
+  background: rgba(255, 255, 255, 0.07);
+  border-radius: 16px;
+  padding: 16px;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  text-align: center;
+}
+.trace-swara-image {
+  width: 100%;
+  max-width: 160px;
+  aspect-ratio: 1;
+  object-fit: contain;
+  border-radius: 12px;
+}
+.trace-swara-image-label {
+  font-size: 14px;
+  color: #c4b5fd;
+  margin-top: 8px;
+}
+
+/* ─── Completion Screen ──────────────────────────────── */
+.trace-complete {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  text-align: center;
+  gap: 16px;
+}
+.trace-complete-letter {
+  font-size: 100px;
+  font-weight: 800;
+  line-height: 1;
+  background: linear-gradient(135deg, #fbbf24, #f59e0b, #22c55e);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: completePop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+@keyframes completePop {
+  0% { transform: scale(0.3); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.trace-complete h2 {
+  font-size: 30px;
+  font-weight: 700;
+  margin: 0;
+}
+.trace-complete-stars {
+  font-size: 44px;
+  letter-spacing: 6px;
+  margin: 8px 0;
+}
+.trace-complete-msg {
+  color: #c4b5fd;
+  font-size: 16px;
+  max-width: 400px;
+  line-height: 1.5;
+}
+
+.trace-complete-actions {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 12px;
+}
+
+.trace-cta-btn {
+  padding: 14px 32px;
+  font-size: 16px;
+  font-weight: 700;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.25s;
+}
+.trace-cta-btn.primary {
+  background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+  color: #fff;
+  box-shadow: 0 6px 20px rgba(109, 40, 217, 0.35);
+}
+.trace-cta-btn.primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(109, 40, 217, 0.45);
+}
+.trace-cta-btn.secondary {
+  background: rgba(255, 255, 255, 0.1);
+  color: #e0e7ff;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+.trace-cta-btn.secondary:hover {
+  background: rgba(255, 255, 255, 0.18);
+  transform: translateY(-2px);
+}
+
+/* ─── Loading ────────────────────────────────────────── */
+.trace-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  gap: 16px;
+}
+.trace-spinner {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 4px solid rgba(255, 255, 255, 0.15);
+  border-top-color: #a78bfa;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ─── Nav buttons (prev/next vowel on tracing screen) ── */
+.trace-nav-bar {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+}
+.trace-nav-btn {
+  padding: 10px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+  color: #c4b5fd;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.trace-nav-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.12);
+  transform: translateY(-1px);
+}
+.trace-nav-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}

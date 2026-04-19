@@ -21,11 +21,12 @@ const Quiz = () => {
 
   useEffect(() => {
     fetchQuiz();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [language, level]);
 
   const fetchQuiz = async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/quizzes/${language}/${level}`);
+      const response = await axios.get(`http://localhost:5001/api/quizzes/${language}/${level}`);
       setQuiz(response.data.quiz);
       setLoading(false);
       setStartTime(Date.now());
@@ -39,7 +40,7 @@ const Quiz = () => {
     if (quiz && quiz.questions[currentQuestion]) {
       const questionId = quiz.questions[currentQuestion].questionId;
       // Fetch audio from database via API
-      const audioUrl = `http://localhost:5000/api/audio/${language}/${level}/${questionId}`;
+      const audioUrl = `http://localhost:5001/api/audio/${language}/${level}/${questionId}`;
       
       if (audioRef.current) {
         audioRef.current.src = audioUrl;
@@ -96,12 +97,14 @@ const Quiz = () => {
 
   const submitQuizScore = async (finalAnswers, finalScore) => {
     try {
-      await axios.post('http://localhost:5000/api/scores', {
+      await axios.post('http://localhost:5001/api/scores', {
         userId,
         quizId: quiz._id,
         language,
         level: parseInt(level),
         score: finalScore,
+        correctAnswers: finalScore,
+        totalQuestions: quiz.questions.length,
         answers: finalAnswers
       });
 
@@ -110,7 +113,8 @@ const Quiz = () => {
           score: finalScore,
           totalQuestions: quiz.questions.length,
           language,
-          level
+          level,
+          skipScoreSave: true
         }
       });
     } catch (error) {
@@ -158,7 +162,7 @@ const Quiz = () => {
       <div className="quiz-header">
         <button
           className="btn btn-secondary exit-btn"
-          onClick={() => navigate(`/planets/${language}`)}
+          onClick={() => navigate('/planet-home', { state: { language } })}
         >
           ← Exit
         </button>

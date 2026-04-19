@@ -14,17 +14,18 @@ const PlanetSelection = () => {
 
   useEffect(() => {
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [language, userId]);
 
   const fetchData = async () => {
     try {
       // Fetch all quizzes for this language
-      const quizzesResponse = await axios.get(`http://localhost:5000/api/quizzes/${language}`);
+      const quizzesResponse = await axios.get(`http://localhost:5001/api/quizzes/${language}`);
       setQuizzes(quizzesResponse.data.quizzes);
 
       // Fetch user progress
       if (userId) {
-        const progressResponse = await axios.get(`http://localhost:5000/api/progress/${userId}`);
+        const progressResponse = await axios.get(`http://localhost:5001/api/progress/${userId}`);
         setProgress(progressResponse.data.progress);
       }
 
@@ -70,7 +71,7 @@ const PlanetSelection = () => {
       </div>
 
       <div className="planet-header">
-        <button className="btn btn-secondary back-home-btn" onClick={() => navigate('/')}>
+        <button className="btn btn-secondary back-home-btn" onClick={() => navigate('/game-hub')}>
           ← Home
         </button>
         <div className="user-info">
@@ -84,7 +85,7 @@ const PlanetSelection = () => {
       </div>
 
       <h1 className="planets-title">
-        Choose Your Planet 🪐
+        Choose Your World 🗺️
         <br />
         <span className="title-subtitle">Select a level to start learning</span>
       </h1>
@@ -92,7 +93,7 @@ const PlanetSelection = () => {
       <div className="planets-grid">
         {quizzes.map((quiz, index) => {
           const unlocked = isPlanetUnlocked(quiz.level);
-          const planetEmojis = ['🌎', '🪐', '🌕', '⭐', '🌙', '☄️', '🌟', '💫', '✨', '🌠'];
+          const planetEmojis = ['�', '�️', '⛰️'];
           
           return (
             <div
@@ -134,6 +135,22 @@ const PlanetSelection = () => {
             <span className="stat-label">Total Score</span>
             <span className="stat-value">{progress?.totalScore || 0}</span>
           </div>
+        </div>
+      </div>
+
+      {/* ── Other Games ── */}
+      <div className="other-games-section">
+        <h2 className="other-games-title">🎮 Other Games</h2>
+        <div
+          className="other-game-card whack-card"
+          onClick={() => navigate(`/whack/${language}`)}
+        >
+          <span className="other-game-icon">🔨</span>
+          <div className="other-game-info">
+            <h3 className="other-game-name">Whack-a-Letter</h3>
+            <p className="other-game-desc">Tap the tiles that show the target letter!</p>
+          </div>
+          <span className="other-game-arrow">→</span>
         </div>
       </div>
     </div>
