@@ -5,7 +5,7 @@ import axios from 'axios';
 import { API_BASE_URL, API_TIMEOUT } from '../config';
 
 export default function PlanetSelection({ route, navigation }) {
-  const [language, setLanguage] = useState(route.params?.language || 'hindi');
+  const language = route.params?.language || 'hindi';
   const [quizzes, setQuizzes] = useState([]);
   const [progress, setProgress] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -13,18 +13,8 @@ export default function PlanetSelection({ route, navigation }) {
   const [userName, setUserName] = useState('');
 
   useEffect(() => {
-    const loadStoredLanguage = async () => {
-      try {
-        const storedLanguage = await AsyncStorage.getItem('userLanguage');
-        if (storedLanguage) {
-          setLanguage(storedLanguage);
-        }
-      } catch (e) {}
-    };
-
-    loadStoredLanguage();
     loadAndFetch();
-  }, [language]);
+  }, []);
 
   const loadAndFetch = async () => {
     try {

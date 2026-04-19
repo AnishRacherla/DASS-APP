@@ -113,7 +113,6 @@ function WordCard({ item, activeId, onDragStart, onDragMove, onDragEnd }) {
         },
       ]}
     >
-      <Text style={styles.wordEmoji}>{item.emoji || '🔤'}</Text>
       <Text style={styles.wordText}>{item.word}</Text>
     </View>
   );

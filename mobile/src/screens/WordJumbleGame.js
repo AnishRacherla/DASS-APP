@@ -317,6 +317,8 @@ export default function WordJumbleGame({ navigation, route }) {
   }
 
   const progress = currentIdx / TOTAL;
+  const currentSentence = gameData.sentences[currentIdx];
+  const sentenceWords = currentSentence.originalSentence.split(' ');
 
   return (
     <View style={styles.container}>
@@ -376,6 +378,14 @@ export default function WordJumbleGame({ navigation, route }) {
           boardOffsetRef.current = { x, y };
         }}
       >
+        <View style={styles.answerStrip}>
+          {sentenceWords.map((_, index) => (
+            <View key={index} style={styles.answerSlot}>
+              <Text style={styles.answerSlotLabel}>{index + 1}</Text>
+            </View>
+          ))}
+        </View>
+
         {/* Order guide */}
         <View style={styles.orderGuide}>
           <Text style={styles.orderGuideText}>← {t('पहला', 'మొదటి', 'First')}</Text>
@@ -471,6 +481,28 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     position: 'relative',
   },
+  answerStrip: {
+    position: 'absolute',
+    top: 10,
+    left: 10,
+    right: 10,
+    flexDirection: 'row',
+    gap: 8,
+    zIndex: 2,
+    pointerEvents: 'none',
+  },
+  answerSlot: {
+    flex: 1,
+    minHeight: 46,
+    borderRadius: 14,
+    borderWidth: 1.5,
+    borderStyle: 'dashed',
+    borderColor: 'rgba(165,180,252,0.35)',
+    backgroundColor: 'rgba(255,255,255,0.04)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  answerSlotLabel: { color: 'rgba(255,255,255,0.35)', fontSize: 11, fontWeight: '800', letterSpacing: 1 },
   orderGuide: {
     position: 'absolute', bottom: 8, left: 10, right: 10,
     flexDirection: 'row', alignItems: 'center', gap: 6,

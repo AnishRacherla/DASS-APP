@@ -21,12 +21,11 @@
         "backgroundColor": "#0B0C2A"
       },
       "package": "com.literacygame.app",
-      "permissions": []
+      "permissions": [],
+      "versionCode": 1
     },
-    "extra": {
-      "eas": {
-        "projectId": "fe62faab-ad66-4042-b424-d556fb617b0c"
-      }
+    "web": {
+      "bundler": "metro"
     }
   }
 }

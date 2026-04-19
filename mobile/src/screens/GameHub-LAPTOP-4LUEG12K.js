@@ -22,6 +22,24 @@ const GAMES = [
     category: 'Letters',
   },
   {
+    id: 'bubble-shooter',
+    title: 'Bubble Shooter',
+    emoji: '🫧',
+    description: 'Hear the consonant and shoot the matching bubble.',
+    color: '#38BDF8',
+    screen: 'BubbleShooterSelection',
+    category: 'Letters',
+  },
+  {
+    id: 'word-sorting-basket',
+    title: 'Word Sorting Basket',
+    emoji: '🧺',
+    description: 'Drag mixed words into the right category basket.',
+    color: '#F59E0B',
+    screen: 'WordSortingBasketSelection',
+    category: 'Words',
+  },
+  {
     id: 'mars',
     title: 'Mars Game',
     emoji: '🪐',
@@ -39,6 +57,56 @@ const GAMES = [
     color: '#a855f7',
     screen: 'AksharaGame',
     category: 'Aksharas',
+    special: true,
+  },
+  {
+    id: 'swara',
+    title: 'Swara Sing-Along',
+    emoji: '🎵',
+    description: 'Learn Hindi vowels with picture, pronunciation, and audio practice.',
+    color: '#3b82f6',
+    screen: 'SwaraGame',
+    category: 'Vowels',
+    special: true,
+  },
+  {
+    id: 'varnamal',
+    title: 'Varnamala Puzzle',
+    emoji: '🧩',
+    description: 'Arrange consonants in alphabetical order! Drag and drop letters to complete the Varnamala.',
+    color: '#8b5cf6',
+    screen: 'VarnamalGame',
+    category: 'Puzzle',
+    special: true,
+  },
+  {
+    id: 'matra',
+    title: 'Matra Magic Builder',
+    emoji: '✨',
+    description: 'Drag & drop matras to build Hindi words! Learn all 11 matras.',
+    color: '#f43f5e',
+    screen: 'MatraGame',
+    category: 'Matras',
+    special: true,
+  },
+  {
+    id: 'word-jumble',
+    title: 'Word Jumble',
+    emoji: '🌊',
+    description: 'Drag floating words into the correct order and press OK to score!',
+    color: '#06b6d4',
+    screen: 'WordJumbleSelection',
+    category: 'Sentences',
+    special: true,
+  },
+  {
+    id: 'crossword',
+    title: 'Kids Crossword',
+    emoji: '🎮',
+    description: 'Solve 5 crossword puzzles in sequence with 4 stars per puzzle.',
+    color: '#8b5cf6',
+    screen: 'CrosswordGame',
+    category: 'Puzzles',
     special: true,
   },
 ];
@@ -119,7 +187,7 @@ export default function GameHub({ navigation }) {
         {/* Header */}
         <Text style={styles.title}>🎮 Choose Your Game 🌟</Text>
         <Text style={styles.subtitle}>
-          5 amazing games to learn {language === 'hindi' ? 'Hindi (हिंदी)' : 'Telugu (తెలుగు)'} letters and words!
+          {GAMES.length} amazing games to learn {language === 'hindi' ? 'Hindi (हिंदी)' : 'Telugu (తెలుగు)'} letters and words!
         </Text>
 
         {/* Lessons Banner */}

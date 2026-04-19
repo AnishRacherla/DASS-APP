@@ -8,28 +8,17 @@ import {
   StatusBar,
   ActivityIndicator
 } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { API_BASE_URL, API_TIMEOUT } from '../config';
 
 export default function BalloonSelection({ navigation, route }) {
-  const [language, setLanguage] = useState(route.params?.language || 'hindi');
+  const { language } = route.params;
   const [games, setGames] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const loadStoredLanguage = async () => {
-      try {
-        const storedLanguage = await AsyncStorage.getItem('userLanguage');
-        if (storedLanguage) {
-          setLanguage(storedLanguage);
-        }
-      } catch (e) {}
-    };
-
-    loadStoredLanguage();
     fetchGames();
-  }, [language]);
+  }, []);
 
   const fetchGames = async () => {
     try {

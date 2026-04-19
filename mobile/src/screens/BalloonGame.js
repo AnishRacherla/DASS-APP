@@ -25,15 +25,8 @@ const SPAWN_INTERVAL = 600; // Spawn new balloon every 0.6 seconds (more continu
 const HINDI_NAME_BY_SYMBOL = Object.fromEntries(hindiConsonants.map((c) => [c.symbol, c.name]));
 const TELUGU_NAME_BY_SYMBOL = Object.fromEntries(teluguConsonants.map((c) => [c.symbol, c.name]));
 
-const FALLBACK_LETTERS = {
-  hindi: ['अ', 'आ', 'इ', 'ई', 'उ', 'ऊ', 'ए', 'ऐ', 'ओ', 'औ', 'क', 'ख', 'ग', 'घ', 'च', 'ज', 'ट', 'ठ', 'ड', 'ढ', 'त', 'थ', 'द', 'ध', 'प', 'फ', 'ब', 'भ', 'म', 'र', 'ल', 'व', 'श', 'ष', 'स', 'ह'],
-  telugu: ['అ', 'ఆ', 'ఇ', 'ఈ', 'ఉ', 'ఊ', 'ఎ', 'ఏ', 'ఐ', 'ఒ', 'ఓ', 'ఔ', 'క', 'ఖ', 'గ', 'ఘ', 'చ', 'జ', 'ట', 'ఠ', 'డ', 'ఢ', 'త', 'థ', 'ద', 'ధ', 'ప', 'ఫ', 'బ', 'భ', 'మ', 'ర', 'ల', 'వ', 'శ', 'ష', 'స', 'హ'],
-};
-
 export default function BalloonGame({ navigation, route }) {
-  const [language, setLanguage] = useState(route.params?.language || 'hindi');
-  const level = route.params?.level || 1;
-  const gameId = route.params?.gameId;
+  const { language, level, gameId } = route.params;
   const [game, setGame] = useState(null);
   const [score, setScore] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -106,10 +99,8 @@ export default function BalloonGame({ navigation, route }) {
       
       letterAudioMapRef.current = audioMap;
       console.log(`Built audio map for ${language} with ${Object.keys(audioMap).length} letters`);
-      return letters;
     } catch (error) {
       console.error('Error building letter audio map:', error);
-      return [];
     }
   };
 
@@ -157,17 +148,6 @@ export default function BalloonGame({ navigation, route }) {
 
   // Reset game state when level changes
   useEffect(() => {
-    const loadStoredLanguage = async () => {
-      try {
-        const storedLanguage = await AsyncStorage.getItem('userLanguage');
-        if (storedLanguage) {
-          setLanguage(storedLanguage);
-        }
-      } catch (e) {}
-    };
-
-    loadStoredLanguage();
-
     setScore(0);
     setCorrectAnswers(0);
     setTotalTaps(0);
@@ -218,28 +198,14 @@ export default function BalloonGame({ navigation, route }) {
       levelRef.current = gameData?.level || level;
       
       // Build letter audio map from API
-      const apiLetters = await buildLetterAudioMap();
+      await buildLetterAudioMap();
       
       // Collect all unique letters from all rounds
       const letters = new Set();
-      const rounds = gameData.gameData?.rounds || gameData.rounds || [];
-      rounds.forEach(round => {
+      gameData.gameData.rounds.forEach(round => {
         round.balloons.forEach(letter => letters.add(letter));
         letters.add(round.targetLetter);
       });
-
-      // If the backend game payload has no rounds or no letters, fall back to the
-      // built-in language pool so the game remains playable after deploy.
-      if (letters.size === 0) {
-        const fallbackLetters = apiLetters?.length
-          ? apiLetters
-              .map((item) => item.symbol)
-              .filter(Boolean)
-          : (FALLBACK_LETTERS[language] || FALLBACK_LETTERS.hindi);
-
-        fallbackLetters.forEach((letter) => letters.add(letter));
-      }
-
       const lettersArray = Array.from(letters);
       availableLettersRef.current = lettersArray;
       
