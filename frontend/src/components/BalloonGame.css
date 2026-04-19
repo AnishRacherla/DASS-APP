@@ -70,13 +70,13 @@
 
 .balloons-area {
   position: relative;
-  height: calc(100vh - 280px);
+  height: calc(100vh - 300px);
   min-height: 400px;
 }
 
 .balloon {
   position: absolute;
-  bottom: -120px;
+  bottom: -100px;
   width: 80px;
   height: 100px;
   border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
@@ -85,15 +85,11 @@
   align-items: center;
   justify-content: center;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-  will-change: transform;
-}
-
-.balloon.floating {
-  animation: float-up 8.2s linear forwards, sway 2.2s ease-in-out infinite;
+  transition: transform 0.1s ease;
 }
 
 .balloon:hover {
-  filter: brightness(1.1);
+  transform: scale(1.1);
 }
 
 .balloon-letter {
@@ -114,34 +110,22 @@
   background: #666;
 }
 
-@keyframes float-up {
+@keyframes float {
   0% {
-    bottom: -120px;
-    opacity: 1;
-  }
-  85% {
-    opacity: 1;
-  }
-  100% {
-    bottom: 120%;
-    opacity: 0;
-  }
-}
-
-@keyframes sway {
-  0% {
+    bottom: -100px;
     transform: translateX(0) rotate(0deg);
   }
   25% {
-    transform: translateX(10px) rotate(4deg);
+    transform: translateX(10px) rotate(5deg);
   }
   50% {
-    transform: translateX(-12px) rotate(-4deg);
+    transform: translateX(-10px) rotate(-5deg);
   }
   75% {
-    transform: translateX(8px) rotate(3deg);
+    transform: translateX(10px) rotate(5deg);
   }
   100% {
+    bottom: calc(100vh + 100px);
     transform: translateX(0) rotate(0deg);
   }
 }

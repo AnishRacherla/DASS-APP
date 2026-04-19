@@ -3,8 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import './BalloonGame.css';
 
-const API_BASE = 'http://localhost:5001';
-const BALLOON_FLIGHT_MS = 8200;
+const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:5001';
 
 export default function BalloonGame() {
   const navigate = useNavigate();
@@ -227,7 +226,7 @@ export default function BalloonGame() {
     if (!gameActiveRef.current || currentLetters.length === 0 || !currentTarget) return;
     
     setBalloons(prevBalloons => {
-      const activeBalloons = prevBalloons.filter(b => !b.popped);
+      const activeBalloons = prevBalloons.filter(b => !b.popped && !b.offScreen);
       
       if (activeBalloons.length >= 8) return prevBalloons;
       
@@ -257,13 +256,15 @@ export default function BalloonGame() {
         color,
         left,
         bottom: -10,
-        popped: false
+        popped: false,
+        offScreen: false
       };
       
       setTimeout(() => {
-        // Remove the balloon when its upward animation completes.
-        setBalloons(prev => prev.filter(b => b.id !== id));
-      }, BALLOON_FLIGHT_MS);
+        setBalloons(prev => prev.map(b => 
+          b.id === id ? { ...b, offScreen: true } : b
+        ));
+      }, 8000);
       
       return [...prevBalloons, newBalloon];
     });
@@ -363,10 +364,11 @@ export default function BalloonGame() {
           {balloons.map((balloon) => (
             <div
               key={balloon.id}
-              className={`balloon ${balloon.popped ? 'popped' : 'floating'}`}
+              className={`balloon ${balloon.popped ? 'popped' : ''}`}
               style={{
                 left: `${balloon.left}%`,
-                backgroundColor: balloon.color
+                backgroundColor: balloon.color,
+                animation: balloon.popped ? 'pop 0.3s ease-out' : 'float 8s ease-in-out'
               }}
               onClick={() => handleBalloonClick(balloon)}
             >
