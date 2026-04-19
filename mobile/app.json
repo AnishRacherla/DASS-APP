@@ -22,6 +22,11 @@
       },
       "package": "com.literacygame.app",
       "permissions": []
+    },
+    "extra": {
+      "eas": {
+        "projectId": "fe62faab-ad66-4042-b424-d556fb617b0c"
+      }
     }
   }
 }
