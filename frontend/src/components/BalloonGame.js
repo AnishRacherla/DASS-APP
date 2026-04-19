@@ -4,6 +4,7 @@ import axios from 'axios';
 import './BalloonGame.css';
 
 const API_BASE = 'http://localhost:5001';
+const BALLOON_FLIGHT_MS = 8200;
 
 export default function BalloonGame() {
   const navigate = useNavigate();
@@ -226,7 +227,7 @@ export default function BalloonGame() {
     if (!gameActiveRef.current || currentLetters.length === 0 || !currentTarget) return;
     
     setBalloons(prevBalloons => {
-      const activeBalloons = prevBalloons.filter(b => !b.popped && !b.offScreen);
+      const activeBalloons = prevBalloons.filter(b => !b.popped);
       
       if (activeBalloons.length >= 8) return prevBalloons;
       
@@ -256,15 +257,13 @@ export default function BalloonGame() {
         color,
         left,
         bottom: -10,
-        popped: false,
-        offScreen: false
+        popped: false
       };
       
       setTimeout(() => {
-        setBalloons(prev => prev.map(b => 
-          b.id === id ? { ...b, offScreen: true } : b
-        ));
-      }, 8000);
+        // Remove the balloon when its upward animation completes.
+        setBalloons(prev => prev.filter(b => b.id !== id));
+      }, BALLOON_FLIGHT_MS);
       
       return [...prevBalloons, newBalloon];
     });
@@ -364,11 +363,10 @@ export default function BalloonGame() {
           {balloons.map((balloon) => (
             <div
               key={balloon.id}
-              className={`balloon ${balloon.popped ? 'popped' : ''}`}
+              className={`balloon ${balloon.popped ? 'popped' : 'floating'}`}
               style={{
                 left: `${balloon.left}%`,
-                backgroundColor: balloon.color,
-                animation: balloon.popped ? 'pop 0.3s ease-out' : 'float 8s ease-in-out'
+                backgroundColor: balloon.color
               }}
               onClick={() => handleBalloonClick(balloon)}
             >
