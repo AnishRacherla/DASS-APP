@@ -67,7 +67,6 @@ const FillStoryGame = () => {
   const [feedback, setFeedback] = useState(null); // { type: 'correct'|'wrong', blankId }
   const [storyComplete, setStoryComplete] = useState(false);
   const [showHint, setShowHint] = useState(false);
-  const [flyingWord, setFlyingWord] = useState(null);
   const [wrongShake, setWrongShake] = useState(null);
   const [attempts, setAttempts] = useState({});
 
@@ -75,11 +74,7 @@ const FillStoryGame = () => {
   const optionRefs = useRef({});
   const storyContainerRef = useRef(null);
 
-  useEffect(() => {
-    fetchStory();
-  }, [language, level]);
-
-  const fetchStory = async () => {
+  const fetchStory = useCallback(async () => {
     setLoading(true);
     try {
       const res = await axios.get(`${API}/api/fill-story/${language}/${level}`);
@@ -97,7 +92,11 @@ const FillStoryGame = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [language, level]);
+
+  useEffect(() => {
+    fetchStory();
+  }, [fetchStory]);
 
   // Parse story template into segments
   const parseStory = useCallback(() => {
@@ -137,7 +136,6 @@ const FillStoryGame = () => {
       setAttempts(prev => ({ ...prev, [blankId]: (prev[blankId] || 0) + 1 }));
 
       // Fly animation
-      setFlyingWord({ blankId, word: option });
       setFeedback({ type: 'correct', blankId });
       setMascotState('happy');
 
@@ -169,7 +167,6 @@ const FillStoryGame = () => {
           return updated;
         });
 
-        setFlyingWord(null);
         setFeedback(null);
       }, 700);
     } else {

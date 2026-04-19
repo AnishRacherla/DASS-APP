@@ -81,10 +81,16 @@ export default function WordJumbleGame() {
         x = padding + Math.random() * maxX;
         y = padding + Math.random() * maxY;
         attempts++;
-      } while (
-        attempts < 30 &&
-        placed.some(p => Math.abs(p.x - x) < WORD_W + 10 && Math.abs(p.y - y) < WORD_H + 8)
-      );
+        let overlaps = false;
+        for (let i = 0; i < placed.length; i += 1) {
+          const p = placed[i];
+          if (Math.abs(p.x - x) < WORD_W + 10 && Math.abs(p.y - y) < WORD_H + 8) {
+            overlaps = true;
+            break;
+          }
+        }
+        if (!overlaps) break;
+      } while (attempts < 30);
       placed.push({ x, y });
       return { id: idx, text, x, y };
     });
@@ -180,7 +186,6 @@ export default function WordJumbleGame() {
   const checkAnswer = () => {
     if (feedback?.correct) return;
     const currentSentence = gameData.sentences[currentIdx];
-    const correctWords = currentSentence.originalSentence.split(' ');
 
     // Sort words by x position to determine the user's order
     const sorted = [...words].sort((a, b) => a.x - b.x);

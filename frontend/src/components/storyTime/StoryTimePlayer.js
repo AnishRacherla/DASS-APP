@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { storyTimeData } from '../../data/storyTimeData';
@@ -10,6 +10,19 @@ const StoryTimePlayer = () => {
     const story = storyTimeData.find(s => s.id === storyId);
     const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
     const [showMoral, setShowMoral] = useState(false);
+
+    const handleNext = useCallback(() => {
+        if (!story) return;
+        if (showMoral) {
+            navigate(`/story-time/quiz/${story.id}`);
+            return;
+        }
+        if (currentSlideIndex < story.slides.length - 1) {
+            setCurrentSlideIndex(prev => prev + 1);
+        } else {
+            setShowMoral(true);
+        }
+    }, [currentSlideIndex, navigate, showMoral, story]);
 
     useEffect(() => {
         if (!story) return;
@@ -36,23 +49,11 @@ const StoryTimePlayer = () => {
                 audioObj.currentTime = 0;
             }
         }
-    }, [currentSlideIndex, story, showMoral]);
+    }, [currentSlideIndex, handleNext, showMoral, story]);
 
     if (!story) {
         return <div>Story not found</div>;
     }
-
-    const handleNext = () => {
-        if (showMoral) {
-            navigate(`/story-time/quiz/${story.id}`);
-            return;
-        }
-        if (currentSlideIndex < story.slides.length - 1) {
-            setCurrentSlideIndex(prev => prev + 1);
-        } else {
-            setShowMoral(true);
-        }
-    };
 
     const handlePrev = () => {
         if (showMoral) {

@@ -38,10 +38,6 @@ function getConsonantPool(language, difficulty) {
   return all;
 }
 
-function shuffle(array) {
-  return [...array].sort(() => Math.random() - 0.5);
-}
-
 function randomLetter(pool) {
   return pool[Math.floor(Math.random() * pool.length)] || pool[0];
 }
@@ -61,10 +57,6 @@ function createBoard(pool, rowCount) {
 
 function cloneBoard(board) {
   return board.map((row) => row.map((cell) => (cell ? { ...cell } : null)));
-}
-
-function boardRows(board) {
-  return board.length;
 }
 
 function isCellExposed(board, row, col) {
@@ -228,7 +220,6 @@ export default function BubbleShooterGame() {
   const boardStateRef = useRef([]);
   const targetRef = useRef(null);
   const projectileRef = useRef(null);
-  const lastFrameRef = useRef(0);
   const gameTimerRef = useRef(null);
   const audioTimerRef = useRef(null);
   const letterChangeTimerRef = useRef(null);
@@ -240,7 +231,6 @@ export default function BubbleShooterGame() {
   const boardSizeRef = useRef({ width: 960, height: 620 });
   const endedRef = useRef(false);
   const isDraggingRef = useRef(false);
-  const pendingMissPenaltyRef = useRef(false);
 
   const [board, setBoard] = useState(() => createBoard(availablePool, level.initialRows));
   const [score, setScore] = useState(0);
@@ -251,7 +241,7 @@ export default function BubbleShooterGame() {
   const [aimAngle, setAimAngle] = useState(-Math.PI / 2);
   const [feedback, setFeedback] = useState(null);
   const [gameState, setGameState] = useState('playing');
-  const [endReason, setEndReason] = useState('');
+  const [, setEndReason] = useState('');
   const levelNumber = difficulty === 'hard' ? 3 : difficulty === 'medium' ? 2 : 1;
 
   const getBoardMetrics = useCallback(() => getBoardLayout(boardSizeRef.current.width, boardSizeRef.current.height), []);
@@ -309,13 +299,6 @@ export default function BubbleShooterGame() {
     setFeedback({ text, type });
     window.setTimeout(() => setFeedback(null), 650);
   }, []);
-
-  const syncTarget = useCallback((boardState) => {
-    const nextTarget = pickTarget(boardState, targetRef.current?.id);
-    targetRef.current = nextTarget;
-    setCurrentTarget(nextTarget);
-    if (nextTarget) sayTarget(nextTarget);
-  }, [sayTarget]);
 
   const addNewRowAndRetarget = useCallback((boardState) => {
     const nextBoard = addTopRow(boardState, availablePool);
@@ -458,7 +441,7 @@ export default function BubbleShooterGame() {
     projectileRef.current = next;
     setProjectile(next);
     animationRef.current = requestAnimationFrame(stepProjectile);
-  }, [applyWrongHit, getBoardMetrics, resolveHit, showFeedback]);
+  }, [applyWrongHit, getBoardMetrics, resolveHit]);
 
   const fireProjectile = useCallback(() => {
     if (endedRef.current || projectileRef.current || !currentTarget) return;

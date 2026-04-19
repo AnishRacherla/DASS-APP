@@ -6,17 +6,6 @@ import { STAGES } from './StageHub';
 import { getStars, markPlayed } from '../hooks/useGameProgress';
 import './PlanetGamesScreen.css';
 
-const StarRow = ({ gameId }) => {
-    const stars = getStars(gameId); // -1 = not played
-    return (
-        <div className="ps-card-stars">
-            {[1, 2, 3].map(n => (
-                <span key={n} className={`ps-star ${stars >= n ? 'earned' : 'empty'}`}>⭐</span>
-            ))}
-        </div>
-    );
-};
-
 const PlanetGamesScreen = () => {
     const { stageId } = useParams();
     const navigate = useNavigate();

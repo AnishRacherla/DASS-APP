@@ -5,7 +5,6 @@ import axios from 'axios';
 import './WordSortingBasketGame.css';
 
 const API_BASE = 'http://localhost:5001';
-const BOARD_WIDTH = 1200;
 const GAME_TIME = 60;
 const CORRECT_HIT_POINTS = 10;
 const WRONG_HIT_POINTS = -5;
@@ -113,8 +112,6 @@ export default function WordSortingBasketGame() {
   const [words, setWords] = useState([]);
   const [basketCategories, setBasketCategories] = useState([]);
   const [score, setScore] = useState(0);
-  const [correctCount, setCorrectCount] = useState(0);
-  const [wrongCount, setWrongCount] = useState(0);
   const [timeLeft, setTimeLeft] = useState(GAME_TIME);
   const [feedback, setFeedback] = useState(null);
   const [gameState, setGameState] = useState('playing');
@@ -157,8 +154,6 @@ export default function WordSortingBasketGame() {
     setWords([]);
     setBasketCategories([]);
     setScore(0);
-    setCorrectCount(0);
-    setWrongCount(0);
     setTimeLeft(GAME_TIME);
     setFeedback(null);
     setGameState('playing');
@@ -248,7 +243,6 @@ export default function WordSortingBasketGame() {
       scoreRef.current = nextScore;
       correctRef.current += 1;
       setScore(nextScore);
-      setCorrectCount(correctRef.current);
       showFeedback(`+${CORRECT_HIT_POINTS}`, 'correct');
       setWords((currentWords) => currentWords.filter((item) => item.id !== wordId));
       if (totalWords === 1) {
@@ -262,7 +256,6 @@ export default function WordSortingBasketGame() {
       scoreRef.current = nextScore;
       wrongRef.current += 1;
       setScore(nextScore);
-      setWrongCount(wrongRef.current);
       showFeedback('Wrong basket (-5)', 'wrong');
     }
 
